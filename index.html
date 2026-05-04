@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Sophia Benzari</title>
-
+  <link rel="icon" href="favicon.ico">
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Jost:wght@300;400&display=swap" rel="stylesheet" />
@@ -466,6 +466,9 @@
       font-family: 'Cormorant Garamond', serif; font-style: italic; font-weight: 300;
       font-size: clamp(11px, 0.92vw, 13px); color: var(--w42);
     }
+    .video-wrap iframe {
+      border: none;
+    }
 
     /* Resume + contact in about */
     .resume-row {
@@ -796,10 +799,13 @@
       <p class="section-label">Music</p>
       <div class="rule"></div>
       <div class="video-wrap">
-        <video controls>
-          <source src="Liesbestraum.mov" type="video/quicktime" />
-          <source src="Liesbestraum.mov" type="video/mp4" />
-        </video>
+        <iframe 
+            src="https://player.vimeo.com/video/118920749?title=0&byline=0&portrait=0"
+            frameborder="0"
+            allow="autoplay; fullscreen; picture-in-picture"
+            allowfullscreen
+            style="width:100%; height:100%;">
+          </iframe>
       </div>
       <p class="video-caption">Video recording of me playing Liebestraum — Franz Liszt, Dec 2025</p>
     </section>
