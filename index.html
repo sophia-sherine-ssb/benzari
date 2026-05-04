@@ -1,0 +1,1121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sophia Benzari</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Jost:wght@300;400&display=swap" rel="stylesheet" />
+
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --white: rgba(255,255,255,1.00);
+      --w85:   rgba(255,255,255,0.85);
+      --w60:   rgba(255,255,255,0.60);
+      --w42:   rgba(255,255,255,0.42);
+      --w22:   rgba(255,255,255,0.22);
+      --w16:   rgba(255,255,255,0.16);
+      --w12:   rgba(255,255,255,0.12);
+      --w10:   rgba(255,255,255,0.10);
+      --w06:   rgba(255,255,255,0.06);
+      --px:    clamp(2rem, 5vw, 5rem);
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      width: 100%; height: 100%;
+      background: #0b0f14;
+      color: var(--white);
+      cursor: none;
+      overflow: hidden; /* SPA — each view manages its own scroll */
+    }
+
+    /* ── 3D canvas — always behind everything ── */
+    #bg { position: fixed; inset: 0; z-index: 0; }
+
+    /* ── Vignette ── */
+    #fog {
+      position: fixed; inset: 0; z-index: 1; pointer-events: none;
+      transition: background .8s ease;
+    }
+    /* Per-view fog intensities set by JS */
+    body.view-home #fog {
+      background:
+        linear-gradient(110deg, rgba(4,8,14,0.72) 0%, rgba(4,8,14,0.36) 48%, rgba(4,8,14,0.00) 72%),
+        radial-gradient(ellipse at 80% 55%, transparent 48%, rgba(0,0,0,0.30) 100%);
+    }
+    body.view-work #fog, body.view-about #fog {
+      background:
+        linear-gradient(110deg, rgba(4,8,14,0.82) 0%, rgba(4,8,14,0.55) 50%, rgba(4,8,14,0.20) 100%),
+        radial-gradient(ellipse at center, transparent 30%, rgba(0,0,0,0.45) 100%);
+    }
+    body.view-contact #fog {
+      background:
+        radial-gradient(ellipse at center, transparent 35%, rgba(0,0,0,0.55) 100%),
+        linear-gradient(to bottom, rgba(4,8,14,0.55) 0%, rgba(4,8,14,0.30) 50%, rgba(4,8,14,0.55) 100%);
+    }
+
+    /* ── Custom cursor ── */
+    #cur {
+      position: fixed; width: 5px; height: 5px; border-radius: 50%;
+      background: #fff; transform: translate(-50%,-50%);
+      pointer-events: none; z-index: 300; mix-blend-mode: difference;
+    }
+    #cur-o {
+      position: fixed; width: 28px; height: 28px; border-radius: 50%;
+      border: 1px solid rgba(255,255,255,0.26); transform: translate(-50%,-50%);
+      pointer-events: none; z-index: 299;
+    }
+
+    /* ══════════════════════════════
+       NAV
+    ══════════════════════════════ */
+    nav {
+      position: fixed; top: 2.2rem; right: var(--px); z-index: 50;
+      display: flex; gap: 2.4rem;
+    }
+    nav a {
+      font-family: 'Jost', sans-serif; font-weight: 400;
+      font-size: 11.5px; letter-spacing: 0.26em; text-transform: uppercase;
+      color: var(--w60); text-decoration: none; transition: color .25s;
+      cursor: pointer;
+    }
+    nav a:hover, nav a.active { color: var(--white); }
+
+    /* ══════════════════════════════
+       VIEW SYSTEM
+    ══════════════════════════════ */
+    .view {
+      position: fixed; inset: 0; z-index: 10;
+      opacity: 0; pointer-events: none;
+      transition: opacity .5s cubic-bezier(.22,1,.36,1);
+      overflow-y: auto; overflow-x: hidden;
+      /* hidden views must not intercept any layout */
+      visibility: hidden;
+    }
+    .view.active {
+      opacity: 1; pointer-events: all;
+      visibility: visible;
+    }
+    /* home & contact: no scroll, flex column to bottom */
+    #view-home {
+      overflow: hidden;
+      display: flex; flex-direction: column;
+      justify-content: flex-end;
+      padding: 0 var(--px) clamp(4.5rem, 10vh, 7rem);
+    }
+    #view-contact {
+      overflow: hidden;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      padding: 6rem var(--px) 5rem;
+      text-align: center; min-height: 100vh;
+    }
+
+    /* ══════════════════════════════
+       BOTTOM BAR (shared)
+    ══════════════════════════════ */
+    .bottom-bar {
+      position: fixed; bottom: 0; left: 0; right: 0; z-index: 40;
+      padding: 0 var(--px) 1.8rem;
+      display: flex; align-items: flex-end; justify-content: space-between;
+      pointer-events: none;
+    }
+    .year {
+      font-family: 'Jost', sans-serif; font-weight: 300;
+      font-size: 10px; letter-spacing: 0.22em; color: var(--w42);
+    }
+    .quote {
+      font-family: 'Cormorant Garamond', serif; font-style: italic; font-weight: 300;
+      font-size: clamp(9.5px, 0.80vw, 11.5px);
+      color: var(--w42); text-align: right; max-width: 400px; line-height: 1.65;
+    }
+    .quote cite {
+      display: block; margin-top: 0.35em;
+      font-style: normal; font-family: 'Jost', sans-serif;
+      font-weight: 300; font-size: 9px; letter-spacing: 0.20em;
+      text-transform: uppercase; color: var(--w42);
+    }
+
+    /* ══════════════════════════════
+       SHARED TYPOGRAPHY
+    ══════════════════════════════ */
+    .section-label {
+      font-family: 'Jost', sans-serif; font-weight: 300;
+      font-size: 10px; letter-spacing: 0.40em; text-transform: uppercase;
+      color: var(--w42); margin-bottom: 1.8rem;
+    }
+    .rule {
+      height: 1px; width: 100%;
+      background: linear-gradient(to right, var(--w22) 0%, transparent 85%);
+      margin-bottom: clamp(2rem, 4vh, 3rem);
+    }
+    .vline { background: var(--w12); }
+
+    @keyframes rise { to { opacity: 1; transform: translateY(0); } }
+    ::-webkit-scrollbar { width: 2px; }
+    ::-webkit-scrollbar-thumb { background: var(--w12); border-radius: 2px; }
+
+    /* ══════════════════════════════════════════════
+       ① HOME VIEW
+    ══════════════════════════════════════════════ */
+
+    .content-block {
+      display: flex; flex-direction: column;
+    }
+
+    .name {
+      font-family: 'Cormorant Garamond', serif; font-weight: 300;
+      font-size: clamp(44px, 6.2vw, 88px);
+      line-height: 0.90; letter-spacing: 0.01em;
+      color: var(--white); text-shadow: 0 2px 32px rgba(0,0,0,0.38);
+    }
+    .discipline {
+      margin-top: 0.8rem;
+      font-family: 'Jost', sans-serif; font-weight: 300;
+      font-size: clamp(9px, 0.82vw, 11px);
+      letter-spacing: 0.38em; text-transform: uppercase; color: var(--w42);
+    }
+    .home-rule {
+      margin-top: clamp(1.2rem, 2.4vh, 2.2rem);
+      height: 1px; width: 100%;
+      background: linear-gradient(to right, var(--w16) 0%, transparent 80%);
+    }
+    .bio {
+      margin-top: clamp(1.1rem, 1.8vh, 1.8rem);
+      display: grid;
+      grid-template-columns: 1fr 1px 1fr;
+      column-gap: clamp(1.6rem, 3vw, 2.8rem);
+      align-items: start;
+    }
+    .col, .col-fr { display: flex; flex-direction: column; gap: 0.75em; }
+    .col p {
+      font-family: 'Jost', sans-serif; font-weight: 300;
+      font-size: clamp(11px, 0.92vw, 13px);
+      line-height: 1.84; color: var(--w85);
+    }
+    .col-fr p {
+      font-family: 'Cormorant Garamond', serif; font-style: italic; font-weight: 300;
+      font-size: clamp(11.5px, 0.98vw, 14px);
+      line-height: 1.92; color: var(--w60);
+    }
+    .col p a, .col-fr p a {
+      color: inherit; text-decoration: underline; text-underline-offset: 3px;
+      text-decoration-color: var(--w42); transition: color .2s, text-decoration-color .2s;
+      cursor: pointer;
+    }
+    .col p a:hover, .col-fr p a:hover { color: var(--w85); text-decoration-color: var(--w60); }
+
+    /* ══════════════════════════════════════════════
+       ② WORK VIEW
+    ══════════════════════════════════════════════ */
+    #view-work {
+      padding: clamp(5rem,11vh,8rem) var(--px) clamp(5rem,10vh,8rem);
+      max-width: 1080px;
+      min-height: 100vh;
+    }
+
+    .page-title {
+      font-family: 'Cormorant Garamond', serif; font-weight: 300;
+      font-size: clamp(32px, 4vw, 54px);
+      letter-spacing: 0.01em; line-height: 1; color: var(--white);
+    }
+    .page-sub {
+      margin-top: 0.7rem;
+      font-family: 'Jost', sans-serif; font-weight: 300;
+      font-size: clamp(9px, 0.82vw, 11px);
+      letter-spacing: 0.38em; text-transform: uppercase; color: var(--w42);
+    }
+    .top-rule {
+      margin-top: clamp(1.5rem, 3vh, 2.5rem);
+      height: 1px; width: 100%;
+      background: linear-gradient(to right, var(--w22) 0%, transparent 80%);
+    }
+
+    .categories { margin-top: clamp(2rem, 4vh, 3.5rem); display: flex; flex-direction: column; }
+    .category { border-bottom: 1px solid var(--w10); }
+    .category:first-child { border-top: 1px solid var(--w10); }
+
+    .cat-header {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 1.5rem 0; cursor: pointer; user-select: none;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .cat-left { display: flex; align-items: baseline; gap: 1.4rem; }
+    .cat-number {
+      font-family: 'Cormorant Garamond', serif; font-weight: 300;
+      font-size: clamp(11px, 0.9vw, 13px); color: var(--w42); letter-spacing: 0.08em;
+    }
+    .cat-name {
+      font-family: 'Jost', sans-serif; font-weight: 400;
+      font-size: clamp(11px, 1vw, 13.5px);
+      letter-spacing: 0.30em; text-transform: uppercase;
+      color: var(--w85); transition: color .25s;
+    }
+    .cat-count {
+      font-family: 'Jost', sans-serif; font-weight: 300;
+      font-size: 10px; letter-spacing: 0.14em; color: var(--w42);
+    }
+    .cat-arrow {
+      width: 18px; height: 18px; display: flex; align-items: center; justify-content: center;
+      transition: transform .4s cubic-bezier(.22,1,.36,1); color: var(--w42); flex-shrink: 0;
+    }
+    .cat-header:hover .cat-name { color: var(--white); }
+    .cat-header:hover .cat-arrow { color: var(--w85); }
+    .category.open .cat-arrow { transform: rotate(90deg); }
+    .category.open .cat-name  { color: var(--white); }
+
+    .cat-panel { display: grid; grid-template-rows: 0fr; transition: grid-template-rows .5s cubic-bezier(.22,1,.36,1); }
+    .cat-panel-inner { overflow: hidden; }
+    .category.open .cat-panel { grid-template-rows: 1fr; }
+
+    .cards {
+      padding-bottom: 2.4rem;
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(min(100%, 310px), 1fr));
+      gap: clamp(1.2rem, 2.5vw, 2rem);
+    }
+    .card {
+      background: var(--w06); border: 1px solid var(--w10); border-radius: 2px;
+      overflow: hidden; display: flex; flex-direction: column;
+      transition: border-color .3s, background .3s; text-decoration: none; color: inherit;
+    }
+    .card:hover { border-color: var(--w22); background: rgba(255,255,255,0.09); }
+    .card-img {
+      width: 100%; aspect-ratio: 16/9; background: var(--w06);
+      position: relative; overflow: hidden;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .card-img img {
+      width: 100%; height: 100%; object-fit: cover; display: block;
+      transition: transform .5s ease;
+    }
+    .card:hover .card-img img { transform: scale(1.03); }
+    .card-img .placeholder {
+      position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;
+      font-family: 'Jost', sans-serif; font-weight: 300;
+      font-size: 10px; letter-spacing: 0.22em; text-transform: uppercase; color: var(--w22);
+    }
+    .card-img img.loaded + .placeholder,
+    .card-img img:not([src=""]) + .placeholder { display: none; }
+    .card-body { padding: 1.2rem 1.3rem 1.4rem; display: flex; flex-direction: column; gap: 0.55rem; flex: 1; }
+    .card-title {
+      font-family: 'Cormorant Garamond', serif; font-weight: 400;
+      font-size: clamp(14px, 1.25vw, 17px); line-height: 1.2; color: var(--white); letter-spacing: 0.01em;
+    }
+    .card-summary {
+      font-family: 'Jost', sans-serif; font-weight: 300;
+      font-size: clamp(10.5px, 0.85vw, 12px); line-height: 1.65; color: var(--w60);
+    }
+    .card-tools { margin-top: 0.3rem; display: flex; flex-wrap: wrap; gap: 0.4rem; }
+    .tool-tag {
+      font-family: 'Jost', sans-serif; font-weight: 300;
+      font-size: 9.5px; letter-spacing: 0.16em; text-transform: uppercase;
+      color: var(--w42); border: 1px solid var(--w22); padding: 2px 7px; border-radius: 1px;
+    }
+    .card-result {
+      margin-top: 0.4rem;
+      font-family: 'Cormorant Garamond', serif; font-style: italic; font-weight: 300;
+      font-size: clamp(11px, 0.95vw, 13.5px); line-height: 1.6; color: var(--w42);
+    }
+    .card-link {
+      margin-top: auto; padding-top: 0.9rem;
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      font-family: 'Jost', sans-serif; font-weight: 300;
+      font-size: 10px; letter-spacing: 0.22em; text-transform: uppercase;
+      color: var(--w42); text-decoration: none; transition: color .25s;
+    }
+    .card-link:hover { color: var(--white); }
+    .card-link svg { transition: transform .25s; }
+    .card-link:hover svg { transform: translateX(3px); }
+
+    /* ══════════════════════════════════════════════
+       ③ ABOUT VIEW
+    ══════════════════════════════════════════════ */
+    #view-about {
+      padding: clamp(6rem,13vh,10rem) var(--px) clamp(6rem,10vh,9rem);
+      max-width: 860px; margin: 0 auto;
+      display: flex; flex-direction: column;
+      gap: clamp(5rem, 10vh, 8rem);
+    }
+
+    /* Scroll reveal */
+    .reveal {
+      opacity: 0; transform: translateY(22px);
+      transition: opacity .85s cubic-bezier(.22,1,.36,1), transform .85s cubic-bezier(.22,1,.36,1);
+    }
+    .reveal.visible { opacity: 1; transform: translateY(0); }
+
+    /* Intro */
+    .intro-greeting {
+      display: grid; grid-template-columns: 1fr 1px 1fr;
+      column-gap: clamp(1.6rem, 3vw, 2.8rem);
+      margin-bottom: clamp(1.8rem, 3.5vh, 2.8rem);
+    }
+    .intro-greeting .vline { background: var(--w12); }
+    .greeting-en {
+      font-family: 'Cormorant Garamond', serif; font-weight: 300;
+      font-size: clamp(26px, 3.2vw, 44px); line-height: 1.05; letter-spacing: 0.01em; color: var(--white);
+    }
+    .greeting-fr {
+      font-family: 'Cormorant Garamond', serif; font-style: italic; font-weight: 300;
+      font-size: clamp(24px, 3vw, 40px); line-height: 1.05; letter-spacing: 0.01em;
+      color: var(--w60); align-self: center;
+    }
+    .intro-body {
+      font-family: 'Jost', sans-serif; font-weight: 300;
+      font-size: clamp(12px, 1vw, 14px); line-height: 1.90; color: var(--w85); max-width: 600px;
+    }
+
+    /* Education + Skills */
+    .edu-skills {
+      display: grid; grid-template-columns: 1fr 1px 1fr;
+      column-gap: clamp(1.6rem, 3vw, 2.8rem); align-items: start;
+    }
+    .edu-skills .vline { background: var(--w12); }
+    .block-title {
+      font-family: 'Jost', sans-serif; font-weight: 400;
+      font-size: 10.5px; letter-spacing: 0.32em; text-transform: uppercase;
+      color: var(--w42); margin-bottom: 1.6rem;
+    }
+    .edu-entry { margin-bottom: 1.8rem; }
+    .edu-entry:last-child { margin-bottom: 0; }
+    .edu-school {
+      font-family: 'Cormorant Garamond', serif; font-weight: 400;
+      font-size: clamp(14px, 1.3vw, 18px); color: var(--white); line-height: 1.2; margin-bottom: 0.25rem;
+    }
+    .edu-degree {
+      font-family: 'Jost', sans-serif; font-weight: 300;
+      font-size: clamp(11px, 0.92vw, 13px); color: var(--w85); line-height: 1.5; margin-bottom: 0.2rem;
+    }
+    .edu-detail {
+      font-family: 'Jost', sans-serif; font-weight: 300;
+      font-size: clamp(10px, 0.82vw, 11.5px); color: var(--w42); line-height: 1.6;
+    }
+    .skill-group { margin-bottom: 1.5rem; }
+    .skill-group:last-child { margin-bottom: 0; }
+    .skill-group-name {
+      font-family: 'Jost', sans-serif; font-weight: 300;
+      font-size: 9.5px; letter-spacing: 0.28em; text-transform: uppercase;
+      color: var(--w42); margin-bottom: 0.6rem;
+    }
+    .skill-tags { display: flex; flex-wrap: wrap; gap: 0.4rem; }
+    .skill-tag {
+      font-family: 'Jost', sans-serif; font-weight: 300;
+      font-size: clamp(10px, 0.82vw, 11.5px); color: var(--w85);
+      border: 1px solid var(--w22); padding: 3px 9px; border-radius: 1px; line-height: 1.6;
+    }
+
+    /* Stack gallery */
+    .stack-wrap { position: relative; padding: 2.5rem 0 3.5rem; user-select: none; }
+    .stack-stage { position: relative; width: 100%; padding-bottom: 75%; }
+    .stack-card {
+      position: absolute; inset: 0; border-radius: 3px; overflow: hidden;
+      border: 1px solid var(--w12); background: #111620;
+      display: flex; align-items: center; justify-content: center;
+      box-shadow: 0 8px 48px rgba(0,0,0,0.55); will-change: transform, opacity;
+    }
+    .stack-card img { width: 100%; height: 100%; object-fit: contain; display: block; pointer-events: none; }
+    .slide-placeholder {
+      position: absolute; bottom: 1rem; left: 0; right: 0; text-align: center;
+      font-family: 'Jost', sans-serif; font-weight: 300;
+      font-size: 10px; letter-spacing: 0.22em; text-transform: uppercase;
+      color: rgba(255,255,255,0.6); pointer-events: none; padding: 0.5rem;
+    }
+    .hover-zone {
+      position: absolute; top: 0; bottom: 0; width: 28%; z-index: 10; cursor: pointer;
+    }
+    .hover-zone-left  { left: 0; }
+    .hover-zone-right { right: 0; }
+    .hover-zone::after {
+      content: ''; position: absolute; top: 50%;
+      width: 10px; height: 10px; border-style: solid;
+      border-color: rgba(255,255,255,0.22); opacity: 0;
+      transition: opacity .3s ease, border-color .3s ease;
+    }
+    .hover-zone-left::after  { left: 1.2rem; border-width: 1px 0 0 1px; transform: translateY(-50%) rotate(-45deg); }
+    .hover-zone-right::after { right: 1.2rem; border-width: 1px 1px 0 0; transform: translateY(-50%) rotate(45deg); }
+    .hover-zone:hover::after { opacity: 1; border-color: rgba(255,255,255,0.55); }
+    .stack-controls { display: flex; align-items: center; justify-content: center; margin-top: 1.6rem; }
+    .carousel-dots  { display: flex; gap: 6px; align-items: center; }
+    .dot {
+      width: 5px; height: 5px; border-radius: 50%; background: var(--w22); cursor: pointer;
+      transition: background .3s, transform .3s;
+    }
+    .dot.active { background: var(--w85); transform: scale(1.3); }
+    .carousel-caption {
+      margin-top: 1.1rem; text-align: center;
+      font-family: 'Cormorant Garamond', serif; font-style: italic; font-weight: 300;
+      font-size: clamp(11px, 0.92vw, 13px); color: var(--w42);
+    }
+
+    /* Video */
+    .video-wrap {
+      width: 100%; aspect-ratio: 16/9; background: var(--w06);
+      border: 1px solid var(--w12); border-radius: 2px; overflow: hidden;
+      position: relative; display: flex; align-items: center; justify-content: center;
+    }
+    .video-wrap video { width: 100%; height: 100%; border: none; display: block; }
+    .video-caption {
+      margin-top: 1rem; text-align: center;
+      font-family: 'Cormorant Garamond', serif; font-style: italic; font-weight: 300;
+      font-size: clamp(11px, 0.92vw, 13px); color: var(--w42);
+    }
+
+    /* Resume + contact in about */
+    .resume-row {
+      display: flex; align-items: center;
+      gap: clamp(1.2rem, 2.5vw, 2.2rem);
+      margin-bottom: clamp(2.5rem, 5vh, 4rem);
+    }
+    .resume-link {
+      font-family: 'Jost', sans-serif; font-weight: 300;
+      font-size: clamp(11px, 0.95vw, 13.5px); letter-spacing: 0.22em; text-transform: uppercase;
+      color: var(--w85); text-decoration: none;
+      display: inline-flex; align-items: center; gap: 0.5rem; transition: color .25s;
+    }
+    .resume-link:hover { color: var(--white); }
+    .resume-link svg { opacity: 0.6; transition: opacity .25s, transform .25s; }
+    .resume-link:hover svg { opacity: 1; transform: translateY(-1px); }
+    .resume-divider { width: 1px; height: 1.1rem; background: var(--w22); flex-shrink: 0; }
+
+    .contact-list { display: flex; flex-direction: column; align-items: center; gap: 1.4rem; margin-bottom: clamp(2.5rem, 5vh, 4rem); }
+    .contact-row  { display: flex; align-items: center; gap: 0.9rem; }
+    .contact-item {
+      font-family: 'Cormorant Garamond', serif; font-weight: 300;
+      font-size: clamp(18px, 2.2vw, 28px); color: var(--w85); text-decoration: none;
+      letter-spacing: 0.01em; line-height: 1; transition: color .25s;
+    }
+    .contact-item:hover { color: var(--white); }
+    .contact-phone {
+      font-family: 'Jost', sans-serif; font-weight: 300;
+      font-size: clamp(13px, 1.3vw, 18px); color: var(--w60); letter-spacing: 0.08em;
+    }
+    .copy-btn {
+      background: none; border: 1px solid var(--w22); width: 26px; height: 26px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer; color: var(--w42); flex-shrink: 0; transition: border-color .2s, color .2s;
+    }
+    .copy-btn:hover { border-color: var(--w60); color: var(--w85); }
+    .copy-btn svg { display: block; }
+    .copy-btn .icon-check { display: none; }
+    .copy-btn.copied { border-color: rgba(120,200,140,0.5); color: rgba(120,200,140,0.9); }
+    .copy-btn.copied .icon-clip  { display: none; }
+    .copy-btn.copied .icon-check { display: block; }
+    .contact-cities {
+      font-family: 'Jost', sans-serif; font-weight: 300;
+      font-size: clamp(10px, 0.9vw, 12px); letter-spacing: 0.30em; text-transform: uppercase;
+      color: var(--w42); margin-bottom: clamp(2rem, 4vh, 3rem);
+    }
+    .contact-closing { text-align: center; }
+    .closing-en {
+      font-family: 'Cormorant Garamond', serif; font-weight: 300;
+      font-size: clamp(13px, 1.4vw, 18px); color: var(--w42); letter-spacing: 0.04em;
+      display: block; margin-bottom: 0.4rem;
+    }
+    .closing-fr {
+      font-family: 'Cormorant Garamond', serif; font-style: italic; font-weight: 300;
+      font-size: clamp(15px, 1.7vw, 22px); color: var(--w60); letter-spacing: 0.02em; display: block;
+    }
+
+    /* ══════════════════════════════════════════════
+       ④ CONTACT VIEW — styles above in view system
+    ══════════════════════════════════════════════ */
+    #view-contact .section-label { margin-bottom: 2.5rem; }
+    #view-contact .contact-list  { margin-bottom: clamp(2.5rem, 5vh, 4rem); }
+    #view-contact .contact-cities { margin-bottom: clamp(2.2rem, 4.5vh, 3.5rem); }
+  </style>
+</head>
+<body class="view-home">
+
+  <div id="cur"></div>
+  <div id="cur-o"></div>
+  <canvas id="bg"></canvas>
+  <div id="fog"></div>
+
+  <!-- ── Navigation ── -->
+  <nav>
+    <a href="#" data-view="home">Home</a>
+    <a href="#" data-view="work">Work</a>
+    <a href="#" data-view="about">About</a>
+    <a href="#" data-view="contact">Contact</a>
+  </nav>
+
+  <!-- ══════════════════════════════════════════════
+       ① HOME VIEW
+  ══════════════════════════════════════════════ -->
+  <div id="view-home" class="view">
+    <div class="content-block">
+      <header>
+        <h1 class="name">Sophia<br>Benzari</h1>
+        <p class="discipline">Engineering &thinsp;&middot;&thinsp; Design &thinsp;&middot;&thinsp; Biomedicine</p>
+      </header>
+      <div class="home-rule"></div>
+      <section class="bio" aria-label="Biography">
+        <div class="col">
+          <p>From the deserts of Morocco to the palm trees of Los Angeles, I work at the intersection of design, technology, and economics. After receiving my French Baccalaureate from Lycée Descartes in Rabat, I went on to study Biomedical Engineering at USC as part of the Class of 2028.</p>
+          <p>From oil painting in my backyard to generating CAD from hand sketches, I've explored as many scientific and artistic tools as I could from a young age. Over time, I've grown to value the process of designing and building technology that can meaningfully shape the world around us.</p>
+          <p>This space brings together projects I've worked on, along with what I've learned through them. For more, see the <a href="#" data-view="about">/about</a> section for my resume and contact information.</p>
+        </div>
+        <div class="vline" aria-hidden="true"></div>
+        <div class="col-fr" lang="fr">
+          <p>Du désert marocain aux palmiers de Los Angeles, j'évolue à l'intersection du design, de la technologie et de l'économie. Après avoir obtenu mon baccalauréat français au Lycée Descartes de Rabat, j'ai poursuivi des études en ingénierie biomédicale à l'USC, promotion 2028.</p>
+          <p>De la peinture à l'huile dans mon jardin à la création de modèles CAD à partir de croquis, j'ai exploré autant d'outils scientifiques qu'artistiques que possible dès mon plus jeune âge. J'ai progressivement appris à apprécier le processus de conception et de création de technologies capables d'avoir un impact réel.</p>
+          <p>Cet espace rassemble les projets sur lesquels j'ai travaillé, ainsi que ce que j'en ai tiré. Pour en savoir plus, consultez la section <a href="#" data-view="about">/about</a> pour mon CV et mes coordonnées.</p>
+        </div>
+      </section>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════
+       ② WORK VIEW
+  ══════════════════════════════════════════════ -->
+  <div id="view-work" class="view">
+    <h1 class="page-title">Projects</h1>
+    <p class="page-sub">Selected work &thinsp;&middot;&thinsp; 2025 – 2026</p>
+    <div class="top-rule"></div>
+
+    <div class="categories">
+
+      <!-- MATLAB -->
+      <div class="category">
+        <div class="cat-header" role="button" tabindex="0" aria-expanded="false">
+          <div class="cat-left">
+            <span class="cat-number">01</span>
+            <span class="cat-name">Matlab &thinsp;/&thinsp; Simulations</span>
+            <span class="cat-count">2 projects</span>
+          </div>
+          <span class="cat-arrow" aria-hidden="true">
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M5 2l5 5-5 5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </span>
+        </div>
+        <div class="cat-panel"><div class="cat-panel-inner"><div class="cards">
+          <div class="card">
+            <div class="card-img"><img src="" alt="Cochlear Implant Vocoder" loading="lazy"/><div class="placeholder">Image coming soon</div></div>
+            <div class="card-body">
+              <h3 class="card-title">Cochlear Implant Vocoder Simulation</h3>
+              <p class="card-summary">Simulates how a cochlear implant processes speech by modeling electrode band filtering and envelope extraction.</p>
+              <div class="card-tools"><span class="tool-tag">MATLAB</span><span class="tool-tag">Signal Processing</span><span class="tool-tag">Biomedical</span></div>
+              <p class="card-result">Demonstrated perceptible speech reconstruction across 4–22 electrode channels.</p>
+              <a class="card-link" href="#">View project <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2 6h8M7 3l3 3-3 3" stroke="currentColor" stroke-width="1.1" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-img"><img src="" alt="PCM Heat Simulation" loading="lazy"/><div class="placeholder">Image coming soon</div></div>
+            <div class="card-body">
+              <h3 class="card-title">Phase Changing Material Heat Simulation + CAD</h3>
+              <p class="card-summary">Thermal simulation of PCM behavior during phase transitions, paired with a CAD visualization of the physical assembly.</p>
+              <div class="card-tools"><span class="tool-tag">MATLAB</span><span class="tool-tag">Thermodynamics</span><span class="tool-tag">CAD</span></div>
+              <p class="card-result">Modeled latent heat storage efficiency across temperature cycles.</p>
+              <a class="card-link" href="#">View project <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2 6h8M7 3l3 3-3 3" stroke="currentColor" stroke-width="1.1" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+            </div>
+          </div>
+        </div></div></div>
+      </div>
+
+      <!-- ARDUINO -->
+      <div class="category">
+        <div class="cat-header" role="button" tabindex="0" aria-expanded="false">
+          <div class="cat-left">
+            <span class="cat-number">02</span>
+            <span class="cat-name">Arduino &thinsp;/&thinsp; Electrical</span>
+            <span class="cat-count">2 projects</span>
+          </div>
+          <span class="cat-arrow" aria-hidden="true">
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M5 2l5 5-5 5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </span>
+        </div>
+        <div class="cat-panel"><div class="cat-panel-inner"><div class="cards">
+          <div class="card">
+            <div class="card-img"><img src="" alt="Electric Guitar PCB" loading="lazy"/><div class="placeholder">Image coming soon</div></div>
+            <div class="card-body">
+              <h3 class="card-title">Electric Guitar — PCB with 196 Hz Notch Filter</h3>
+              <p class="card-summary">Custom-designed PCB for an electric guitar, incorporating an active notch filter at 196 Hz to eliminate G-string resonance noise.</p>
+              <div class="card-tools"><span class="tool-tag">PCB Design</span><span class="tool-tag">Circuit Theory</span><span class="tool-tag">Audio Electronics</span></div>
+              <p class="card-result">Achieved targeted frequency attenuation with minimal signal coloration across other bands.</p>
+              <a class="card-link" href="#">View project <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2 6h8M7 3l3 3-3 3" stroke="currentColor" stroke-width="1.1" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-img"><img src="" alt="Tracking Drone" loading="lazy"/><div class="placeholder">Image coming soon</div></div>
+            <div class="card-body">
+              <h3 class="card-title">Tracking Drone</h3>
+              <p class="card-summary">Autonomous drone system with real-time object tracking using onboard sensing and microcontroller-based flight control.</p>
+              <div class="card-tools"><span class="tool-tag">Arduino</span><span class="tool-tag">Computer Vision</span><span class="tool-tag">Embedded Systems</span></div>
+              <p class="card-result">Successfully tracked moving targets in controlled indoor environments.</p>
+              <a class="card-link" href="#">View project <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2 6h8M7 3l3 3-3 3" stroke="currentColor" stroke-width="1.1" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+            </div>
+          </div>
+        </div></div></div>
+      </div>
+
+      <!-- WOODWORK -->
+      <div class="category">
+        <div class="cat-header" role="button" tabindex="0" aria-expanded="false">
+          <div class="cat-left">
+            <span class="cat-number">03</span>
+            <span class="cat-name">Woodwork</span>
+            <span class="cat-count">2 projects</span>
+          </div>
+          <span class="cat-arrow" aria-hidden="true">
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M5 2l5 5-5 5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </span>
+        </div>
+        <div class="cat-panel"><div class="cat-panel-inner"><div class="cards">
+          <div class="card">
+            <div class="card-img"><img src="" alt="Electric Guitar Wood" loading="lazy"/><div class="placeholder">Image coming soon</div></div>
+            <div class="card-body">
+              <h3 class="card-title">Electric Guitar — Wood Component</h3>
+              <p class="card-summary">Hand-crafted guitar body and neck; selected tonewoods, shaped, sanded, and finished to complement the custom PCB electronics.</p>
+              <div class="card-tools"><span class="tool-tag">Woodworking</span><span class="tool-tag">Hand Tools</span><span class="tool-tag">Finishing</span></div>
+              <p class="card-result">Fully assembled and playable instrument integrating handmade wood and custom electronics.</p>
+              <a class="card-link" href="#">View project <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2 6h8M7 3l3 3-3 3" stroke="currentColor" stroke-width="1.1" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-img"><img src="" alt="Paint Box" loading="lazy"/><div class="placeholder">Image coming soon</div></div>
+            <div class="card-body">
+              <h3 class="card-title">Paint Box</h3>
+              <p class="card-summary">Custom-built wooden paint storage box with segmented compartments, hinged lid, and a recessed palette surface.</p>
+              <div class="card-tools"><span class="tool-tag">Woodworking</span><span class="tool-tag">Joinery</span><span class="tool-tag">Design</span></div>
+              <p class="card-result">Functional art supply organizer built entirely from hand tools and reclaimed wood.</p>
+              <a class="card-link" href="#">View project <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2 6h8M7 3l3 3-3 3" stroke="currentColor" stroke-width="1.1" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+            </div>
+          </div>
+        </div></div></div>
+      </div>
+
+    </div><!-- /categories -->
+    <div style="height:4rem"></div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════
+       ③ ABOUT VIEW
+  ══════════════════════════════════════════════ -->
+  <div id="view-about" class="view">
+
+    <!-- Intro -->
+    <section class="reveal">
+      <p class="section-label">Introduction</p>
+      <div class="intro-greeting">
+        <h2 class="greeting-en">Fancy seeing<br>you here!</h2>
+        <div class="vline"></div>
+        <p class="greeting-fr">C'est un plaisir<br>de vous rencontrer !</p>
+      </div>
+      <div class="rule"></div>
+      <p class="intro-body">If you're reading this, it means I either shared this portfolio with you directly or you found it through an application. Either way, I hope you enjoyed exploring the projects I care deeply about. Below, you'll find more details about my background, education, and skills. If you enjoy art and music, scroll to the bottom.</p>
+    </section>
+
+    <!-- Education + Skills -->
+    <section class="reveal">
+      <p class="section-label">Background</p>
+      <div class="rule"></div>
+      <div class="edu-skills">
+        <div>
+          <p class="block-title">Education</p>
+          <div class="edu-entry">
+            <p class="edu-school">University of Southern California</p>
+            <p class="edu-degree">B.S. Biomedical Engineering &thinsp;·&thinsp; Class of 2028</p>
+            <p class="edu-detail">Relevant coursework: Signal Processing, Data Analysis, Biomedical Instrumentation</p>
+          </div>
+          <div class="edu-entry">
+            <p class="edu-school">Harvard University — Summer Studies</p>
+            <p class="edu-degree">Microeconomics &amp; Physics (Mechanics) — 2023</p>
+            <p class="edu-degree">Macroeconomics &amp; Physics (Electromagnetism) — 2025</p>
+          </div>
+          <div class="edu-entry">
+            <p class="edu-school">Lycée Descartes, Rabat</p>
+            <p class="edu-degree">French Baccalaureate — <em>Très Bien</em></p>
+            <p class="edu-detail">Focus: Mathematics, Physics-Chemistry, Biology</p>
+          </div>
+        </div>
+        <div class="vline"></div>
+        <div>
+          <p class="block-title">Skills &amp; Tools</p>
+          <div class="skill-group">
+            <p class="skill-group-name">Technical</p>
+            <div class="skill-tags"><span class="skill-tag">MATLAB</span><span class="skill-tag">Python</span><span class="skill-tag">C++</span><span class="skill-tag">Signal Processing</span><span class="skill-tag">Data Analysis</span><span class="skill-tag">Excel</span></div>
+          </div>
+          <div class="skill-group">
+            <p class="skill-group-name">Engineering &amp; Design</p>
+            <div class="skill-tags"><span class="skill-tag">Fusion 360</span><span class="skill-tag">3D Modeling</span><span class="skill-tag">Prototyping</span><span class="skill-tag">Simulation</span></div>
+          </div>
+          <div class="skill-group">
+            <p class="skill-group-name">Hardware &amp; Fabrication</p>
+            <div class="skill-tags"><span class="skill-tag">Arduino</span><span class="skill-tag">Electronics</span><span class="skill-tag">PCB Design</span><span class="skill-tag">Woodworking</span></div>
+          </div>
+          <div class="skill-group">
+            <p class="skill-group-name">Languages</p>
+            <div class="skill-tags"><span class="skill-tag">English — native</span><span class="skill-tag">French — native</span><span class="skill-tag">Arabic — conversational</span><span class="skill-tag">Spanish — basic</span></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Paintings -->
+    <section class="reveal">
+      <p class="section-label">Art</p>
+      <div class="rule"></div>
+      <div class="stack-wrap" id="stackWrap">
+        <div class="stack-stage" id="stackStage">
+          <div class="hover-zone hover-zone-left"  id="zoneLeft"></div>
+          <div class="hover-zone hover-zone-right" id="zoneRight"></div>
+          <div class="stack-card" data-index="0">
+            <img src="white swan.png" alt="White Swan"/>
+            <span class="slide-placeholder">Painting I — Two Swans</span>
+          </div>
+          <div class="stack-card" data-index="1">
+            <img src="white horse.png" alt="White Horse"/>
+            <span class="slide-placeholder">Painting II — White Horse</span>
+          </div>
+          <div class="stack-card" data-index="2">
+            <img src="light on docks.png" alt="Light on Docks"/>
+            <span class="slide-placeholder">Painting III — Light on Docks</span>
+          </div>
+          <div class="stack-card" data-index="3">
+            <img src="sleeping cat.png" alt="Sleeping Cat"/>
+            <span class="slide-placeholder">Painting IV — Sleeping Cat</span>
+          </div>
+          <div class="stack-card" data-index="4">
+            <img src="whiskey.png" alt="Whiskey"/>
+            <span class="slide-placeholder">Painting V — Whiskey</span>
+          </div>
+        </div>
+        <div class="stack-controls"><div class="carousel-dots" id="carouselDots"></div></div>
+        <p class="carousel-caption">Oil paintings — studies, 2022–2025</p>
+      </div>
+    </section>
+
+    <!-- Music -->
+    <section class="reveal">
+      <p class="section-label">Music</p>
+      <div class="rule"></div>
+      <div class="video-wrap">
+        <video controls>
+          <source src="Liesbestraum.mov" type="video/quicktime" />
+          <source src="Liesbestraum.mov" type="video/mp4" />
+        </video>
+      </div>
+      <p class="video-caption">Video recording of me playing Liebestraum — Franz Liszt, Dec 2025</p>
+    </section>
+
+    <!-- Resume + Contact -->
+    <section class="reveal" style="text-align:center;">
+      <p class="section-label">Resume &amp; Contact</p>
+      <div class="rule"></div>
+      <div class="resume-row" style="justify-content:center; margin-bottom:clamp(3rem,6vh,5rem);">
+        <a class="resume-link" href="#" target="_blank">
+          <svg width="13" height="13" viewBox="0 0 13 13" fill="none"><path d="M2 10.5h9M6.5 2v7M4 6.5l2.5 3 2.5-3" stroke="currentColor" stroke-width="1.1" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          English Resume
+        </a>
+        <div class="resume-divider"></div>
+        <a class="resume-link" href="#" target="_blank">
+          <svg width="13" height="13" viewBox="0 0 13 13" fill="none"><path d="M2 10.5h9M6.5 2v7M4 6.5l2.5 3 2.5-3" stroke="currentColor" stroke-width="1.1" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          CV en Français
+        </a>
+      </div>
+      <div class="contact-list">
+        <div class="contact-row">
+          <a class="contact-item" href="mailto:benzari@usc.edu">benzari@usc.edu</a>
+          <button class="copy-btn" data-copy="benzari@usc.edu" aria-label="Copy email">
+            <svg class="icon-clip" width="12" height="12" viewBox="0 0 12 12" fill="none"><rect x="4" y="1" width="7" height="8" rx="1" stroke="currentColor" stroke-width="1.1"/><path d="M1 4h3M1 4v6h6V9" stroke="currentColor" stroke-width="1.1" stroke-linecap="round"/></svg>
+            <svg class="icon-check" width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2 6.5l3 3 5-5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+        </div>
+        <div class="contact-row">
+          <a class="contact-item" href="mailto:sophia.benzari22@gmail.com">sophia.benzari22@gmail.com</a>
+          <button class="copy-btn" data-copy="sophia.benzari22@gmail.com" aria-label="Copy email">
+            <svg class="icon-clip" width="12" height="12" viewBox="0 0 12 12" fill="none"><rect x="4" y="1" width="7" height="8" rx="1" stroke="currentColor" stroke-width="1.1"/><path d="M1 4h3M1 4v6h6V9" stroke="currentColor" stroke-width="1.1" stroke-linecap="round"/></svg>
+            <svg class="icon-check" width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2 6.5l3 3 5-5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+        </div>
+        <div class="contact-row"><span class="contact-item contact-phone">+1 (858) 388-2000</span></div>
+      </div>
+      <p class="contact-cities">Rabat &nbsp;&middot;&nbsp; Los Angeles &nbsp;&middot;&nbsp; Paris</p>
+      <div class="contact-closing">
+        <span class="closing-en">I only look forward.</span>
+        <span class="closing-fr">Je marche de l'avant.</span>
+      </div>
+    </section>
+
+    <div style="height:4rem"></div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════
+       ④ CONTACT VIEW
+  ══════════════════════════════════════════════ -->
+  <div id="view-contact" class="view">
+    <p class="section-label">Get in touch</p>
+    <div class="contact-list">
+      <div class="contact-row">
+        <a class="contact-item" href="mailto:benzari@usc.edu">benzari@usc.edu</a>
+        <button class="copy-btn" data-copy="benzari@usc.edu" aria-label="Copy email">
+          <svg class="icon-clip" width="12" height="12" viewBox="0 0 12 12" fill="none"><rect x="4" y="1" width="7" height="8" rx="1" stroke="currentColor" stroke-width="1.1"/><path d="M1 4h3M1 4v6h6V9" stroke="currentColor" stroke-width="1.1" stroke-linecap="round"/></svg>
+          <svg class="icon-check" width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2 6.5l3 3 5-5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+      </div>
+      <div class="contact-row">
+        <a class="contact-item" href="mailto:sophia.benzari22@gmail.com">sophia.benzari22@gmail.com</a>
+        <button class="copy-btn" data-copy="sophia.benzari22@gmail.com" aria-label="Copy email">
+          <svg class="icon-clip" width="12" height="12" viewBox="0 0 12 12" fill="none"><rect x="4" y="1" width="7" height="8" rx="1" stroke="currentColor" stroke-width="1.1"/><path d="M1 4h3M1 4v6h6V9" stroke="currentColor" stroke-width="1.1" stroke-linecap="round"/></svg>
+          <svg class="icon-check" width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2 6.5l3 3 5-5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+      </div>
+      <div class="contact-row"><span class="contact-item contact-phone">+1 (858) 388-2000</span></div>
+    </div>
+    <p class="contact-cities">Rabat &nbsp;&middot;&nbsp; Los Angeles &nbsp;&middot;&nbsp; Paris</p>
+    <div class="contact-closing">
+      <span class="closing-fr">Impossible n'est pas français.</span>
+    </div>
+  </div>
+
+  <!-- ── Bottom bar ── -->
+  <div class="bottom-bar">
+    <span class="year">© 2026</span>
+    <blockquote class="quote">
+      "I know of no better life purpose than to perish in attempting the great and the impossible"
+      <cite>— Friedrich Nietzsche</cite>
+    </blockquote>
+  </div>
+
+  <!-- ══════════════════════════════════════════════
+       THREE.JS
+  ══════════════════════════════════════════════ -->
+  <script type="importmap">
+    {
+      "imports": {
+        "three":         "https://cdn.jsdelivr.net/npm/three@0.165.0/build/three.module.js",
+        "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.165.0/examples/jsm/"
+      }
+    }
+  </script>
+
+  <script type="module">
+    import * as THREE from 'three';
+    import { RGBELoader } from 'three/addons/loaders/RGBELoader.js';
+
+    const canvas   = document.getElementById('bg');
+    const scene    = new THREE.Scene();
+    const camera   = new THREE.PerspectiveCamera(75, innerWidth/innerHeight, .1, 1000);
+    const renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
+    renderer.setSize(innerWidth, innerHeight);
+    renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+    renderer.toneMapping         = THREE.ACESFilmicToneMapping;
+    renderer.toneMappingExposure = 0.82;
+    renderer.outputColorSpace    = THREE.SRGBColorSpace;
+    scene.background = new THREE.Color(0x0d1520);
+
+    const pmrem = new THREE.PMREMGenerator(renderer);
+    pmrem.compileEquirectangularShader();
+    new RGBELoader().setPath('./').load('mountain.hdr',
+      tex => {
+        const env = pmrem.fromEquirectangular(tex).texture;
+        scene.background = env; scene.environment = env;
+        tex.dispose(); pmrem.dispose();
+      }, null,
+      () => {
+        const geo = new THREE.SphereGeometry(500,32,16);
+        const mat = new THREE.ShaderMaterial({
+          side: THREE.BackSide,
+          uniforms: { top:{value:new THREE.Color(0x060b14)}, mid:{value:new THREE.Color(0x112030)}, bottom:{value:new THREE.Color(0x2d5470)} },
+          vertexShader:   `varying vec3 vP; void main(){ vP=position; gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.); }`,
+          fragmentShader: `varying vec3 vP; uniform vec3 top,mid,bottom; void main(){ float h=normalize(vP).y; vec3 c=mix(bottom,mid,smoothstep(-.3,.3,h)); c=mix(c,top,smoothstep(.2,1.,h)); gl_FragColor=vec4(c,1.); }`,
+        });
+        scene.add(new THREE.Mesh(geo, mat));
+        scene.background = null;
+      }
+    );
+
+    /* Camera movement — speed set per view */
+    const tgt = {lon:0, lat:0}, state = {lon:0, lat:0};
+    const euler = new THREE.Euler(0,0,0,'YXZ');
+    let speed = 180; /* home: full range */
+
+    window.addEventListener('view-changed', e => {
+      speed = e.detail === 'home' ? 180 : e.detail === 'contact' ? 18 : 14;
+    });
+    window.addEventListener('mousemove', e => {
+      tgt.lon =  (e.clientX/innerWidth  - .5) * speed;
+      tgt.lat = -(e.clientY/innerHeight - .5) * (speed * 0.67);
+    });
+
+    /* Cursor */
+    const dot = document.getElementById('cur'), ring = document.getElementById('cur-o');
+    let mx=0,my=0,rx=0,ry=0;
+    window.addEventListener('mousemove', e=>{ mx=e.clientX; my=e.clientY; });
+    (function tc(){ dot.style.left=mx+'px'; dot.style.top=my+'px'; rx+=(mx-rx)*.14; ry+=(my-ry)*.14; ring.style.left=rx+'px'; ring.style.top=ry+'px'; requestAnimationFrame(tc); })();
+
+    window.addEventListener('resize', ()=>{ camera.aspect=innerWidth/innerHeight; camera.updateProjectionMatrix(); renderer.setSize(innerWidth,innerHeight); });
+
+    (function animate(){
+      requestAnimationFrame(animate);
+      state.lon += (tgt.lon-state.lon)*.06;
+      state.lat += (tgt.lat-state.lat)*.06;
+      state.lat  = Math.max(-85, Math.min(85, state.lat));
+      euler.y = THREE.MathUtils.degToRad(-state.lon);
+      euler.x = THREE.MathUtils.degToRad( state.lat);
+      camera.quaternion.setFromEuler(euler);
+      renderer.render(scene, camera);
+    })();
+  </script>
+
+  <script>
+    /* ══════════════════════════════════════════════
+       SPA ROUTER
+    ══════════════════════════════════════════════ */
+    const views   = document.querySelectorAll('.view');
+    const navLinks = document.querySelectorAll('nav a[data-view]');
+
+    function showView(id) {
+      views.forEach(v => {
+        v.classList.remove('active');
+        // scroll back to top when leaving
+        v.scrollTop = 0;
+      });
+      navLinks.forEach(a => a.classList.toggle('active', a.dataset.view === id));
+
+      const target = document.getElementById('view-' + id);
+      if (target) target.classList.add('active');
+
+      // Update body class for fog
+      document.body.className = 'view-' + id;
+
+      // Fire event so Three.js can adjust speed
+      window.dispatchEvent(new CustomEvent('view-changed', { detail: id }));
+
+      // Re-run scroll reveal for about section
+      if (id === 'about') triggerReveal();
+    }
+
+    // Nav clicks
+    document.querySelectorAll('[data-view]').forEach(el => {
+      el.addEventListener('click', e => {
+        e.preventDefault();
+        showView(el.dataset.view);
+      });
+    });
+
+    // Boot into home view properly
+    showView('home');
+
+    /* ══════════════════════════════════════════════
+       SCROLL REVEAL (about view)
+    ══════════════════════════════════════════════ */
+    function triggerReveal() {
+      const aboutView = document.getElementById('view-about');
+      const reveals   = aboutView.querySelectorAll('.reveal');
+      const obs = new IntersectionObserver(entries => {
+        entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); obs.unobserve(e.target); }});
+      }, { root: aboutView, threshold: 0.1 });
+      reveals.forEach(el => { el.classList.remove('visible'); obs.observe(el); });
+    }
+
+    /* ══════════════════════════════════════════════
+       ACCORDION (work view)
+    ══════════════════════════════════════════════ */
+    const categories = Array.from(document.querySelectorAll('.category'));
+    function openCat(cat) {
+      categories.forEach(c => { if (c!==cat) { c.classList.remove('open'); c.querySelector('.cat-header').setAttribute('aria-expanded','false'); }});
+      cat.classList.add('open'); cat.querySelector('.cat-header').setAttribute('aria-expanded','true');
+    }
+    function closeCat(cat) { cat.classList.remove('open'); cat.querySelector('.cat-header').setAttribute('aria-expanded','false'); }
+    categories.forEach(cat => {
+      const header = cat.querySelector('.cat-header');
+      const toggle = () => cat.classList.contains('open') ? closeCat(cat) : openCat(cat);
+      header.addEventListener('click', toggle);
+      header.addEventListener('keydown', e => { if (e.key==='Enter'||e.key===' ') { e.preventDefault(); toggle(); }});
+    });
+
+    /* ══════════════════════════════════════════════
+       PAINTING STACK GALLERY
+    ══════════════════════════════════════════════ */
+    (function() {
+      const cards  = Array.from(document.querySelectorAll('.stack-card'));
+      const dotsEl = document.getElementById('carouselDots');
+      const zoneL  = document.getElementById('zoneLeft');
+      const zoneR  = document.getElementById('zoneRight');
+      const wrap   = document.getElementById('stackWrap');
+      const total  = cards.length;
+      let current=0, peek=null, animating=false;
+      let mx=0,my=0,pmx=0,pmy=0;
+
+      wrap.addEventListener('mousemove', e => { const r=wrap.getBoundingClientRect(); mx=(e.clientX-r.left)/r.width-.5; my=(e.clientY-r.top)/r.height-.5; });
+      wrap.addEventListener('mouseleave', () => { mx=0; my=0; if(peek){peek=null; applyTransforms(false);} });
+
+      const POS = {
+        front:     [  0,   0,   1.00, 1.00, 5, 0],
+        peekRight: [ 30,   1.5, 0.90, 0.60, 4, 0],
+        peekLeft:  [-30,   1.5, 0.90, 0.60, 4, 0],
+        behind1:   [  5,   1.2, 0.91, 0.40, 3, 1],
+        behind2:   [  8.5, 2.2, 0.83, 0.18, 2, 2],
+        hidden:    [ 12,   3,   0.76, 0.00, 1, 3],
+      };
+
+      function getT(rel, isPeek, dir) {
+        if (rel===0) return POS.front;
+        if (isPeek)  return dir==='right' ? POS.peekRight : POS.peekLeft;
+        if (rel===1) return POS.behind1;
+        if (rel===2) return POS.behind2;
+        return POS.hidden;
+      }
+
+      function applyTransforms(withPx) {
+        const peekIdx = peek==='right'?(current+1)%total : peek==='left'?(current-1+total)%total : -1;
+        cards.forEach((card,i) => {
+          const isFront=i===current, isPeek=i===peekIdx;
+          let rel=(i-current+total)%total;
+          const [ox,oy,sc,op,zi,bl]=getT(rel,isPeek,peek);
+          const pF=(isFront||isPeek)?0:rel*0.5;
+          const px=withPx?pmx*pF*14:0, py=withPx?pmy*pF*6:0;
+          card.style.zIndex=zi; card.style.opacity=op;
+          card.style.filter=bl>0?`blur(${bl}px)`:'none';
+          card.style.transform=`translate(${ox+px}%,${oy+py}%) scale(${sc})`;
+        });
+        dotsEl.querySelectorAll('.dot').forEach((d,i)=>d.classList.toggle('active',i===current));
+      }
+
+      function setT(dur) { const t=`transform ${dur}s cubic-bezier(.22,1,.36,1),opacity ${dur}s ease,filter ${dur}s ease`; cards.forEach(c=>c.style.transition=t); }
+      function goTo(idx) { if(animating)return; animating=true; setT(0.72); current=((idx%total)+total)%total; peek=null; applyTransforms(true); setTimeout(()=>{animating=false;},720); }
+
+      zoneR.addEventListener('mouseenter',()=>{ if(animating)return; peek='right'; setT(0.55); applyTransforms(true); });
+      zoneR.addEventListener('mouseleave',()=>{ if(peek!=='right')return; peek=null; setT(0.55); applyTransforms(true); });
+      zoneR.addEventListener('click',()=>goTo(current+1));
+      zoneL.addEventListener('mouseenter',()=>{ if(animating)return; peek='left'; setT(0.55); applyTransforms(true); });
+      zoneL.addEventListener('mouseleave',()=>{ if(peek!=='left')return; peek=null; setT(0.55); applyTransforms(true); });
+      zoneL.addEventListener('click',()=>goTo(current-1));
+      document.addEventListener('keydown',e=>{ if(e.key==='ArrowRight')goTo(current+1); if(e.key==='ArrowLeft')goTo(current-1); });
+
+      cards.forEach((_,i)=>{ const d=document.createElement('div'); d.className='dot'+(i===0?' active':''); d.addEventListener('click',()=>goTo(i)); dotsEl.appendChild(d); });
+      cards.forEach(c=>c.style.transition='none');
+      applyTransforms(false);
+      requestAnimationFrame(()=>setT(0.72));
+
+      (function parallaxLoop(){
+        requestAnimationFrame(parallaxLoop);
+        pmx+=(mx-pmx)*0.055; pmy+=(my-pmy)*0.055;
+        if(!animating&&!peek){
+          cards.forEach((card,i)=>{ if(i===current)return; let rel=(i-current+total)%total; const [ox,oy,sc]=getT(rel,false,null); card.style.transform=`translate(${ox+pmx*rel*0.5*14}%,${oy+pmy*rel*0.5*6}%) scale(${sc})`; });
+        }
+      })();
+    })();
+
+    /* ══════════════════════════════════════════════
+       COPY BUTTONS
+    ══════════════════════════════════════════════ */
+    document.querySelectorAll('.copy-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        navigator.clipboard.writeText(btn.dataset.copy).then(() => {
+          btn.classList.add('copied');
+          setTimeout(() => btn.classList.remove('copied'), 2000);
+        });
+      });
+    });
+  </script>
+
+</body>
+</html>
