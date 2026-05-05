@@ -32,24 +32,21 @@
       background: #0b0f14;
       color: var(--white);
       cursor: none;
-      overflow: hidden; /* SPA — each view manages its own scroll */
+      overflow: hidden;
     }
 
-    /* ── 3D canvas — always behind everything ── */
     #bg { position: fixed; inset: 0; z-index: 0; }
 
-    /* ── Vignette ── */
     #fog {
       position: fixed; inset: 0; z-index: 1; pointer-events: none;
       transition: background .8s ease;
     }
-    /* Per-view fog intensities set by JS */
     body.view-home #fog {
       background:
         linear-gradient(110deg, rgba(4,8,14,0.72) 0%, rgba(4,8,14,0.36) 48%, rgba(4,8,14,0.00) 72%),
         radial-gradient(ellipse at 80% 55%, transparent 48%, rgba(0,0,0,0.30) 100%);
     }
-    body.view-work #fog, body.view-about #fog {
+    body.view-work #fog, body.view-about #fog, body.view-project-pcm #fog {
       background:
         linear-gradient(110deg, rgba(4,8,14,0.82) 0%, rgba(4,8,14,0.55) 50%, rgba(4,8,14,0.20) 100%),
         radial-gradient(ellipse at center, transparent 30%, rgba(0,0,0,0.45) 100%);
@@ -60,7 +57,6 @@
         linear-gradient(to bottom, rgba(4,8,14,0.55) 0%, rgba(4,8,14,0.30) 50%, rgba(4,8,14,0.55) 100%);
     }
 
-    /* ── Custom cursor ── */
     #cur {
       position: fixed; width: 5px; height: 5px; border-radius: 50%;
       background: #fff; transform: translate(-50%,-50%);
@@ -72,9 +68,6 @@
       pointer-events: none; z-index: 299;
     }
 
-    /* ══════════════════════════════
-       NAV
-    ══════════════════════════════ */
     nav {
       position: fixed; top: 2.2rem; right: var(--px); z-index: 50;
       display: flex; gap: 2.4rem;
@@ -87,22 +80,18 @@
     }
     nav a:hover, nav a.active { color: var(--white); }
 
-    /* ══════════════════════════════
-       VIEW SYSTEM
-    ══════════════════════════════ */
+    /* ── View system ── */
     .view {
       position: fixed; inset: 0; z-index: 10;
       opacity: 0; pointer-events: none;
       transition: opacity .5s cubic-bezier(.22,1,.36,1);
       overflow-y: auto; overflow-x: hidden;
-      /* hidden views must not intercept any layout */
       visibility: hidden;
     }
     .view.active {
       opacity: 1; pointer-events: all;
       visibility: visible;
     }
-    /* home & contact: no scroll, flex column to bottom */
     #view-home {
       overflow: hidden;
       display: flex; flex-direction: column;
@@ -117,9 +106,7 @@
       text-align: center; min-height: 100vh;
     }
 
-    /* ══════════════════════════════
-       BOTTOM BAR (shared)
-    ══════════════════════════════ */
+    /* ── Bottom bar ── */
     .bottom-bar {
       position: fixed; bottom: 0; left: 0; right: 0; z-index: 40;
       padding: 0 var(--px) 1.8rem;
@@ -142,9 +129,7 @@
       text-transform: uppercase; color: var(--w42);
     }
 
-    /* ══════════════════════════════
-       SHARED TYPOGRAPHY
-    ══════════════════════════════ */
+    /* ── Shared typography ── */
     .section-label {
       font-family: 'Jost', sans-serif; font-weight: 300;
       font-size: 10px; letter-spacing: 0.40em; text-transform: uppercase;
@@ -161,14 +146,8 @@
     ::-webkit-scrollbar { width: 2px; }
     ::-webkit-scrollbar-thumb { background: var(--w12); border-radius: 2px; }
 
-    /* ══════════════════════════════════════════════
-       ① HOME VIEW
-    ══════════════════════════════════════════════ */
-
-    .content-block {
-      display: flex; flex-direction: column;
-    }
-
+    /* ══ ① HOME ══ */
+    .content-block { display: flex; flex-direction: column; }
     .name {
       font-family: 'Cormorant Garamond', serif; font-weight: 300;
       font-size: clamp(44px, 6.2vw, 88px);
@@ -188,59 +167,44 @@
     }
     .bio {
       margin-top: clamp(1.1rem, 1.8vh, 1.8rem);
-      display: grid;
-      grid-template-columns: 1fr 1px 1fr;
-      column-gap: clamp(1.6rem, 3vw, 2.8rem);
-      align-items: start;
+      display: grid; grid-template-columns: 1fr 1px 1fr;
+      column-gap: clamp(1.6rem, 3vw, 2.8rem); align-items: start;
     }
     .col, .col-fr { display: flex; flex-direction: column; gap: 0.75em; }
     .col p {
       font-family: 'Jost', sans-serif; font-weight: 300;
-      font-size: clamp(11px, 0.92vw, 13px);
-      line-height: 1.84; color: var(--w85);
+      font-size: clamp(11px, 0.92vw, 13px); line-height: 1.84; color: var(--w85);
     }
     .col-fr p {
       font-family: 'Cormorant Garamond', serif; font-style: italic; font-weight: 300;
-      font-size: clamp(11.5px, 0.98vw, 14px);
-      line-height: 1.92; color: var(--w60);
+      font-size: clamp(11.5px, 0.98vw, 14px); line-height: 1.92; color: var(--w60);
     }
     .col p a, .col-fr p a {
       color: inherit; text-decoration: underline; text-underline-offset: 3px;
-      text-decoration-color: var(--w42); transition: color .2s, text-decoration-color .2s;
-      cursor: pointer;
+      text-decoration-color: var(--w42); transition: color .2s, text-decoration-color .2s; cursor: pointer;
     }
     .col p a:hover, .col-fr p a:hover { color: var(--w85); text-decoration-color: var(--w60); }
 
-    /* ══════════════════════════════════════════════
-       ② WORK VIEW
-    ══════════════════════════════════════════════ */
+    /* ══ ② WORK ══ */
     #view-work {
       padding: clamp(5rem,11vh,8rem) var(--px) clamp(5rem,10vh,8rem);
-      max-width: 1080px;
-      min-height: 100vh;
+      max-width: 1080px; min-height: 100vh;
     }
-
     .page-title {
       font-family: 'Cormorant Garamond', serif; font-weight: 300;
-      font-size: clamp(32px, 4vw, 54px);
-      letter-spacing: 0.01em; line-height: 1; color: var(--white);
+      font-size: clamp(32px, 4vw, 54px); letter-spacing: 0.01em; line-height: 1; color: var(--white);
     }
     .page-sub {
-      margin-top: 0.7rem;
-      font-family: 'Jost', sans-serif; font-weight: 300;
-      font-size: clamp(9px, 0.82vw, 11px);
-      letter-spacing: 0.38em; text-transform: uppercase; color: var(--w42);
+      margin-top: 0.7rem; font-family: 'Jost', sans-serif; font-weight: 300;
+      font-size: clamp(9px, 0.82vw, 11px); letter-spacing: 0.38em; text-transform: uppercase; color: var(--w42);
     }
     .top-rule {
-      margin-top: clamp(1.5rem, 3vh, 2.5rem);
-      height: 1px; width: 100%;
+      margin-top: clamp(1.5rem, 3vh, 2.5rem); height: 1px; width: 100%;
       background: linear-gradient(to right, var(--w22) 0%, transparent 80%);
     }
-
     .categories { margin-top: clamp(2rem, 4vh, 3.5rem); display: flex; flex-direction: column; }
     .category { border-bottom: 1px solid var(--w10); }
     .category:first-child { border-top: 1px solid var(--w10); }
-
     .cat-header {
       display: flex; align-items: center; justify-content: space-between;
       padding: 1.5rem 0; cursor: pointer; user-select: none;
@@ -253,14 +217,10 @@
     }
     .cat-name {
       font-family: 'Jost', sans-serif; font-weight: 400;
-      font-size: clamp(11px, 1vw, 13.5px);
-      letter-spacing: 0.30em; text-transform: uppercase;
+      font-size: clamp(11px, 1vw, 13.5px); letter-spacing: 0.30em; text-transform: uppercase;
       color: var(--w85); transition: color .25s;
     }
-    .cat-count {
-      font-family: 'Jost', sans-serif; font-weight: 300;
-      font-size: 10px; letter-spacing: 0.14em; color: var(--w42);
-    }
+    .cat-count { font-family: 'Jost', sans-serif; font-weight: 300; font-size: 10px; letter-spacing: 0.14em; color: var(--w42); }
     .cat-arrow {
       width: 18px; height: 18px; display: flex; align-items: center; justify-content: center;
       transition: transform .4s cubic-bezier(.22,1,.36,1); color: var(--w42); flex-shrink: 0;
@@ -269,15 +229,12 @@
     .cat-header:hover .cat-arrow { color: var(--w85); }
     .category.open .cat-arrow { transform: rotate(90deg); }
     .category.open .cat-name  { color: var(--white); }
-
     .cat-panel { display: grid; grid-template-rows: 0fr; transition: grid-template-rows .5s cubic-bezier(.22,1,.36,1); }
     .cat-panel-inner { overflow: hidden; }
     .category.open .cat-panel { grid-template-rows: 1fr; }
-
     .cards {
       padding-bottom: 2.4rem;
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(min(100%, 310px), 1fr));
+      display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 310px), 1fr));
       gap: clamp(1.2rem, 2.5vw, 2rem);
     }
     .card {
@@ -288,30 +245,22 @@
     .card:hover { border-color: var(--w22); background: rgba(255,255,255,0.09); }
     .card-img {
       width: 100%; aspect-ratio: 16/9; background: var(--w06);
-      position: relative; overflow: hidden;
-      display: flex; align-items: center; justify-content: center;
+      position: relative; overflow: hidden; display: flex; align-items: center; justify-content: center;
     }
-    .card-img img {
-      width: 100%; height: 100%; object-fit: cover; display: block;
-      transition: transform .5s ease;
-    }
+    .card-img img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform .5s ease; }
     .card:hover .card-img img { transform: scale(1.03); }
     .card-img .placeholder {
       position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;
       font-family: 'Jost', sans-serif; font-weight: 300;
       font-size: 10px; letter-spacing: 0.22em; text-transform: uppercase; color: var(--w22);
     }
-    .card-img img.loaded + .placeholder,
-    .card-img img:not([src=""]) + .placeholder { display: none; }
+    .card-img img.loaded + .placeholder, .card-img img:not([src=""]) + .placeholder { display: none; }
     .card-body { padding: 1.2rem 1.3rem 1.4rem; display: flex; flex-direction: column; gap: 0.55rem; flex: 1; }
     .card-title {
       font-family: 'Cormorant Garamond', serif; font-weight: 400;
       font-size: clamp(14px, 1.25vw, 17px); line-height: 1.2; color: var(--white); letter-spacing: 0.01em;
     }
-    .card-summary {
-      font-family: 'Jost', sans-serif; font-weight: 300;
-      font-size: clamp(10.5px, 0.85vw, 12px); line-height: 1.65; color: var(--w60);
-    }
+    .card-summary { font-family: 'Jost', sans-serif; font-weight: 300; font-size: clamp(10.5px, 0.85vw, 12px); line-height: 1.65; color: var(--w60); }
     .card-tools { margin-top: 0.3rem; display: flex; flex-wrap: wrap; gap: 0.4rem; }
     .tool-tag {
       font-family: 'Jost', sans-serif; font-weight: 300;
@@ -319,8 +268,7 @@
       color: var(--w42); border: 1px solid var(--w22); padding: 2px 7px; border-radius: 1px;
     }
     .card-result {
-      margin-top: 0.4rem;
-      font-family: 'Cormorant Garamond', serif; font-style: italic; font-weight: 300;
+      margin-top: 0.4rem; font-family: 'Cormorant Garamond', serif; font-style: italic; font-weight: 300;
       font-size: clamp(11px, 0.95vw, 13.5px); line-height: 1.6; color: var(--w42);
     }
     .card-link {
@@ -328,34 +276,26 @@
       display: inline-flex; align-items: center; gap: 0.5rem;
       font-family: 'Jost', sans-serif; font-weight: 300;
       font-size: 10px; letter-spacing: 0.22em; text-transform: uppercase;
-      color: var(--w42); text-decoration: none; transition: color .25s;
+      color: var(--w42); text-decoration: none; transition: color .25s; cursor: pointer;
     }
     .card-link:hover { color: var(--white); }
     .card-link svg { transition: transform .25s; }
     .card-link:hover svg { transform: translateX(3px); }
 
-    /* ══════════════════════════════════════════════
-       ③ ABOUT VIEW
-    ══════════════════════════════════════════════ */
+    /* ══ ③ ABOUT ══ */
     #view-about {
       padding: clamp(6rem,13vh,10rem) var(--px) clamp(6rem,10vh,9rem);
       max-width: 860px; margin: 0 auto;
-      display: flex; flex-direction: column;
-      gap: clamp(5rem, 10vh, 8rem);
+      display: flex; flex-direction: column; gap: clamp(5rem, 10vh, 8rem);
     }
-
-    /* Scroll reveal */
     .reveal {
       opacity: 0; transform: translateY(22px);
       transition: opacity .85s cubic-bezier(.22,1,.36,1), transform .85s cubic-bezier(.22,1,.36,1);
     }
     .reveal.visible { opacity: 1; transform: translateY(0); }
-
-    /* Intro */
     .intro-greeting {
       display: grid; grid-template-columns: 1fr 1px 1fr;
-      column-gap: clamp(1.6rem, 3vw, 2.8rem);
-      margin-bottom: clamp(1.8rem, 3.5vh, 2.8rem);
+      column-gap: clamp(1.6rem, 3vw, 2.8rem); margin-bottom: clamp(1.8rem, 3.5vh, 2.8rem);
     }
     .intro-greeting .vline { background: var(--w12); }
     .greeting-en {
@@ -371,8 +311,6 @@
       font-family: 'Jost', sans-serif; font-weight: 300;
       font-size: clamp(12px, 1vw, 14px); line-height: 1.90; color: var(--w85); max-width: 600px;
     }
-
-    /* Education + Skills */
     .edu-skills {
       display: grid; grid-template-columns: 1fr 1px 1fr;
       column-gap: clamp(1.6rem, 3vw, 2.8rem); align-items: start;
@@ -380,8 +318,7 @@
     .edu-skills .vline { background: var(--w12); }
     .block-title {
       font-family: 'Jost', sans-serif; font-weight: 400;
-      font-size: 10.5px; letter-spacing: 0.32em; text-transform: uppercase;
-      color: var(--w42); margin-bottom: 1.6rem;
+      font-size: 10.5px; letter-spacing: 0.32em; text-transform: uppercase; color: var(--w42); margin-bottom: 1.6rem;
     }
     .edu-entry { margin-bottom: 1.8rem; }
     .edu-entry:last-child { margin-bottom: 0; }
@@ -393,16 +330,12 @@
       font-family: 'Jost', sans-serif; font-weight: 300;
       font-size: clamp(11px, 0.92vw, 13px); color: var(--w85); line-height: 1.5; margin-bottom: 0.2rem;
     }
-    .edu-detail {
-      font-family: 'Jost', sans-serif; font-weight: 300;
-      font-size: clamp(10px, 0.82vw, 11.5px); color: var(--w42); line-height: 1.6;
-    }
+    .edu-detail { font-family: 'Jost', sans-serif; font-weight: 300; font-size: clamp(10px, 0.82vw, 11.5px); color: var(--w42); line-height: 1.6; }
     .skill-group { margin-bottom: 1.5rem; }
     .skill-group:last-child { margin-bottom: 0; }
     .skill-group-name {
       font-family: 'Jost', sans-serif; font-weight: 300;
-      font-size: 9.5px; letter-spacing: 0.28em; text-transform: uppercase;
-      color: var(--w42); margin-bottom: 0.6rem;
+      font-size: 9.5px; letter-spacing: 0.28em; text-transform: uppercase; color: var(--w42); margin-bottom: 0.6rem;
     }
     .skill-tags { display: flex; flex-wrap: wrap; gap: 0.4rem; }
     .skill-tag {
@@ -410,8 +343,6 @@
       font-size: clamp(10px, 0.82vw, 11.5px); color: var(--w85);
       border: 1px solid var(--w22); padding: 3px 9px; border-radius: 1px; line-height: 1.6;
     }
-
-    /* Stack gallery */
     .stack-wrap { position: relative; padding: 2.5rem 0 3.5rem; user-select: none; }
     .stack-stage { position: relative; width: 100%; padding-bottom: 75%; }
     .stack-card {
@@ -427,9 +358,7 @@
       font-size: 10px; letter-spacing: 0.22em; text-transform: uppercase;
       color: rgba(255,255,255,0.6); pointer-events: none; padding: 0.5rem;
     }
-    .hover-zone {
-      position: absolute; top: 0; bottom: 0; width: 28%; z-index: 10; cursor: pointer;
-    }
+    .hover-zone { position: absolute; top: 0; bottom: 0; width: 28%; z-index: 10; cursor: pointer; }
     .hover-zone-left  { left: 0; }
     .hover-zone-right { right: 0; }
     .hover-zone::after {
@@ -443,53 +372,35 @@
     .hover-zone:hover::after { opacity: 1; border-color: rgba(255,255,255,0.55); }
     .stack-controls { display: flex; align-items: center; justify-content: center; margin-top: 1.6rem; }
     .carousel-dots  { display: flex; gap: 6px; align-items: center; }
-    .dot {
-      width: 5px; height: 5px; border-radius: 50%; background: var(--w22); cursor: pointer;
-      transition: background .3s, transform .3s;
-    }
+    .dot { width: 5px; height: 5px; border-radius: 50%; background: var(--w22); cursor: pointer; transition: background .3s, transform .3s; }
     .dot.active { background: var(--w85); transform: scale(1.3); }
     .carousel-caption {
       margin-top: 1.1rem; text-align: center;
       font-family: 'Cormorant Garamond', serif; font-style: italic; font-weight: 300;
       font-size: clamp(11px, 0.92vw, 13px); color: var(--w42);
     }
-
-    /* Video */
     .video-wrap {
       width: 100%; aspect-ratio: 16/9; background: var(--w06);
       border: 1px solid var(--w12); border-radius: 2px; overflow: hidden;
       position: relative; display: flex; align-items: center; justify-content: center;
     }
     .video-wrap video { width: 100%; height: 100%; border: none; display: block; }
+    .video-wrap iframe { border: none; display: block; width: 100%; height: 100%; }
     .video-caption {
       margin-top: 1rem; text-align: center;
       font-family: 'Cormorant Garamond', serif; font-style: italic; font-weight: 300;
       font-size: clamp(11px, 0.92vw, 13px); color: var(--w42);
     }
-    .video-wrap iframe {
-      border: none;
-      display: block;
-      width: 100%;
-      height: 100%;
-    }
-
-    /* Resume + contact in about */
-    .resume-row {
-      display: flex; align-items: center;
-      gap: clamp(1.2rem, 2.5vw, 2.2rem);
-      margin-bottom: clamp(2.5rem, 5vh, 4rem);
-    }
+    .resume-row { display: flex; align-items: center; gap: clamp(1.2rem, 2.5vw, 2.2rem); margin-bottom: clamp(2.5rem, 5vh, 4rem); }
     .resume-link {
       font-family: 'Jost', sans-serif; font-weight: 300;
       font-size: clamp(11px, 0.95vw, 13.5px); letter-spacing: 0.22em; text-transform: uppercase;
-      color: var(--w85); text-decoration: none;
-      display: inline-flex; align-items: center; gap: 0.5rem; transition: color .25s;
+      color: var(--w85); text-decoration: none; display: inline-flex; align-items: center; gap: 0.5rem; transition: color .25s;
     }
     .resume-link:hover { color: var(--white); }
     .resume-link svg { opacity: 0.6; transition: opacity .25s, transform .25s; }
     .resume-link:hover svg { opacity: 1; transform: translateY(-1px); }
     .resume-divider { width: 1px; height: 1.1rem; background: var(--w22); flex-shrink: 0; }
-
     .contact-list { display: flex; flex-direction: column; align-items: center; gap: 1.4rem; margin-bottom: clamp(2.5rem, 5vh, 4rem); }
     .contact-row  { display: flex; align-items: center; gap: 0.9rem; }
     .contact-item {
@@ -498,10 +409,7 @@
       letter-spacing: 0.01em; line-height: 1; transition: color .25s;
     }
     .contact-item:hover { color: var(--white); }
-    .contact-phone {
-      font-family: 'Jost', sans-serif; font-weight: 300;
-      font-size: clamp(13px, 1.3vw, 18px); color: var(--w60); letter-spacing: 0.08em;
-    }
+    .contact-phone { font-family: 'Jost', sans-serif; font-weight: 300; font-size: clamp(13px, 1.3vw, 18px); color: var(--w60); letter-spacing: 0.08em; }
     .copy-btn {
       background: none; border: 1px solid var(--w22); width: 26px; height: 26px; border-radius: 50%;
       display: flex; align-items: center; justify-content: center;
@@ -519,22 +427,122 @@
       color: var(--w42); margin-bottom: clamp(2rem, 4vh, 3rem);
     }
     .contact-closing { text-align: center; }
-    .closing-en {
-      font-family: 'Cormorant Garamond', serif; font-weight: 300;
-      font-size: clamp(13px, 1.4vw, 18px); color: var(--w42); letter-spacing: 0.04em;
-      display: block; margin-bottom: 0.4rem;
-    }
-    .closing-fr {
-      font-family: 'Cormorant Garamond', serif; font-style: italic; font-weight: 300;
-      font-size: clamp(15px, 1.7vw, 22px); color: var(--w60); letter-spacing: 0.02em; display: block;
-    }
+    .closing-en { font-family: 'Cormorant Garamond', serif; font-weight: 300; font-size: clamp(13px, 1.4vw, 18px); color: var(--w42); letter-spacing: 0.04em; display: block; margin-bottom: 0.4rem; }
+    .closing-fr { font-family: 'Cormorant Garamond', serif; font-style: italic; font-weight: 300; font-size: clamp(15px, 1.7vw, 22px); color: var(--w60); letter-spacing: 0.02em; display: block; }
 
-    /* ══════════════════════════════════════════════
-       ④ CONTACT VIEW — styles above in view system
-    ══════════════════════════════════════════════ */
+    /* ══ ④ CONTACT ══ */
     #view-contact .section-label { margin-bottom: 2.5rem; }
     #view-contact .contact-list  { margin-bottom: clamp(2.5rem, 5vh, 4rem); }
     #view-contact .contact-cities { margin-bottom: clamp(2.2rem, 4.5vh, 3.5rem); }
+
+    /* ══════════════════════════════════════════════
+       ⑤ PROJECT VIEWS
+    ══════════════════════════════════════════════ */
+    .project-view {
+      padding: clamp(5rem,11vh,8rem) var(--px) 8rem;
+      max-width: 900px;
+    }
+
+    .back-btn {
+      display: inline-flex; align-items: center; gap: 0.6rem;
+      font-family: 'Jost', sans-serif; font-weight: 300;
+      font-size: 10px; letter-spacing: 0.28em; text-transform: uppercase;
+      color: var(--w42); cursor: pointer; background: none; border: none;
+      padding: 0; margin-bottom: clamp(2.5rem, 5vh, 4rem); transition: color .25s;
+    }
+    .back-btn:hover { color: var(--w85); }
+    .back-btn svg { transition: transform .25s; }
+    .back-btn:hover svg { transform: translateX(-3px); }
+
+    .proj-eyebrow {
+      font-family: 'Jost', sans-serif; font-weight: 300;
+      font-size: 10px; letter-spacing: 0.40em; text-transform: uppercase;
+      color: var(--w42); margin-bottom: 1rem;
+    }
+    .proj-title {
+      font-family: 'Cormorant Garamond', serif; font-weight: 300;
+      font-size: clamp(32px, 4.5vw, 62px);
+      line-height: 0.95; letter-spacing: 0.01em; color: var(--white); margin-bottom: 1.4rem;
+    }
+    .proj-tags { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-bottom: clamp(2.5rem, 5vh, 4rem); }
+    .proj-tag {
+      font-family: 'Jost', sans-serif; font-weight: 300;
+      font-size: 9.5px; letter-spacing: 0.16em; text-transform: uppercase;
+      color: var(--w42); border: 1px solid var(--w22); padding: 3px 9px; border-radius: 1px;
+    }
+
+    .proj-section {
+      margin-bottom: clamp(3rem, 6vh, 5rem);
+      opacity: 0; transform: translateY(18px);
+      transition: opacity .8s cubic-bezier(.22,1,.36,1), transform .8s cubic-bezier(.22,1,.36,1);
+    }
+    .proj-section.visible { opacity: 1; transform: translateY(0); }
+
+    .proj-section-label {
+      font-family: 'Jost', sans-serif; font-weight: 300;
+      font-size: 9.5px; letter-spacing: 0.40em; text-transform: uppercase; color: var(--w42); margin-bottom: 1rem;
+    }
+    .proj-rule {
+      height: 1px; width: 100%;
+      background: linear-gradient(to right, var(--w16) 0%, transparent 85%); margin-bottom: 1.8rem;
+    }
+    .proj-body {
+      font-family: 'Jost', sans-serif; font-weight: 300;
+      font-size: clamp(12px, 1vw, 14px); line-height: 1.92; color: var(--w85);
+    }
+    .proj-body p + p { margin-top: 1.1em; }
+    .proj-body strong { font-weight: 400; color: var(--white); }
+
+    .proj-img { width: 100%; border-radius: 2px; overflow: hidden; border: 1px solid var(--w12); margin-bottom: 0.8rem; background: #111620; }
+    .proj-img img { width: 100%; display: block; object-fit: contain; }
+    .proj-img-caption {
+      font-family: 'Cormorant Garamond', serif; font-style: italic; font-weight: 300;
+      font-size: clamp(11px, 0.88vw, 13px); color: var(--w42); text-align: center;
+      margin-bottom: clamp(1.5rem, 3vh, 2.5rem);
+    }
+    .proj-img-grid { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(1rem, 2vw, 1.6rem); margin-bottom: 0.8rem; }
+    .proj-img-grid .proj-img { margin-bottom: 0; }
+
+    .proj-video { width: 100%; aspect-ratio: 16/9; border-radius: 2px; overflow: hidden; border: 1px solid var(--w12); background: #111620; margin-bottom: 0.8rem; }
+    .proj-video video { width: 100%; height: 100%; display: block; object-fit: cover; }
+
+    .proj-code-wrap { position: relative; background: rgba(0,0,0,0.45); border: 1px solid var(--w12); border-radius: 2px; overflow: hidden; margin-bottom: 0.8rem; }
+    .proj-code-label {
+      padding: 0.6rem 1.2rem; background: var(--w06); border-bottom: 1px solid var(--w12);
+      font-family: 'Jost', sans-serif; font-weight: 300;
+      font-size: 9.5px; letter-spacing: 0.24em; text-transform: uppercase; color: var(--w42);
+      display: flex; justify-content: space-between; align-items: center;
+    }
+    .proj-code {
+      padding: 1.4rem 1.6rem; overflow-x: auto; max-height: 420px; overflow-y: auto;
+      user-select: none; -webkit-user-select: none; -moz-user-select: none;
+    }
+    .proj-code pre {
+      font-family: 'Courier New', Courier, monospace;
+      font-size: clamp(10px, 0.85vw, 12px); line-height: 1.75; color: var(--w60);
+      white-space: pre; pointer-events: none;
+    }
+    .proj-code .kw  { color: #7eb8f7; }
+    .proj-code .cm  { color: rgba(255,255,255,0.28); font-style: italic; }
+    .proj-code .nm  { color: #a8d8a8; }
+    .proj-code .fn  { color: #d4a0ff; }
+    .proj-code .st  { color: #f7c97e; }
+
+    .proj-params { width: 100%; border-collapse: collapse; margin-bottom: 0.8rem; }
+    .proj-params th, .proj-params td {
+      padding: 0.7rem 1rem; text-align: left; border-bottom: 1px solid var(--w10);
+      font-family: 'Jost', sans-serif; font-weight: 300; font-size: clamp(11px, 0.88vw, 13px);
+    }
+    .proj-params th { font-weight: 400; font-size: 9.5px; letter-spacing: 0.22em; text-transform: uppercase; color: var(--w42); }
+    .proj-params td { color: var(--w85); }
+    .proj-params td:first-child { color: var(--white); font-weight: 400; }
+    .proj-params tr:last-child th, .proj-params tr:last-child td { border-bottom: none; }
+
+    .proj-result { border-left: 1px solid var(--w22); padding: 1rem 1.4rem; margin: 1.6rem 0; }
+    .proj-result p {
+      font-family: 'Cormorant Garamond', serif; font-style: italic; font-weight: 300;
+      font-size: clamp(14px, 1.3vw, 18px); line-height: 1.7; color: var(--w85);
+    }
   </style>
 </head>
 <body class="view-home">
@@ -544,7 +552,6 @@
   <canvas id="bg"></canvas>
   <div id="fog"></div>
 
-  <!-- ── Navigation ── -->
   <nav>
     <a href="#" data-view="home">Home</a>
     <a href="#" data-view="work">Work</a>
@@ -552,9 +559,7 @@
     <a href="#" data-view="contact">Contact</a>
   </nav>
 
-  <!-- ══════════════════════════════════════════════
-       ① HOME VIEW
-  ══════════════════════════════════════════════ -->
+  <!-- ① HOME -->
   <div id="view-home" class="view">
     <div class="content-block">
       <header>
@@ -578,14 +583,11 @@
     </div>
   </div>
 
-  <!-- ══════════════════════════════════════════════
-       ② WORK VIEW
-  ══════════════════════════════════════════════ -->
+  <!-- ② WORK -->
   <div id="view-work" class="view">
     <h1 class="page-title">Projects</h1>
     <p class="page-sub">Selected work &thinsp;&middot;&thinsp; 2025 – 2026</p>
     <div class="top-rule"></div>
-
     <div class="categories">
 
       <!-- MATLAB -->
@@ -596,9 +598,7 @@
             <span class="cat-name">Matlab &thinsp;/&thinsp; Simulations</span>
             <span class="cat-count">2 projects</span>
           </div>
-          <span class="cat-arrow" aria-hidden="true">
-            <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M5 2l5 5-5 5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-          </span>
+          <span class="cat-arrow" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M5 2l5 5-5 5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
         </div>
         <div class="cat-panel"><div class="cat-panel-inner"><div class="cards">
           <div class="card">
@@ -612,13 +612,13 @@
             </div>
           </div>
           <div class="card">
-            <div class="card-img"><img src="" alt="PCM Heat Simulation" loading="lazy"/><div class="placeholder">Image coming soon</div></div>
+            <div class="card-img"><img src="pcm-cad-render.png" alt="PCM Heat Simulation" loading="lazy"/><div class="placeholder">Image coming soon</div></div>
             <div class="card-body">
               <h3 class="card-title">Phase Changing Material Heat Simulation + CAD</h3>
               <p class="card-summary">Thermal simulation of PCM behavior during phase transitions, paired with a CAD visualization of the physical assembly.</p>
               <div class="card-tools"><span class="tool-tag">MATLAB</span><span class="tool-tag">Thermodynamics</span><span class="tool-tag">CAD</span></div>
               <p class="card-result">Modeled latent heat storage efficiency across temperature cycles.</p>
-              <a class="card-link" href="#">View project <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2 6h8M7 3l3 3-3 3" stroke="currentColor" stroke-width="1.1" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+              <a class="card-link" data-view="project-pcm" href="#">View project <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2 6h8M7 3l3 3-3 3" stroke="currentColor" stroke-width="1.1" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
             </div>
           </div>
         </div></div></div>
@@ -632,9 +632,7 @@
             <span class="cat-name">Arduino &thinsp;/&thinsp; Electrical</span>
             <span class="cat-count">2 projects</span>
           </div>
-          <span class="cat-arrow" aria-hidden="true">
-            <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M5 2l5 5-5 5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-          </span>
+          <span class="cat-arrow" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M5 2l5 5-5 5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
         </div>
         <div class="cat-panel"><div class="cat-panel-inner"><div class="cards">
           <div class="card">
@@ -668,9 +666,7 @@
             <span class="cat-name">Woodwork</span>
             <span class="cat-count">2 projects</span>
           </div>
-          <span class="cat-arrow" aria-hidden="true">
-            <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M5 2l5 5-5 5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-          </span>
+          <span class="cat-arrow" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M5 2l5 5-5 5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
         </div>
         <div class="cat-panel"><div class="cat-panel-inner"><div class="cards">
           <div class="card">
@@ -696,16 +692,12 @@
         </div></div></div>
       </div>
 
-    </div><!-- /categories -->
+    </div>
     <div style="height:4rem"></div>
   </div>
 
-  <!-- ══════════════════════════════════════════════
-       ③ ABOUT VIEW
-  ══════════════════════════════════════════════ -->
+  <!-- ③ ABOUT -->
   <div id="view-about" class="view">
-
-    <!-- Intro -->
     <section class="reveal">
       <p class="section-label">Introduction</p>
       <div class="intro-greeting">
@@ -717,7 +709,6 @@
       <p class="intro-body">If you're reading this, it means I either shared this portfolio with you directly or you found it through an application. Either way, I hope you enjoyed exploring the projects I care deeply about. Below, you'll find more details about my background, education, and skills. If you enjoy art and music, scroll to the bottom.</p>
     </section>
 
-    <!-- Education + Skills -->
     <section class="reveal">
       <p class="section-label">Background</p>
       <div class="rule"></div>
@@ -763,7 +754,6 @@
       </div>
     </section>
 
-    <!-- Paintings -->
     <section class="reveal">
       <p class="section-label">Art</p>
       <div class="rule"></div>
@@ -771,47 +761,26 @@
         <div class="stack-stage" id="stackStage">
           <div class="hover-zone hover-zone-left"  id="zoneLeft"></div>
           <div class="hover-zone hover-zone-right" id="zoneRight"></div>
-          <div class="stack-card" data-index="0">
-            <img src="white swan.png" alt="White Swan"/>
-            <span class="slide-placeholder">Painting I — Two Swans</span>
-          </div>
-          <div class="stack-card" data-index="1">
-            <img src="white horse.png" alt="White Horse"/>
-            <span class="slide-placeholder">Painting II — White Horse</span>
-          </div>
-          <div class="stack-card" data-index="2">
-            <img src="light on docks.png" alt="Light on Docks"/>
-            <span class="slide-placeholder">Painting III — Light on Docks</span>
-          </div>
-          <div class="stack-card" data-index="3">
-            <img src="sleeping cat.png" alt="Sleeping Cat"/>
-            <span class="slide-placeholder">Painting IV — Sleeping Cat</span>
-          </div>
-          <div class="stack-card" data-index="4">
-            <img src="whiskey.png" alt="Whiskey"/>
-            <span class="slide-placeholder">Painting V — Whiskey</span>
-          </div>
+          <div class="stack-card" data-index="0"><img src="white swan.png" alt="White Swan"/><span class="slide-placeholder">Painting I — Two Swans</span></div>
+          <div class="stack-card" data-index="1"><img src="white horse.png" alt="White Horse"/><span class="slide-placeholder">Painting II — White Horse</span></div>
+          <div class="stack-card" data-index="2"><img src="light on docks.png" alt="Light on Docks"/><span class="slide-placeholder">Painting III — Light on Docks</span></div>
+          <div class="stack-card" data-index="3"><img src="sleeping cat.png" alt="Sleeping Cat"/><span class="slide-placeholder">Painting IV — Sleeping Cat</span></div>
+          <div class="stack-card" data-index="4"><img src="whiskey.png" alt="Whiskey"/><span class="slide-placeholder">Painting V — Whiskey</span></div>
         </div>
         <div class="stack-controls"><div class="carousel-dots" id="carouselDots"></div></div>
         <p class="carousel-caption">Oil paintings — studies, 2022–2025</p>
       </div>
     </section>
 
-    <!-- Music -->
     <section class="reveal">
       <p class="section-label">Music</p>
       <div class="rule"></div>
       <div class="video-wrap">
-      <iframe
-        src="https://player.vimeo.com/video/1189207493?title=0&byline=0&portrait=0"
-        allow="autoplay; fullscreen; picture-in-picture"
-        allowfullscreen>
-      </iframe>
+        <iframe src="https://player.vimeo.com/video/1189207493?title=0&byline=0&portrait=0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe>
       </div>
       <p class="video-caption">Video recording of me playing Liebestraum — Franz Liszt, Dec 2025</p>
     </section>
 
-    <!-- Resume + Contact -->
     <section class="reveal" style="text-align:center;">
       <p class="section-label">Resume &amp; Contact</p>
       <div class="rule"></div>
@@ -849,13 +818,10 @@
         <span class="closing-fr">Je marche de l'avant.</span>
       </div>
     </section>
-
     <div style="height:4rem"></div>
   </div>
 
-  <!-- ══════════════════════════════════════════════
-       ④ CONTACT VIEW
-  ══════════════════════════════════════════════ -->
+  <!-- ④ CONTACT -->
   <div id="view-contact" class="view">
     <p class="section-label">Get in touch</p>
     <div class="contact-list">
@@ -881,7 +847,211 @@
     </div>
   </div>
 
-  <!-- ── Bottom bar ── -->
+  <!-- ⑤ PROJECT — PCM -->
+  <div id="view-project-pcm" class="view project-view">
+    <button class="back-btn" data-view="work">
+      <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M9 2L4 7l5 5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      Back to Work
+    </button>
+
+    <p class="proj-eyebrow">Matlab &thinsp;·&thinsp; Fusion 360 &thinsp;·&thinsp; Thermodynamics &thinsp;·&thinsp; 2025</p>
+    <h1 class="proj-title">Phase Change Material<br>Heat Simulation + CAD</h1>
+    <div class="proj-tags">
+      <span class="proj-tag">MATLAB</span><span class="proj-tag">Fusion 360</span>
+      <span class="proj-tag">Thermal Simulation</span><span class="proj-tag">Thermodynamics</span>
+      <span class="proj-tag">Energy Systems</span><span class="proj-tag">CAD</span>
+    </div>
+
+    <div class="proj-section">
+      <p class="proj-section-label">The Problem</p>
+      <div class="proj-rule"></div>
+      <div class="proj-body">
+        <p>Los Angeles runs on a grid not designed for the heat it now faces. During summer heat waves, electrical transformers experience extreme thermal stress — as load increases and ambient temperatures rise, they overheat, derate, and in the worst cases, fail entirely.</p>
+        <p>During the 2006–2007 LA heat storms, <strong>more than 800 transformers failed</strong>, cutting power to tens of thousands of residents. The problem is compounding: heat waves are intensifying, energy demand is climbing, and the infrastructure is aging.</p>
+      </div>
+      <div class="proj-result">
+        <p>"More than 64,000 customers experienced power outages during a heat wave, as utilities worked on overheating equipment." — LAIST</p>
+      </div>
+    </div>
+
+    <div class="proj-section">
+      <p class="proj-section-label">The Approach</p>
+      <div class="proj-rule"></div>
+      <div class="proj-body">
+        <p>The project proposes a <strong>passive PCM-based cooling device</strong> — a unit filled with paraffin wax that attaches directly to a pad-mounted transformer. When the wax melts, it absorbs a large quantity of heat without itself rising significantly in temperature. Overnight, as ambient temperatures drop, the wax solidifies again, releasing stored heat and resetting for the next day.</p>
+        <p>No pumps. No electricity. No maintenance. Just thermodynamics.</p>
+        <p>To validate the design, I built a <strong>thermal simulation in MATLAB</strong> modeling transformer heat behavior under realistic LA load conditions, and a <strong>3D CAD model in Fusion 360</strong> showing how the PCM unit integrates with the transformer housing.</p>
+      </div>
+    </div>
+
+    <div class="proj-section">
+      <p class="proj-section-label">CAD Design — Fusion 360</p>
+      <div class="proj-rule"></div>
+      <div class="proj-img"><img src="pcm-cad-render.png" alt="PCM cooling device mounted on pad transformer — Fusion 360 render"/></div>
+      <p class="proj-img-caption">Rendered model of the PCM cooling unit integrated with a pad-mounted transformer. The grey panel is the paraffin wax housing. Designed in Fusion 360.</p>
+      <div class="proj-body">
+        <p>The CAD model places the PCM enclosure in direct thermal contact with the transformer's outer casing. The design accounts for the ~10% volume expansion during melting, uses standard mounting hardware for retrofit compatibility, and includes ventilation slots for overnight heat dissipation.</p>
+      </div>
+    </div>
+
+    <div class="proj-section">
+      <p class="proj-section-label">Simulation Parameters</p>
+      <div class="proj-rule"></div>
+      <div class="proj-body"><p>The MATLAB simulation models heat flow across two coupled systems over an 8-hour cycle representative of a Los Angeles summer afternoon.</p></div>
+      <table class="proj-params" style="margin-top:1.4rem;">
+        <thead><tr><th>Component</th><th>Parameter</th><th>Value</th></tr></thead>
+        <tbody>
+          <tr><td>Transformer</td><td>Thermal capacitance</td><td>500,000 J/K</td></tr>
+          <tr><td>Transformer</td><td>Initial temperature</td><td>32°C</td></tr>
+          <tr><td>Transformer</td><td>Heat output — idle</td><td>3,500 W</td></tr>
+          <tr><td>Transformer</td><td>Heat output — peak (hrs 2–5)</td><td>10,000 W</td></tr>
+          <tr><td>PCM (paraffin wax)</td><td>Mass</td><td>180 kg</td></tr>
+          <tr><td>PCM</td><td>Melting point</td><td>55°C</td></tr>
+          <tr><td>PCM</td><td>Latent heat</td><td>180,000 J/kg</td></tr>
+          <tr><td>PCM</td><td>Sensible heat capacity</td><td>2,200 J/(kg·K)</td></tr>
+          <tr><td>PCM</td><td>Total latent energy capacity</td><td>14.4 MJ</td></tr>
+        </tbody>
+      </table>
+      <div class="proj-body" style="margin-top:1.2rem;">
+        <p><strong>Partial melting is often desirable.</strong> If the PCM never fully melts, it retains buffering capacity throughout the peak period — continuing to absorb heat rather than reaching thermal saturation.</p>
+      </div>
+    </div>
+
+    <div class="proj-section">
+      <p class="proj-section-label">Simulation Results</p>
+      <div class="proj-rule"></div>
+      <div class="proj-img-grid">
+        <div>
+          <div class="proj-img"><img src="pcm-simulation-graph.png" alt="Temperature comparison with and without PCM"/></div>
+          <p class="proj-img-caption">Temperature over time — with PCM (red) vs without (blue dashed). Peak temperature reduced by ~25°C.</p>
+        </div>
+        <div>
+          <div class="proj-img"><img src="pcm-heat-flow.png" alt="Heat flow paths — transformer to PCM to air"/></div>
+          <p class="proj-img-caption">Heat flow paths: transformer → PCM → air. Sharp peak at hour 5 reflects the evening temperature drop.</p>
+        </div>
+      </div>
+      <div class="proj-body">
+        <p>During hours 2–5, transformer heat output rises sharply to 10,000 W. Without PCM, surface temperature climbs past 80°C. With the PCM unit attached, peak temperature is held below 58°C. From hour 5 onward, ambient temperature drops from 32°C to 24°C — the PCM releases its stored heat and resets overnight.</p>
+      </div>
+      <div class="proj-result">
+        <p>The PCM system reduced simulated peak transformer temperature by approximately 25°C under LA heatwave conditions — demonstrating that passive phase-change cooling can meaningfully extend safe operating range without adding energy consumption.</p>
+      </div>
+    </div>
+
+    <div class="proj-section">
+      <p class="proj-section-label">Assembly Animation</p>
+      <div class="proj-rule"></div>
+      <div class="proj-video">
+        <video controls>
+          <source src="pcm-animation.mp4" type="video/mp4"/>
+        </video>
+      </div>
+      <p class="proj-img-caption">CAD animation showing the PCM cooling unit being mounted onto a pad-mounted transformer.</p>
+    </div>
+
+    <div class="proj-section">
+      <p class="proj-section-label">MATLAB Simulation Code</p>
+      <div class="proj-rule"></div>
+      <div class="proj-body"><p>The simulation uses a forward Euler integration scheme, modeling three coupled thermal systems: transformer heat generation, PCM phase transition with latent heat, and convective loss to ambient air.</p></div>
+      <div class="proj-code-wrap" style="margin-top:1.4rem;">
+        <div class="proj-code-label">
+          <span>pcm_simulation.m &nbsp;—&nbsp; MATLAB</span>
+          <span style="font-size:9px; color: var(--w22);">view only</span>
+        </div>
+        <div class="proj-code"><pre><span class="cm">%% PCM Transformer Cooling Simulation
+% Sophia Benzari — Biomedical Engineering, USC
+% Models heat flow between transformer, PCM unit, and ambient air
+% over an 8-hour Los Angeles summer afternoon load cycle.</span>
+
+<span class="kw">clear</span>; <span class="kw">clc</span>; <span class="kw">close all</span>;
+
+<span class="cm">%% ── Parameters ──────────────────────────────────────────</span>
+dt    = <span class="nm">1</span>;           <span class="cm">% time step [s]</span>
+t_end = <span class="nm">8</span> * <span class="nm">3600</span>;  <span class="cm">% 8 hours [s]</span>
+t     = <span class="nm">0</span>:dt:t_end;
+
+<span class="cm">% Transformer</span>
+C_T  = <span class="nm">500000</span>;  <span class="cm">% thermal capacitance [J/K]</span>
+T_T0 = <span class="nm">32</span>;      <span class="cm">% initial temperature [°C]</span>
+R_TP = <span class="nm">0.002</span>;   <span class="cm">% thermal resistance, transformer → PCM [K/W]</span>
+R_TA = <span class="nm">0.01</span>;    <span class="cm">% thermal resistance, transformer → air [K/W]</span>
+
+<span class="cm">% PCM — paraffin wax</span>
+m_PCM  = <span class="nm">180</span>;     <span class="cm">% mass [kg]</span>
+T_melt = <span class="nm">55</span>;      <span class="cm">% melting point [°C]</span>
+L_PCM  = <span class="nm">180000</span>;  <span class="cm">% latent heat [J/kg]</span>
+Cp_PCM = <span class="nm">2200</span>;    <span class="cm">% sensible heat capacity [J/(kg·K)]</span>
+Q_lat  = m_PCM * L_PCM;  <span class="cm">% total latent energy = 14.4 MJ</span>
+R_PA   = <span class="nm">0.005</span>;   <span class="cm">% thermal resistance, PCM → air [K/W]</span>
+
+<span class="cm">% Ambient: drops 32°C → 24°C at hour 5</span>
+T_amb = <span class="nm">32</span> * <span class="kw">ones</span>(<span class="nm">1</span>, <span class="kw">length</span>(t));
+T_amb(t >= <span class="nm">5</span>*<span class="nm">3600</span>) = <span class="nm">24</span>;
+
+<span class="cm">% Heat generation: idle 3500 W, peak 10000 W hrs 2–5</span>
+Q_gen = <span class="nm">3500</span> * <span class="kw">ones</span>(<span class="nm">1</span>, <span class="kw">length</span>(t));
+Q_gen(t >= <span class="nm">2</span>*<span class="nm">3600</span> &amp; t &lt; <span class="nm">5</span>*<span class="nm">3600</span>) = <span class="nm">10000</span>;
+
+<span class="cm">%% ── Initialise ───────────────────────────────────────────</span>
+T_T   = <span class="kw">zeros</span>(<span class="nm">1</span>, <span class="kw">length</span>(t));
+T_P   = <span class="kw">zeros</span>(<span class="nm">1</span>, <span class="kw">length</span>(t));
+E_lat = <span class="kw">zeros</span>(<span class="nm">1</span>, <span class="kw">length</span>(t));
+T_T(<span class="nm">1</span>) = T_T0;  T_P(<span class="nm">1</span>) = T_T0;
+
+<span class="cm">%% ── Forward Euler integration ────────────────────────────</span>
+<span class="kw">for</span> i = <span class="nm">1</span>:<span class="kw">length</span>(t)-<span class="nm">1</span>
+  q_TP = (T_T(i) - T_P(i)) / R_TP;
+  q_TA = (T_T(i) - T_amb(i)) / R_TA;
+  q_PA = (T_P(i) - T_amb(i)) / R_PA;
+
+  dT_T = (Q_gen(i) - q_TP - q_TA) / C_T;
+  T_T(i+<span class="nm">1</span>) = T_T(i) + dT_T * dt;
+
+  Q_in = (q_TP - q_PA) * dt;
+  <span class="kw">if</span> T_P(i) >= T_melt &amp;&amp; E_lat(i) &lt; Q_lat &amp;&amp; Q_in > <span class="nm">0</span>
+    E_lat(i+<span class="nm">1</span>) = <span class="kw">min</span>(E_lat(i) + Q_in, Q_lat);
+    T_P(i+<span class="nm">1</span>)   = T_melt;
+  <span class="kw">else</span>
+    E_lat(i+<span class="nm">1</span>) = E_lat(i);
+    T_P(i+<span class="nm">1</span>)   = T_P(i) + Q_in / (m_PCM * Cp_PCM);
+  <span class="kw">end</span>
+<span class="kw">end</span>
+
+<span class="cm">%% ── Baseline: no PCM ────────────────────────────────────</span>
+T_noPCM = <span class="kw">zeros</span>(<span class="nm">1</span>, <span class="kw">length</span>(t));
+T_noPCM(<span class="nm">1</span>) = T_T0;
+<span class="kw">for</span> i = <span class="nm">1</span>:<span class="kw">length</span>(t)-<span class="nm">1</span>
+  q_out = (T_noPCM(i) - T_amb(i)) / <span class="nm">0.008</span>;
+  T_noPCM(i+<span class="nm">1</span>) = T_noPCM(i) + (Q_gen(i) - q_out) / <span class="nm">500000</span> * dt;
+<span class="kw">end</span>
+
+<span class="cm">%% ── Plot ─────────────────────────────────────────────────</span>
+t_hr = t / <span class="nm">3600</span>;
+<span class="fn">figure</span>(<span class="nm">1</span>); <span class="fn">hold on</span>;
+<span class="fn">plot</span>(t_hr, T_noPCM, <span class="st">'b--'</span>, <span class="st">'LineWidth'</span>, <span class="nm">1.8</span>, <span class="st">'DisplayName'</span>, <span class="st">'No PCM'</span>);
+<span class="fn">plot</span>(t_hr, T_T,     <span class="st">'r-'</span>,  <span class="st">'LineWidth'</span>, <span class="nm">1.8</span>, <span class="st">'DisplayName'</span>, <span class="st">'With PCM'</span>);
+<span class="fn">plot</span>(t_hr, T_P,     <span class="st">'y-'</span>,  <span class="st">'LineWidth'</span>, <span class="nm">1.4</span>, <span class="st">'DisplayName'</span>, <span class="st">'PCM temp'</span>);
+<span class="fn">plot</span>(t_hr, T_amb,   <span class="st">'m:'</span>,  <span class="st">'LineWidth'</span>, <span class="nm">1.2</span>, <span class="st">'DisplayName'</span>, <span class="st">'Ambient'</span>);
+<span class="fn">xlabel</span>(<span class="st">'Time [hours]'</span>); <span class="fn">ylabel</span>(<span class="st">'Temperature [degC]'</span>);
+<span class="fn">title</span>(<span class="st">'Transformer Cooling With PCM'</span>); <span class="fn">legend</span>; <span class="fn">grid on</span>;</pre></div>
+      </div>
+      <p class="proj-img-caption" style="text-align:left; margin-top:0.6rem;">Core simulation — forward Euler thermal model with PCM phase transition logic.</p>
+    </div>
+
+    <div class="proj-section">
+      <p class="proj-section-label">Reflections</p>
+      <div class="proj-rule"></div>
+      <div class="proj-body">
+        <p>The most striking takeaway was how much cooling capacity can be unlocked from a material's phase transition alone. The latent heat of paraffin wax — 180,000 J/kg — is roughly fifty times larger than its sensible heat capacity over a 10°C range, meaning a well-chosen PCM can absorb enormous amounts of thermal energy while barely changing temperature.</p>
+        <p>Simulation also clarified how important <strong>partial melting</strong> is as a design goal. A system that fully melts its PCM early has no remaining buffer for the rest of the peak period. The right combination of mass, melting point, and thermal resistance keeps the PCM actively absorbing heat for the entire high-load window.</p>
+        <p>This project was developed alongside <strong>Lehar Goenka</strong>, exploring how passive thermal systems could address infrastructure resilience in heat-stressed cities.</p>
+      </div>
+    </div>
+
+    <div style="height:2rem"></div>
+  </div>
+
+  <!-- Bottom bar -->
   <div class="bottom-bar">
     <span class="year">© 2026</span>
     <blockquote class="quote">
@@ -890,9 +1060,6 @@
     </blockquote>
   </div>
 
-  <!-- ══════════════════════════════════════════════
-       THREE.JS
-  ══════════════════════════════════════════════ -->
   <script type="importmap">
     {
       "imports": {
@@ -920,114 +1087,93 @@
     const pmrem = new THREE.PMREMGenerator(renderer);
     pmrem.compileEquirectangularShader();
     new RGBELoader().setPath('./').load('mountain.hdr',
-      tex => {
-        const env = pmrem.fromEquirectangular(tex).texture;
-        scene.background = env; scene.environment = env;
-        tex.dispose(); pmrem.dispose();
-      }, null,
+      tex => { const env=pmrem.fromEquirectangular(tex).texture; scene.background=env; scene.environment=env; tex.dispose(); pmrem.dispose(); },
+      null,
       () => {
-        const geo = new THREE.SphereGeometry(500,32,16);
-        const mat = new THREE.ShaderMaterial({
+        const geo=new THREE.SphereGeometry(500,32,16);
+        const mat=new THREE.ShaderMaterial({
           side: THREE.BackSide,
-          uniforms: { top:{value:new THREE.Color(0x060b14)}, mid:{value:new THREE.Color(0x112030)}, bottom:{value:new THREE.Color(0x2d5470)} },
-          vertexShader:   `varying vec3 vP; void main(){ vP=position; gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.); }`,
-          fragmentShader: `varying vec3 vP; uniform vec3 top,mid,bottom; void main(){ float h=normalize(vP).y; vec3 c=mix(bottom,mid,smoothstep(-.3,.3,h)); c=mix(c,top,smoothstep(.2,1.,h)); gl_FragColor=vec4(c,1.); }`,
+          uniforms:{top:{value:new THREE.Color(0x060b14)},mid:{value:new THREE.Color(0x112030)},bottom:{value:new THREE.Color(0x2d5470)}},
+          vertexShader:`varying vec3 vP; void main(){ vP=position; gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.); }`,
+          fragmentShader:`varying vec3 vP; uniform vec3 top,mid,bottom; void main(){ float h=normalize(vP).y; vec3 c=mix(bottom,mid,smoothstep(-.3,.3,h)); c=mix(c,top,smoothstep(.2,1.,h)); gl_FragColor=vec4(c,1.); }`,
         });
-        scene.add(new THREE.Mesh(geo, mat));
-        scene.background = null;
+        scene.add(new THREE.Mesh(geo,mat)); scene.background=null;
       }
     );
 
-    /* Camera movement — speed set per view */
-    const tgt = {lon:0, lat:0}, state = {lon:0, lat:0};
-    const euler = new THREE.Euler(0,0,0,'YXZ');
-    let speed = 180; /* home: full range */
-
+    const tgt={lon:0,lat:0}, state={lon:0,lat:0};
+    const euler=new THREE.Euler(0,0,0,'YXZ');
+    let speed=180;
     window.addEventListener('view-changed', e => {
-      speed = e.detail === 'home' ? 180 : e.detail === 'contact' ? 18 : 14;
+      speed = e.detail==='home' ? 180 : e.detail==='contact' ? 18 : 14;
     });
     window.addEventListener('mousemove', e => {
-      tgt.lon =  (e.clientX/innerWidth  - .5) * speed;
-      tgt.lat = -(e.clientY/innerHeight - .5) * (speed * 0.67);
+      tgt.lon=(e.clientX/innerWidth-.5)*speed;
+      tgt.lat=-(e.clientY/innerHeight-.5)*(speed*0.67);
     });
 
-    /* Cursor */
-    const dot = document.getElementById('cur'), ring = document.getElementById('cur-o');
+    const dot=document.getElementById('cur'), ring=document.getElementById('cur-o');
     let mx=0,my=0,rx=0,ry=0;
     window.addEventListener('mousemove', e=>{ mx=e.clientX; my=e.clientY; });
     (function tc(){ dot.style.left=mx+'px'; dot.style.top=my+'px'; rx+=(mx-rx)*.14; ry+=(my-ry)*.14; ring.style.left=rx+'px'; ring.style.top=ry+'px'; requestAnimationFrame(tc); })();
-
-    window.addEventListener('resize', ()=>{ camera.aspect=innerWidth/innerHeight; camera.updateProjectionMatrix(); renderer.setSize(innerWidth,innerHeight); });
-
+    window.addEventListener('resize',()=>{ camera.aspect=innerWidth/innerHeight; camera.updateProjectionMatrix(); renderer.setSize(innerWidth,innerHeight); });
     (function animate(){
       requestAnimationFrame(animate);
-      state.lon += (tgt.lon-state.lon)*.06;
-      state.lat += (tgt.lat-state.lat)*.06;
-      state.lat  = Math.max(-85, Math.min(85, state.lat));
-      euler.y = THREE.MathUtils.degToRad(-state.lon);
-      euler.x = THREE.MathUtils.degToRad( state.lat);
-      camera.quaternion.setFromEuler(euler);
-      renderer.render(scene, camera);
+      state.lon+=(tgt.lon-state.lon)*.06; state.lat+=(tgt.lat-state.lat)*.06;
+      state.lat=Math.max(-85,Math.min(85,state.lat));
+      euler.y=THREE.MathUtils.degToRad(-state.lon); euler.x=THREE.MathUtils.degToRad(state.lat);
+      camera.quaternion.setFromEuler(euler); renderer.render(scene,camera);
     })();
   </script>
 
   <script>
-    /* ══════════════════════════════════════════════
-       SPA ROUTER
-    ══════════════════════════════════════════════ */
-    const views   = document.querySelectorAll('.view');
+    /* ── SPA Router ── */
+    const views    = document.querySelectorAll('.view');
     const navLinks = document.querySelectorAll('nav a[data-view]');
 
     function showView(id) {
-      views.forEach(v => {
-        v.classList.remove('active');
-        // scroll back to top when leaving
-        v.scrollTop = 0;
-      });
-      navLinks.forEach(a => a.classList.toggle('active', a.dataset.view === id));
-
-      const target = document.getElementById('view-' + id);
+      views.forEach(v => { v.classList.remove('active'); v.scrollTop=0; });
+      navLinks.forEach(a => a.classList.toggle('active', a.dataset.view===id));
+      const target = document.getElementById('view-'+id);
       if (target) target.classList.add('active');
-
-      // Update body class for fog
-      document.body.className = 'view-' + id;
-
-      // Fire event so Three.js can adjust speed
+      document.body.className = 'view-'+id;
       window.dispatchEvent(new CustomEvent('view-changed', { detail: id }));
-
-      // Re-run scroll reveal for about section
-      if (id === 'about') triggerReveal();
+      if (id==='about') triggerReveal();
+      if (id.startsWith('project-')) triggerProjectReveal(id);
     }
 
-    // Nav clicks
     document.querySelectorAll('[data-view]').forEach(el => {
-      el.addEventListener('click', e => {
-        e.preventDefault();
-        showView(el.dataset.view);
-      });
+      el.addEventListener('click', e => { e.preventDefault(); showView(el.dataset.view); });
     });
 
-    // Boot into home view properly
     showView('home');
 
-    /* ══════════════════════════════════════════════
-       SCROLL REVEAL (about view)
-    ══════════════════════════════════════════════ */
+    /* ── Scroll reveal — about ── */
     function triggerReveal() {
-      const aboutView = document.getElementById('view-about');
-      const reveals   = aboutView.querySelectorAll('.reveal');
+      const view   = document.getElementById('view-about');
+      const items  = view.querySelectorAll('.reveal');
       const obs = new IntersectionObserver(entries => {
-        entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); obs.unobserve(e.target); }});
-      }, { root: aboutView, threshold: 0.1 });
-      reveals.forEach(el => { el.classList.remove('visible'); obs.observe(el); });
+        entries.forEach(e => { if(e.isIntersecting){ e.target.classList.add('visible'); obs.unobserve(e.target); }});
+      }, { root: view, threshold: 0.1 });
+      items.forEach(el => { el.classList.remove('visible'); obs.observe(el); });
     }
 
-    /* ══════════════════════════════════════════════
-       ACCORDION (work view)
-    ══════════════════════════════════════════════ */
+    /* ── Scroll reveal — project views ── */
+    function triggerProjectReveal(id) {
+      const view = document.getElementById('view-'+id);
+      if (!view) return;
+      view.scrollTop = 0;
+      const sections = view.querySelectorAll('.proj-section');
+      const obs = new IntersectionObserver(entries => {
+        entries.forEach(e => { if(e.isIntersecting){ e.target.classList.add('visible'); obs.unobserve(e.target); }});
+      }, { root: view, threshold: 0.08 });
+      sections.forEach(el => { el.classList.remove('visible'); obs.observe(el); });
+    }
+
+    /* ── Accordion ── */
     const categories = Array.from(document.querySelectorAll('.category'));
     function openCat(cat) {
-      categories.forEach(c => { if (c!==cat) { c.classList.remove('open'); c.querySelector('.cat-header').setAttribute('aria-expanded','false'); }});
+      categories.forEach(c => { if(c!==cat){ c.classList.remove('open'); c.querySelector('.cat-header').setAttribute('aria-expanded','false'); }});
       cat.classList.add('open'); cat.querySelector('.cat-header').setAttribute('aria-expanded','true');
     }
     function closeCat(cat) { cat.classList.remove('open'); cat.querySelector('.cat-header').setAttribute('aria-expanded','false'); }
@@ -1035,59 +1181,33 @@
       const header = cat.querySelector('.cat-header');
       const toggle = () => cat.classList.contains('open') ? closeCat(cat) : openCat(cat);
       header.addEventListener('click', toggle);
-      header.addEventListener('keydown', e => { if (e.key==='Enter'||e.key===' ') { e.preventDefault(); toggle(); }});
+      header.addEventListener('keydown', e => { if(e.key==='Enter'||e.key===' '){ e.preventDefault(); toggle(); }});
     });
 
-    /* ══════════════════════════════════════════════
-       PAINTING STACK GALLERY
-    ══════════════════════════════════════════════ */
+    /* ── Painting stack gallery ── */
     (function() {
-      const cards  = Array.from(document.querySelectorAll('.stack-card'));
-      const dotsEl = document.getElementById('carouselDots');
-      const zoneL  = document.getElementById('zoneLeft');
-      const zoneR  = document.getElementById('zoneRight');
-      const wrap   = document.getElementById('stackWrap');
-      const total  = cards.length;
-      let current=0, peek=null, animating=false;
-      let mx=0,my=0,pmx=0,pmy=0;
+      const cards=Array.from(document.querySelectorAll('.stack-card'));
+      const dotsEl=document.getElementById('carouselDots');
+      const zoneL=document.getElementById('zoneLeft'), zoneR=document.getElementById('zoneRight');
+      const wrap=document.getElementById('stackWrap');
+      const total=cards.length;
+      let current=0,peek=null,animating=false,mx=0,my=0,pmx=0,pmy=0;
 
-      wrap.addEventListener('mousemove', e => { const r=wrap.getBoundingClientRect(); mx=(e.clientX-r.left)/r.width-.5; my=(e.clientY-r.top)/r.height-.5; });
-      wrap.addEventListener('mouseleave', () => { mx=0; my=0; if(peek){peek=null; applyTransforms(false);} });
+      wrap.addEventListener('mousemove',e=>{ const r=wrap.getBoundingClientRect(); mx=(e.clientX-r.left)/r.width-.5; my=(e.clientY-r.top)/r.height-.5; });
+      wrap.addEventListener('mouseleave',()=>{ mx=0; my=0; if(peek){peek=null;applyTransforms(false);} });
 
-      const POS = {
-        front:     [  0,   0,   1.00, 1.00, 5, 0],
-        peekRight: [ 30,   1.5, 0.90, 0.60, 4, 0],
-        peekLeft:  [-30,   1.5, 0.90, 0.60, 4, 0],
-        behind1:   [  5,   1.2, 0.91, 0.40, 3, 1],
-        behind2:   [  8.5, 2.2, 0.83, 0.18, 2, 2],
-        hidden:    [ 12,   3,   0.76, 0.00, 1, 3],
+      const POS={
+        front:[0,0,1.00,1.00,5,0], peekRight:[30,1.5,0.90,0.60,4,0], peekLeft:[-30,1.5,0.90,0.60,4,0],
+        behind1:[5,1.2,0.91,0.40,3,1], behind2:[8.5,2.2,0.83,0.18,2,2], hidden:[12,3,0.76,0.00,1,3],
       };
-
-      function getT(rel, isPeek, dir) {
-        if (rel===0) return POS.front;
-        if (isPeek)  return dir==='right' ? POS.peekRight : POS.peekLeft;
-        if (rel===1) return POS.behind1;
-        if (rel===2) return POS.behind2;
-        return POS.hidden;
-      }
-
-      function applyTransforms(withPx) {
-        const peekIdx = peek==='right'?(current+1)%total : peek==='left'?(current-1+total)%total : -1;
-        cards.forEach((card,i) => {
-          const isFront=i===current, isPeek=i===peekIdx;
-          let rel=(i-current+total)%total;
-          const [ox,oy,sc,op,zi,bl]=getT(rel,isPeek,peek);
-          const pF=(isFront||isPeek)?0:rel*0.5;
-          const px=withPx?pmx*pF*14:0, py=withPx?pmy*pF*6:0;
-          card.style.zIndex=zi; card.style.opacity=op;
-          card.style.filter=bl>0?`blur(${bl}px)`:'none';
-          card.style.transform=`translate(${ox+px}%,${oy+py}%) scale(${sc})`;
-        });
+      function getT(rel,isPeek,dir){ if(rel===0)return POS.front; if(isPeek)return dir==='right'?POS.peekRight:POS.peekLeft; if(rel===1)return POS.behind1; if(rel===2)return POS.behind2; return POS.hidden; }
+      function applyTransforms(withPx){
+        const peekIdx=peek==='right'?(current+1)%total:peek==='left'?(current-1+total)%total:-1;
+        cards.forEach((card,i)=>{ const isFront=i===current,isPeek=i===peekIdx; let rel=(i-current+total)%total; const[ox,oy,sc,op,zi,bl]=getT(rel,isPeek,peek); const pF=(isFront||isPeek)?0:rel*0.5; const px=withPx?pmx*pF*14:0,py=withPx?pmy*pF*6:0; card.style.zIndex=zi; card.style.opacity=op; card.style.filter=bl>0?`blur(${bl}px)`:'none'; card.style.transform=`translate(${ox+px}%,${oy+py}%) scale(${sc})`; });
         dotsEl.querySelectorAll('.dot').forEach((d,i)=>d.classList.toggle('active',i===current));
       }
-
-      function setT(dur) { const t=`transform ${dur}s cubic-bezier(.22,1,.36,1),opacity ${dur}s ease,filter ${dur}s ease`; cards.forEach(c=>c.style.transition=t); }
-      function goTo(idx) { if(animating)return; animating=true; setT(0.72); current=((idx%total)+total)%total; peek=null; applyTransforms(true); setTimeout(()=>{animating=false;},720); }
+      function setT(dur){ const t=`transform ${dur}s cubic-bezier(.22,1,.36,1),opacity ${dur}s ease,filter ${dur}s ease`; cards.forEach(c=>c.style.transition=t); }
+      function goTo(idx){ if(animating)return; animating=true; setT(0.72); current=((idx%total)+total)%total; peek=null; applyTransforms(true); setTimeout(()=>{animating=false;},720); }
 
       zoneR.addEventListener('mouseenter',()=>{ if(animating)return; peek='right'; setT(0.55); applyTransforms(true); });
       zoneR.addEventListener('mouseleave',()=>{ if(peek!=='right')return; peek=null; setT(0.55); applyTransforms(true); });
@@ -1096,29 +1216,19 @@
       zoneL.addEventListener('mouseleave',()=>{ if(peek!=='left')return; peek=null; setT(0.55); applyTransforms(true); });
       zoneL.addEventListener('click',()=>goTo(current-1));
       document.addEventListener('keydown',e=>{ if(e.key==='ArrowRight')goTo(current+1); if(e.key==='ArrowLeft')goTo(current-1); });
-
       cards.forEach((_,i)=>{ const d=document.createElement('div'); d.className='dot'+(i===0?' active':''); d.addEventListener('click',()=>goTo(i)); dotsEl.appendChild(d); });
       cards.forEach(c=>c.style.transition='none');
       applyTransforms(false);
       requestAnimationFrame(()=>setT(0.72));
-
-      (function parallaxLoop(){
-        requestAnimationFrame(parallaxLoop);
-        pmx+=(mx-pmx)*0.055; pmy+=(my-pmy)*0.055;
-        if(!animating&&!peek){
-          cards.forEach((card,i)=>{ if(i===current)return; let rel=(i-current+total)%total; const [ox,oy,sc]=getT(rel,false,null); card.style.transform=`translate(${ox+pmx*rel*0.5*14}%,${oy+pmy*rel*0.5*6}%) scale(${sc})`; });
-        }
-      })();
+      (function parallaxLoop(){ requestAnimationFrame(parallaxLoop); pmx+=(mx-pmx)*0.055; pmy+=(my-pmy)*0.055; if(!animating&&!peek){ cards.forEach((card,i)=>{ if(i===current)return; let rel=(i-current+total)%total; const[ox,oy,sc]=getT(rel,false,null); card.style.transform=`translate(${ox+pmx*rel*0.5*14}%,${oy+pmy*rel*0.5*6}%) scale(${sc})`; }); } })();
     })();
 
-    /* ══════════════════════════════════════════════
-       COPY BUTTONS
-    ══════════════════════════════════════════════ */
+    /* ── Copy buttons ── */
     document.querySelectorAll('.copy-btn').forEach(btn => {
       btn.addEventListener('click', () => {
         navigator.clipboard.writeText(btn.dataset.copy).then(() => {
           btn.classList.add('copied');
-          setTimeout(() => btn.classList.remove('copied'), 2000);
+          setTimeout(()=>btn.classList.remove('copied'), 2000);
         });
       });
     });
