@@ -952,12 +952,133 @@
     <div class="proj-section">
       <p class="proj-section-label">MATLAB Simulation Code</p>
       <div class="proj-rule"></div>
-      <div class="proj-body"><p>The simulation uses a forward Euler integration scheme, modeling three coupled thermal systems: transformer heat generation, PCM phase transition with latent heat, and convective loss to ambient air.</p></div>
+      <div class="proj-body"><p>The simulation uses an enthalpy-based lumped-parameter model — more physically accurate than a simple forward Euler approach. Three local functions handle the PCM state, the baseline, and the enthalpy-to-temperature conversion.</p></div>
       <div class="proj-code-wrap" style="margin-top:1.4rem;">
         <div class="proj-code-label">
-          <span>pcm_simulation.m &nbsp;—&nbsp; MATLAB</span>
+          <span>heatsimadv.m &nbsp;—&nbsp; MATLAB</span>
           <span style="font-size:9px; color: var(--w22);">view only</span>
         </div>
+        <div class="proj-code"><pre><span class="cm">%% pcm_transformer_demo.m
+% Lumped-parameter simulation of transformer + PCM cooling
+% Compares good PCM design vs no-PCM baseline</span>
+
+<span class="kw">clear</span>; <span class="kw">clc</span>; <span class="kw">close all</span>;
+
+<span class="cm">%% Time</span>
+dt   = <span class="nm">1</span>;           <span class="cm">% time step [s]</span>
+tEnd = <span class="nm">8</span>*<span class="nm">3600</span>;     <span class="cm">% 8 hours [s]</span>
+t    = <span class="nm">0</span>:dt:tEnd;
+n    = <span class="fn">numel</span>(t);
+th   = t/<span class="nm">3600</span>;      <span class="cm">% time in hours for plotting</span>
+
+<span class="cm">%% Heat input from transformer losses [W]
+% Step-like peak load during hours 2 to 5</span>
+qGen = <span class="nm">3500</span> + <span class="nm">6500</span> * (t >= <span class="nm">2</span>*<span class="nm">3600</span> &amp; t &lt;= <span class="nm">5</span>*<span class="nm">3600</span>);
+
+<span class="cm">%% Ambient temperature [degC]
+% Hot afternoon first, then cooler evening</span>
+Tamb = <span class="nm">32</span> * <span class="kw">ones</span>(<span class="fn">size</span>(t));
+Tamb(t >= <span class="nm">5</span>*<span class="nm">3600</span>) = <span class="nm">24</span>;
+
+<span class="cm">%% Common transformer properties</span>
+params.Ctr   = <span class="nm">500000</span>;   <span class="cm">% thermal capacitance [J/K]</span>
+params.Tinit = <span class="nm">32</span>;       <span class="cm">% initial temperature [degC]</span>
+
+<span class="cm">%% PCM properties</span>
+params.mPCM  = <span class="nm">180</span>;      <span class="cm">% PCM mass [kg]</span>
+params.cpPCM = <span class="nm">2200</span>;     <span class="cm">% sensible heat capacity [J/(kg*K)]</span>
+params.L     = <span class="nm">180000</span>;   <span class="cm">% latent heat [J/kg]</span>
+params.Tm    = <span class="nm">55</span>;       <span class="cm">% melting temperature [degC]</span>
+params.Tref  = <span class="nm">0</span>;        <span class="cm">% reference temperature [degC]</span>
+
+<span class="cm">%% Good PCM design parameters</span>
+good.Rtp = <span class="nm">0.0005</span>;   <span class="cm">% transformer -> PCM resistance [K/W]</span>
+good.Rpa = <span class="nm">0.002</span>;    <span class="cm">% PCM -> ambient resistance [K/W]</span>
+
+<span class="cm">%% No PCM baseline</span>
+noPCM.Rta = <span class="nm">0.005</span>;   <span class="cm">% transformer -> ambient resistance [K/W]</span>
+
+<span class="cm">%% Simulate</span>
+outGood = <span class="fn">simulatePCM</span>(t, dt, qGen, Tamb, params, good);
+outNo   = <span class="fn">simulateNoPCM</span>(t, dt, qGen, Tamb, params, noPCM);
+
+<span class="cm">%% Figure 1: Temperatures</span>
+<span class="fn">figure</span>(<span class="st">'Color'</span>,<span class="st">'w'</span>);
+<span class="fn">plot</span>(th, outNo.Ttr,    <span class="st">'--'</span>, <span class="st">'LineWidth'</span>, <span class="nm">2</span>, <span class="st">'Color'</span>, [<span class="nm">0.0</span> <span class="nm">0.45</span> <span class="nm">0.74</span>]); <span class="kw">hold on</span>;
+<span class="fn">plot</span>(th, outGood.Ttr,  <span class="st">'-'</span>,  <span class="st">'LineWidth'</span>, <span class="nm">2</span>, <span class="st">'Color'</span>, [<span class="nm">0.85</span> <span class="nm">0.33</span> <span class="nm">0.10</span>]);
+<span class="fn">plot</span>(th, outGood.Tpcm, <span class="st">'-'</span>,  <span class="st">'LineWidth'</span>, <span class="nm">2</span>, <span class="st">'Color'</span>, [<span class="nm">0.93</span> <span class="nm">0.69</span> <span class="nm">0.13</span>]);
+<span class="fn">plot</span>(th, Tamb,         <span class="st">':'</span>,  <span class="st">'LineWidth'</span>, <span class="nm">2</span>, <span class="st">'Color'</span>, [<span class="nm">0.49</span> <span class="nm">0.18</span> <span class="nm">0.56</span>]);
+<span class="fn">grid on</span>;
+<span class="fn">xlabel</span>(<span class="st">'Time [hours]'</span>); <span class="fn">ylabel</span>(<span class="st">'Temperature [degC]'</span>);
+<span class="fn">title</span>(<span class="st">'Transformer Cooling With PCM'</span>);
+<span class="fn">legend</span>(<span class="st">'No PCM transformer'</span>, <span class="st">'Transformer with PCM'</span>, ...
+       <span class="st">'PCM temperature'</span>, <span class="st">'Ambient air'</span>, <span class="st">'Location'</span>, <span class="st">'northwest'</span>);
+
+<span class="cm">%% Figure 2: Heat flows and melt fraction</span>
+<span class="fn">figure</span>(<span class="st">'Color'</span>,<span class="st">'w'</span>);
+<span class="fn">subplot</span>(<span class="nm">2</span>,<span class="nm">1</span>,<span class="nm">1</span>);
+<span class="fn">plot</span>(th, qGen/<span class="nm">1000</span>,        <span class="st">'k'</span>, <span class="st">'LineWidth'</span>, <span class="nm">2</span>); <span class="kw">hold on</span>;
+<span class="fn">plot</span>(th, outGood.qTP/<span class="nm">1000</span>, <span class="st">'-'</span>, <span class="st">'LineWidth'</span>, <span class="nm">2</span>);
+<span class="fn">plot</span>(th, outGood.qPA/<span class="nm">1000</span>, <span class="st">'-'</span>, <span class="st">'LineWidth'</span>, <span class="nm">2</span>);
+<span class="fn">grid on</span>;
+<span class="fn">xlabel</span>(<span class="st">'Time [hours]'</span>); <span class="fn">ylabel</span>(<span class="st">'Heat flow [kW]'</span>);
+<span class="fn">title</span>(<span class="st">'Heat Flow Paths — PCM Case'</span>);
+<span class="fn">legend</span>(<span class="st">'Transformer heat generation'</span>, <span class="st">'Transformer -> PCM'</span>, ...
+       <span class="st">'PCM -> Air'</span>, <span class="st">'Location'</span>, <span class="st">'northwest'</span>);
+
+<span class="fn">subplot</span>(<span class="nm">2</span>,<span class="nm">1</span>,<span class="nm">2</span>);
+<span class="fn">plot</span>(th, outGood.meltFrac, <span class="st">'LineWidth'</span>, <span class="nm">2</span>);
+<span class="fn">grid on</span>;
+<span class="fn">xlabel</span>(<span class="st">'Time [hours]'</span>); <span class="fn">ylabel</span>(<span class="st">'Melt fraction'</span>);
+<span class="fn">ylim</span>([<span class="nm">0</span> <span class="nm">1.05</span>]);
+<span class="fn">title</span>(<span class="st">'PCM Melt Fraction (0 = solid, 1 = fully melted)'</span>);
+
+<span class="cm">%% ---- Local functions ----</span>
+<span class="kw">function</span> out = <span class="fn">simulatePCM</span>(t, dt, qGen, Tamb, p, d)
+    n = <span class="fn">numel</span>(t);
+    Ttr  = <span class="kw">zeros</span>(<span class="nm">1</span>,n); Tpcm = <span class="kw">zeros</span>(<span class="nm">1</span>,n);
+    x    = <span class="kw">zeros</span>(<span class="nm">1</span>,n); qTP  = <span class="kw">zeros</span>(<span class="nm">1</span>,n); qPA  = <span class="kw">zeros</span>(<span class="nm">1</span>,n);
+    Ttr(<span class="nm">1</span>) = p.Tinit;
+    Hpcm = p.mPCM * p.cpPCM * (p.Tinit - p.Tref);
+    [Tpcm(<span class="nm">1</span>), x(<span class="nm">1</span>)] = <span class="fn">enthalpyToState</span>(Hpcm, p);
+    <span class="kw">for</span> k = <span class="nm">2</span>:n
+        qTP(k-<span class="nm">1</span>) = (Ttr(k-<span class="nm">1</span>) - Tpcm(k-<span class="nm">1</span>)) / d.Rtp;
+        qPA(k-<span class="nm">1</span>) = (Tpcm(k-<span class="nm">1</span>) - Tamb(k-<span class="nm">1</span>)) / d.Rpa;
+        dTtr = (qGen(k-<span class="nm">1</span>) - qTP(k-<span class="nm">1</span>)) * dt / p.Ctr;
+        Ttr(k) = Ttr(k-<span class="nm">1</span>) + dTtr;
+        Hpcm = Hpcm + (qTP(k-<span class="nm">1</span>) - qPA(k-<span class="nm">1</span>)) * dt;
+        [Tpcm(k), x(k)] = <span class="fn">enthalpyToState</span>(Hpcm, p);
+    <span class="kw">end</span>
+    qTP(<span class="kw">end</span>) = (Ttr(<span class="kw">end</span>) - Tpcm(<span class="kw">end</span>)) / d.Rtp;
+    qPA(<span class="kw">end</span>) = (Tpcm(<span class="kw">end</span>) - Tamb(<span class="kw">end</span>)) / d.Rpa;
+    out.Ttr = Ttr; out.Tpcm = Tpcm;
+    out.meltFrac = x; out.qTP = qTP; out.qPA = qPA;
+<span class="kw">end</span>
+
+<span class="kw">function</span> out = <span class="fn">simulateNoPCM</span>(t, dt, qGen, Tamb, p, n0)
+    n = <span class="fn">numel</span>(t); Ttr = <span class="kw">zeros</span>(<span class="nm">1</span>,n); Ttr(<span class="nm">1</span>) = p.Tinit;
+    <span class="kw">for</span> k = <span class="nm">2</span>:n
+        qToAir = (Ttr(k-<span class="nm">1</span>) - Tamb(k-<span class="nm">1</span>)) / n0.Rta;
+        Ttr(k) = Ttr(k-<span class="nm">1</span>) + (qGen(k-<span class="nm">1</span>) - qToAir) * dt / p.Ctr;
+    <span class="kw">end</span>
+    out.Ttr = Ttr;
+<span class="kw">end</span>
+
+<span class="kw">function</span> [T, x] = <span class="fn">enthalpyToState</span>(H, p)
+    <span class="cm">% Convert PCM enthalpy H into temperature T and melt fraction x</span>
+    HsolidEnd = p.mPCM * p.cpPCM * (p.Tm - p.Tref);
+    HliqEnd   = HsolidEnd + p.mPCM * p.L;
+    <span class="kw">if</span> H &lt; HsolidEnd
+        T = p.Tref + H / (p.mPCM * p.cpPCM); x = <span class="nm">0</span>;
+    <span class="kw">elseif</span> H &lt;= HliqEnd
+        T = p.Tm; x = (H - HsolidEnd) / (p.mPCM * p.L);
+    <span class="kw">else</span>
+        T = p.Tm + (H - HliqEnd) / (p.mPCM * p.cpPCM); x = <span class="nm">1</span>;
+    <span class="kw">end</span>
+    x = <span class="fn">max</span>(<span class="nm">0</span>, <span class="fn">min</span>(<span class="nm">1</span>, x));
+<span class="kw">end</span></pre></div>
+      </div>
+      <p class="proj-img-caption" style="text-align:left; margin-top:0.6rem;">Enthalpy-based lumped-parameter model with three local functions: simulatePCM, simulateNoPCM, and enthalpyToState.</p>
         <div class="proj-code"><pre><span class="cm">%% PCM Transformer Cooling Simulation
 % Sophia Benzari — Biomedical Engineering, USC
 % Models heat flow between transformer, PCM unit, and ambient air
