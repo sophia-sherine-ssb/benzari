@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>PCM Heat Simulation — Sophia Benzari</title>
+  <link rel="icon" href="favicon.ico">
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Jost:wght@300;400&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+    :root {
+      --white:rgba(255,255,255,1.00); --w85:rgba(255,255,255,0.96);
+      --w60:rgba(255,255,255,0.82);   --w42:rgba(255,255,255,0.62);
+      --w22:rgba(255,255,255,0.30);   --w16:rgba(255,255,255,0.22);
+      --w12:rgba(255,255,255,0.18);   --w10:rgba(255,255,255,0.14);
+      --w06:rgba(255,255,255,0.08);   --px:clamp(2rem,5vw,5rem);
+    }
+    html { scroll-behavior:smooth; }
+    body { background:#0b0f14; color:var(--white); cursor:none; min-height:100vh; }
+    #bg { position:fixed; inset:0; z-index:0; }
+    #fog { position:fixed; inset:0; z-index:1; pointer-events:none;
+      background: linear-gradient(110deg,rgba(4,8,14,0.82) 0%,rgba(4,8,14,0.55) 50%,rgba(4,8,14,0.20) 100%),
+                  radial-gradient(ellipse at center,transparent 30%,rgba(0,0,0,0.45) 100%);
+    }
+    #cur { position:fixed; width:5px; height:5px; border-radius:50%; background:#fff; transform:translate(-50%,-50%); pointer-events:none; z-index:300; mix-blend-mode:difference; left:-50px; top:-50px; }
+    #cur-o { position:fixed; width:28px; height:28px; border-radius:50%; border:1px solid rgba(255,255,255,0.26); transform:translate(-50%,-50%); pointer-events:none; z-index:299; left:-50px; top:-50px; }
+    nav { position:fixed; top:2.2rem; right:var(--px); z-index:50; display:flex; gap:2.4rem; }
+    nav a { font-family:'Jost',sans-serif; font-weight:400; font-size:13px; letter-spacing:0.26em; text-transform:uppercase; color:var(--w60); text-decoration:none; transition:color .25s; }
+    nav a:hover { color:var(--white); }
+    .bottom-bar { position:fixed; bottom:0; left:0; right:0; z-index:40; padding:0 var(--px) 1.8rem; display:flex; align-items:flex-end; justify-content:space-between; pointer-events:none; }
+    .year { font-family:'Jost',sans-serif; font-weight:300; font-size:10px; letter-spacing:0.22em; color:var(--w42); }
+    .quote { font-family:'Cormorant Garamond',serif; font-style:italic; font-weight:300; font-size:clamp(9.5px,0.80vw,11.5px); color:var(--w42); text-align:right; max-width:400px; line-height:1.65; }
+    .quote cite { display:block; margin-top:0.35em; font-style:normal; font-family:'Jost',sans-serif; font-weight:300; font-size:9px; letter-spacing:0.20em; text-transform:uppercase; color:var(--w42); }
+    ::-webkit-scrollbar { width:2px; }
+    ::-webkit-scrollbar-thumb { background:var(--w12); border-radius:2px; }
+
+    /* PROJECT LAYOUT */
+    main { position:relative; z-index:10; padding:clamp(5rem,11vh,8rem) var(--px) clamp(3rem,5vh,4rem); max-width:820px; margin:0 auto; }
+    .back-btn { display:inline-flex; align-items:center; gap:0.6rem; font-family:'Jost',sans-serif; font-weight:300; font-size:11px; letter-spacing:0.28em; text-transform:uppercase; color:var(--w42); text-decoration:none; transition:color .25s; }
+    @media (min-width:681px) {
+      .back-btn { position:fixed; top:clamp(4rem,8vh,6rem); left:var(--px); z-index:60; }
+    }
+    @media (max-width:680px) {
+      .back-btn { display:inline-flex; margin-bottom:clamp(2rem,4vh,3rem); }
+    }
+    .back-btn:hover { color:var(--w85); }
+    .back-btn:hover svg { transform:translateX(-3px); }
+    .back-btn svg { transition:transform .25s; }
+    .proj-eyebrow { font-family:'Jost',sans-serif; font-weight:300; font-size:11px; letter-spacing:0.40em; text-transform:uppercase; color:var(--w42); margin-bottom:1rem; }
+    .proj-title { font-family:'Cormorant Garamond',serif; font-weight:300; font-size:clamp(42px,6vw,80px); line-height:0.95; color:var(--white); margin-bottom:1.4rem; }
+    .proj-tags { display:flex; flex-wrap:wrap; gap:0.5rem; margin-bottom:clamp(2.5rem,5vh,4rem); }
+    .proj-tag { font-family:'Jost',sans-serif; font-weight:300; font-size:10.5px; letter-spacing:0.16em; text-transform:uppercase; color:var(--w42); border:1px solid var(--w22); padding:4px 11px; border-radius:1px; }
+    .proj-section { margin-bottom:clamp(3rem,6vh,5rem); opacity:0; transform:translateY(18px); transition:opacity .8s cubic-bezier(.22,1,.36,1),transform .8s cubic-bezier(.22,1,.36,1); }
+    .proj-section.visible { opacity:1; transform:translateY(0); }
+    .proj-section-label { font-family:'Jost',sans-serif; font-weight:300; font-size:10.5px; letter-spacing:0.40em; text-transform:uppercase; color:var(--w42); margin-bottom:1rem; }
+    .proj-rule { height:1px; background:linear-gradient(to right,var(--w16) 0%,transparent 85%); margin-bottom:1.8rem; }
+    .proj-body { font-family:'Jost',sans-serif; font-weight:300; font-size:clamp(14.5px,1.2vw,17px); line-height:1.96; color:var(--w85); }
+    .proj-body p+p { margin-top:1.1em; }
+    .proj-body strong { font-weight:400; color:var(--white); }
+    .proj-img { border-radius:2px; overflow:hidden; border:1px solid var(--w12); margin-bottom:0.8rem; background:#111620; }
+    .proj-img img { width:100%; display:block; object-fit:contain; }
+    .proj-img-caption { font-family:'Cormorant Garamond',serif; font-style:italic; font-weight:300; font-size:clamp(12px,0.95vw,14px); color:var(--w42); text-align:center; margin-bottom:clamp(1.5rem,3vh,2.5rem); }
+    .proj-img-grid { display:grid; grid-template-columns:1fr 1fr; gap:clamp(1rem,2vw,1.6rem); margin-bottom:0.8rem; }
+    .proj-img-grid .proj-img { margin-bottom:0; }
+    .proj-video { aspect-ratio:16/9; border-radius:2px; overflow:hidden; border:1px solid var(--w12); background:#111620; margin-bottom:0.8rem; }
+    .proj-video video { width:100%; height:100%; display:block; }
+    .proj-code-wrap { background:rgba(0,0,0,0.45); border:1px solid var(--w12); border-radius:2px; overflow:hidden; margin-bottom:0.8rem; }
+    .proj-code-label { padding:0.6rem 1.2rem; background:var(--w06); border-bottom:1px solid var(--w12); font-family:'Jost',sans-serif; font-weight:300; font-size:10px; letter-spacing:0.24em; text-transform:uppercase; color:var(--w42); display:flex; justify-content:space-between; align-items:center; }
+    .proj-code { padding:1.4rem 1.6rem; overflow-x:auto; max-height:420px; overflow-y:auto; user-select:none; -webkit-user-select:none; }
+    .proj-code pre { font-family:'Courier New',monospace; font-size:clamp(10px,0.85vw,12px); line-height:1.75; color:var(--w60); white-space:pre; pointer-events:none; }
+    .proj-code .kw { color:#7eb8f7; } .proj-code .cm { color:rgba(255,255,255,0.36); font-style:italic; }
+    .proj-code .nm { color:#a8d8a8; } .proj-code .fn { color:#d4a0ff; } .proj-code .st { color:#f7c97e; }
+    .proj-params { width:100%; border-collapse:collapse; margin-bottom:0.8rem; }
+    .proj-params th,.proj-params td { padding:0.8rem 1rem; text-align:left; border-bottom:1px solid var(--w10); font-family:'Jost',sans-serif; font-weight:300; font-size:clamp(12px,0.95vw,14px); }
+    .proj-params th { font-weight:400; font-size:10.5px; letter-spacing:0.22em; text-transform:uppercase; color:var(--w42); }
+    .proj-params td { color:var(--w85); }
+    .proj-params td:first-child { color:var(--white); font-weight:400; }
+    .proj-params tr:last-child td,.proj-params tr:last-child th { border-bottom:none; }
+    .proj-result { border-left:1px solid var(--w22); padding:1rem 1.4rem; margin:1.6rem 0; }
+    .proj-result p { font-family:'Cormorant Garamond',serif; font-style:italic; font-weight:300; font-size:clamp(15px,1.4vw,20px); line-height:1.7; color:var(--w85); }
+
+    /* LIGHTBOX */
+    #lightbox{display:none;position:fixed;inset:0;z-index:500;background:rgba(5,9,15,0.92);align-items:center;justify-content:center;cursor:zoom-out;}
+    #lightbox.open{display:flex;}
+    #lightbox img{max-width:90vw;max-height:88vh;object-fit:contain;border-radius:2px;border:1px solid var(--w12);}
+    #lightbox-close{position:fixed;top:2rem;right:2rem;width:40px;height:40px;display:flex;align-items:center;justify-content:center;background:var(--w06);border:1px solid var(--w22);border-radius:50%;cursor:pointer;color:var(--w85);font-size:18px;transition:background .2s;}
+    #lightbox-close:hover{background:var(--w12);}
+  </style>
+</head>
+<body>
+    <div id="lightbox"><span id="lightbox-close">✕</span><img id="lightbox-img" src="" alt=""/></div>
+  <div id="cur"></div>
+  <div id="cur-o"></div>
+  <canvas id="bg"></canvas>
+  <div id="fog"></div>
+
+  <nav>
+    <a href="index.html">Home</a>
+    <a href="index.html?view=work">Work</a>
+    <a href="index.html?view=about">About</a>
+    <a href="index.html?view=contact">Contact</a>
+  </nav>
+
+  <main>
+    <a class="back-btn" href="index.html?view=work">
+      <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M9 2L4 7l5 5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      Back to Work
+    </a>
+
+    <p class="proj-eyebrow">Matlab &thinsp;&middot;&thinsp; Fusion 360 &thinsp;&middot;&thinsp; Thermodynamics &thinsp;&middot;&thinsp; 2025</p>
+    <h1 class="proj-title">Phase Change Material<br>Heat Simulation + CAD</h1>
+    <div class="proj-tags">
+      <span class="proj-tag">MATLAB</span><span class="proj-tag">Fusion 360</span>
+      <span class="proj-tag">Thermal Simulation</span><span class="proj-tag">Thermodynamics</span>
+      <span class="proj-tag">Energy Systems</span><span class="proj-tag">CAD</span>
+    </div>
+
+    <div class="proj-section">
+      <p class="proj-section-label">The Problem</p><div class="proj-rule"></div>
+      <div class="proj-body">
+        <p>Los Angeles runs on a grid not designed for the heat it now faces. During summer heat waves, electrical transformers experience extreme thermal stress — as load increases and ambient temperatures rise, they overheat, derate, and in the worst cases, fail entirely.</p>
+        <p>During the 2006–2007 LA heat storms, <strong>more than 800 transformers failed</strong>, cutting power to tens of thousands of residents. The problem is compounding: heat waves are intensifying, energy demand is climbing, and the infrastructure is aging.</p>
+      </div>
+      <div class="proj-result"><p>"More than 64,000 customers experienced power outages during a heat wave, as utilities worked on overheating equipment." — LAIST</p></div>
+    </div>
+
+    <div class="proj-section">
+      <p class="proj-section-label">The Approach</p><div class="proj-rule"></div>
+      <div class="proj-body">
+        <p>The project proposes a <strong>passive PCM-based cooling device</strong> — a unit filled with paraffin wax that attaches directly to a pad-mounted transformer. When the wax melts, it absorbs a large quantity of heat without itself rising significantly in temperature. Overnight, as ambient temperatures drop, the wax solidifies again, releasing stored heat and resetting for the next day.</p>
+        <p>No pumps. No electricity. No maintenance. Just thermodynamics. To validate the design, I built a <strong>thermal simulation in MATLAB</strong> and a <strong>3D CAD model in Fusion 360</strong>.</p>
+      </div>
+    </div>
+
+    <div class="proj-section">
+      <p class="proj-section-label">CAD Design — Fusion 360</p><div class="proj-rule"></div>
+      <div class="proj-img"><img src="pcm-cad-render.png" alt="PCM cooling device — Fusion 360 render"/></div>
+      <p class="proj-img-caption">Rendered model of the PCM cooling unit integrated with a pad-mounted transformer. The grey panel is the paraffin wax housing. Designed in Fusion 360.</p>
+    </div>
+
+    <div class="proj-section">
+      <p class="proj-section-label">Simulation Parameters</p><div class="proj-rule"></div>
+      <table class="proj-params">
+        <thead><tr><th>Component</th><th>Parameter</th><th>Value</th></tr></thead>
+        <tbody>
+          <tr><td>Transformer</td><td>Thermal capacitance</td><td>500,000 J/K</td></tr>
+          <tr><td>Transformer</td><td>Initial temperature</td><td>32°C</td></tr>
+          <tr><td>Transformer</td><td>Heat — idle / peak (hrs 2–5)</td><td>3,500 W / 10,000 W</td></tr>
+          <tr><td>PCM (paraffin wax)</td><td>Mass</td><td>180 kg</td></tr>
+          <tr><td>PCM</td><td>Melting point</td><td>55°C</td></tr>
+          <tr><td>PCM</td><td>Latent heat</td><td>180,000 J/kg</td></tr>
+          <tr><td>PCM</td><td>Total latent energy capacity</td><td>14.4 MJ</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="proj-section">
+      <p class="proj-section-label">Simulation Results</p><div class="proj-rule"></div>
+      <div class="proj-img-grid">
+        <div><div class="proj-img"><img src="pcm-simulation-graph.png" alt="Temperature comparison"/></div><p class="proj-img-caption">Temperature over time — with PCM (red) vs without (blue). Peak reduced by ~25°C.</p></div>
+        <div><div class="proj-img"><img src="pcm-heat-flow.png" alt="Heat flow paths"/></div><p class="proj-img-caption">Heat flow: transformer → PCM → air. Sharp peak at hour 5 reflects the evening drop.</p></div>
+      </div>
+      <div class="proj-result"><p>The PCM system reduced simulated peak transformer temperature by approximately 25°C under LA heatwave conditions.</p></div>
+    </div>
+
+    <div class="proj-section">
+      <p class="proj-section-label">Assembly Animation</p><div class="proj-rule"></div>
+      <div class="proj-video"><video controls><source src="pcm-animation.mp4" type="video/mp4"/></video></div>
+      <p class="proj-img-caption">CAD animation showing the PCM unit being mounted onto a pad-mounted transformer.</p>
+    </div>
+
+    <div class="proj-section">
+      <p class="proj-section-label">MATLAB Simulation Code</p><div class="proj-rule"></div>
+      <div class="proj-body"><p>Enthalpy-based lumped-parameter model with three local functions: simulatePCM, simulateNoPCM, and enthalpyToState.</p></div>
+      <div class="proj-code-wrap" style="margin-top:1.4rem;">
+        <div class="proj-code-label"><span>Heat_Simulation.m &nbsp;—&nbsp; MATLAB</span><span style="font-size:9px;color:var(--w22);">view only</span></div>
+        <div class="proj-code"><pre><span class="cm">%% pcm_transformer_demo.m
+% Lumped-parameter simulation of transformer + PCM cooling
+% Compares good PCM design vs no-PCM baseline</span>
+
+<span class="kw">clear</span>; <span class="kw">clc</span>; <span class="kw">close all</span>;
+
+<span class="cm">%% Time</span>
+dt   = <span class="nm">1</span>;                     <span class="cm">% time step [s]</span>
+tEnd = <span class="nm">8</span>*<span class="nm">3600</span>;              <span class="cm">% 8 hours [s]</span>
+t    = <span class="nm">0</span>:dt:tEnd;
+n    = <span class="fn">numel</span>(t);
+th   = t/<span class="nm">3600</span>;                <span class="cm">% time in hours for plotting</span>
+
+<span class="cm">%% Heat input from transformer losses [W]
+% Step-like peak load during hours 2 to 5</span>
+qGen = <span class="nm">3500</span> + <span class="nm">6500</span> * (t &gt;= <span class="nm">2</span>*<span class="nm">3600</span> &amp; t &lt;= <span class="nm">5</span>*<span class="nm">3600</span>);
+
+<span class="cm">%% Ambient temperature [degC]
+% Hot afternoon first, then cooler evening</span>
+Tamb = <span class="nm">32</span> * <span class="kw">ones</span>(<span class="fn">size</span>(t));
+Tamb(t &gt;= <span class="nm">5</span>*<span class="nm">3600</span>) = <span class="nm">24</span>;
+
+<span class="cm">%% Common transformer properties</span>
+params.Ctr   = <span class="nm">500000</span>;      <span class="cm">% thermal capacitance of transformer [J/K]</span>
+params.Tinit = <span class="nm">32</span>;          <span class="cm">% initial transformer temperature [degC]</span>
+
+<span class="cm">%% PCM properties</span>
+params.mPCM  = <span class="nm">180</span>;         <span class="cm">% PCM mass [kg]  (increased from 80)</span>
+params.cpPCM = <span class="nm">2200</span>;        <span class="cm">% PCM sensible heat capacity [J/(kg*K)]</span>
+params.L     = <span class="nm">180000</span>;      <span class="cm">% latent heat [J/kg]</span>
+params.Tm    = <span class="nm">55</span>;          <span class="cm">% melting temperature [degC]  (lowered from 82)</span>
+params.Tref  = <span class="nm">0</span>;           <span class="cm">% reference temperature [degC]</span>
+
+<span class="cm">%% Good PCM design parameters</span>
+good.Rtp = <span class="nm">0.0005</span>;          <span class="cm">% transformer -&gt; PCM thermal resistance [K/W]  (lowered from 0.002)</span>
+good.Rpa = <span class="nm">0.002</span>;           <span class="cm">% PCM -&gt; ambient thermal resistance [K/W]  (lowered from 0.003)</span>
+
+<span class="cm">%% No PCM baseline parameters</span>
+noPCM.Rta = <span class="nm">0.005</span>;          <span class="cm">% transformer -&gt; ambient resistance [K/W]</span>
+
+<span class="cm">%% Simulate</span>
+outGood = <span class="fn">simulatePCM</span>(t, dt, qGen, Tamb, params, good);
+outNo   = <span class="fn">simulateNoPCM</span>(t, dt, qGen, Tamb, params, noPCM);
+
+<span class="cm">%% Figure 1: Temperatures</span>
+<span class="fn">figure</span>(<span class="st">'Color'</span>,<span class="st">'w'</span>);
+<span class="fn">plot</span>(th, outNo.Ttr,    <span class="st">'--'</span>, <span class="st">'LineWidth'</span>, <span class="nm">2</span>, <span class="st">'Color'</span>, [<span class="nm">0.0</span> <span class="nm">0.45</span> <span class="nm">0.74</span>]); <span class="kw">hold on</span>;
+<span class="fn">plot</span>(th, outGood.Ttr,  <span class="st">'-'</span>,  <span class="st">'LineWidth'</span>, <span class="nm">2</span>, <span class="st">'Color'</span>, [<span class="nm">0.85</span> <span class="nm">0.33</span> <span class="nm">0.10</span>]);
+<span class="fn">plot</span>(th, outGood.Tpcm, <span class="st">'-'</span>,  <span class="st">'LineWidth'</span>, <span class="nm">2</span>, <span class="st">'Color'</span>, [<span class="nm">0.93</span> <span class="nm">0.69</span> <span class="nm">0.13</span>]);
+<span class="fn">plot</span>(th, Tamb,         <span class="st">':'</span>,  <span class="st">'LineWidth'</span>, <span class="nm">2</span>, <span class="st">'Color'</span>, [<span class="nm">0.49</span> <span class="nm">0.18</span> <span class="nm">0.56</span>]);
+<span class="fn">grid on</span>;
+<span class="fn">xlabel</span>(<span class="st">'Time [hours]'</span>); <span class="fn">ylabel</span>(<span class="st">'Temperature [degC]'</span>);
+<span class="fn">title</span>(<span class="st">'Transformer Cooling With PCM'</span>);
+<span class="fn">legend</span>(<span class="st">'No PCM transformer'</span>, <span class="st">'Transformer with PCM'</span>, ...
+       <span class="st">'PCM temperature'</span>, <span class="st">'Ambient air'</span>, <span class="st">'Location'</span>, <span class="st">'northwest'</span>);
+
+<span class="cm">%% Figure 2: Heat flows and melt fraction</span>
+<span class="fn">figure</span>(<span class="st">'Color'</span>,<span class="st">'w'</span>);
+<span class="fn">subplot</span>(<span class="nm">2</span>,<span class="nm">1</span>,<span class="nm">1</span>);
+<span class="fn">plot</span>(th, qGen/<span class="nm">1000</span>,        <span class="st">'k'</span>,  <span class="st">'LineWidth'</span>, <span class="nm">2</span>); <span class="kw">hold on</span>;
+<span class="fn">plot</span>(th, outGood.qTP/<span class="nm">1000</span>, <span class="st">'-'</span>, <span class="st">'LineWidth'</span>, <span class="nm">2</span>);
+<span class="fn">plot</span>(th, outGood.qPA/<span class="nm">1000</span>, <span class="st">'-'</span>, <span class="st">'LineWidth'</span>, <span class="nm">2</span>);
+<span class="fn">grid on</span>;
+<span class="fn">xlabel</span>(<span class="st">'Time [hours]'</span>); <span class="fn">ylabel</span>(<span class="st">'Heat flow [kW]'</span>);
+<span class="fn">title</span>(<span class="st">'Heat Flow Paths — PCM Case'</span>);
+<span class="fn">legend</span>(<span class="st">'Transformer heat generation'</span>, <span class="st">'Transformer -&gt; PCM'</span>, ...
+       <span class="st">'PCM -&gt; Air'</span>, <span class="st">'Location'</span>, <span class="st">'northwest'</span>);
+
+<span class="fn">subplot</span>(<span class="nm">2</span>,<span class="nm">1</span>,<span class="nm">2</span>);
+<span class="fn">plot</span>(th, outGood.meltFrac, <span class="st">'LineWidth'</span>, <span class="nm">2</span>);
+<span class="fn">grid on</span>;
+<span class="fn">xlabel</span>(<span class="st">'Time [hours]'</span>); <span class="fn">ylabel</span>(<span class="st">'Melt fraction'</span>);
+<span class="fn">ylim</span>([<span class="nm">0</span> <span class="nm">1.05</span>]);
+<span class="fn">title</span>(<span class="st">'PCM Melt Fraction (0 = solid, 1 = fully melted)'</span>);
+
+<span class="cm">%% ---- Local functions ----</span>
+<span class="kw">function</span> out = <span class="fn">simulatePCM</span>(t, dt, qGen, Tamb, p, d)
+    n = <span class="fn">numel</span>(t);
+    Ttr  = <span class="kw">zeros</span>(<span class="nm">1</span>,n);  Tpcm = <span class="kw">zeros</span>(<span class="nm">1</span>,n);
+    x    = <span class="kw">zeros</span>(<span class="nm">1</span>,n);  qTP  = <span class="kw">zeros</span>(<span class="nm">1</span>,n);  qPA = <span class="kw">zeros</span>(<span class="nm">1</span>,n);
+    Ttr(<span class="nm">1</span>) = p.Tinit;
+    Hpcm = p.mPCM * p.cpPCM * (p.Tinit - p.Tref);
+    [Tpcm(<span class="nm">1</span>), x(<span class="nm">1</span>)] = <span class="fn">enthalpyToState</span>(Hpcm, p);
+    <span class="kw">for</span> k = <span class="nm">2</span>:n
+        qTP(k-<span class="nm">1</span>) = (Ttr(k-<span class="nm">1</span>) - Tpcm(k-<span class="nm">1</span>)) / d.Rtp;
+        qPA(k-<span class="nm">1</span>) = (Tpcm(k-<span class="nm">1</span>) - Tamb(k-<span class="nm">1</span>)) / d.Rpa;
+        dTtr = (qGen(k-<span class="nm">1</span>) - qTP(k-<span class="nm">1</span>)) * dt / p.Ctr;
+        Ttr(k) = Ttr(k-<span class="nm">1</span>) + dTtr;
+        Hpcm = Hpcm + (qTP(k-<span class="nm">1</span>) - qPA(k-<span class="nm">1</span>)) * dt;
+        [Tpcm(k), x(k)] = <span class="fn">enthalpyToState</span>(Hpcm, p);
+    <span class="kw">end</span>
+    qTP(<span class="kw">end</span>) = (Ttr(<span class="kw">end</span>) - Tpcm(<span class="kw">end</span>)) / d.Rtp;
+    qPA(<span class="kw">end</span>) = (Tpcm(<span class="kw">end</span>) - Tamb(<span class="kw">end</span>)) / d.Rpa;
+    out.Ttr = Ttr; out.Tpcm = Tpcm;
+    out.meltFrac = x; out.qTP = qTP; out.qPA = qPA;
+<span class="kw">end</span>
+
+<span class="kw">function</span> out = <span class="fn">simulateNoPCM</span>(t, dt, qGen, Tamb, p, n0)
+    n = <span class="fn">numel</span>(t);
+    Ttr = <span class="kw">zeros</span>(<span class="nm">1</span>,n);  Ttr(<span class="nm">1</span>) = p.Tinit;
+    <span class="kw">for</span> k = <span class="nm">2</span>:n
+        qToAir = (Ttr(k-<span class="nm">1</span>) - Tamb(k-<span class="nm">1</span>)) / n0.Rta;
+        dT = (qGen(k-<span class="nm">1</span>) - qToAir) * dt / p.Ctr;
+        Ttr(k) = Ttr(k-<span class="nm">1</span>) + dT;
+    <span class="kw">end</span>
+    out.Ttr = Ttr;
+<span class="kw">end</span>
+
+<span class="kw">function</span> [T, x] = <span class="fn">enthalpyToState</span>(H, p)
+    <span class="cm">% Convert PCM enthalpy H into temperature T and melt fraction x</span>
+    HsolidEnd = p.mPCM * p.cpPCM * (p.Tm - p.Tref);
+    HliqEnd   = HsolidEnd + p.mPCM * p.L;
+    <span class="kw">if</span> H &lt; HsolidEnd
+        T = p.Tref + H / (p.mPCM * p.cpPCM);  x = <span class="nm">0</span>;
+    <span class="kw">elseif</span> H &lt;= HliqEnd
+        T = p.Tm;  x = (H - HsolidEnd) / (p.mPCM * p.L);
+    <span class="kw">else</span>
+        T = p.Tm + (H - HliqEnd) / (p.mPCM * p.cpPCM);  x = <span class="nm">1</span>;
+    <span class="kw">end</span>
+    x = <span class="fn">max</span>(<span class="nm">0</span>, <span class="fn">min</span>(<span class="nm">1</span>, x));
+<span class="kw">end</span></pre></div>
+      </div>
+    </div>
+
+    <div class="proj-section">
+      <p class="proj-section-label">Reflections</p><div class="proj-rule"></div>
+      <div class="proj-body">
+        <p>The most striking takeaway was how much cooling capacity can be unlocked from a material's phase transition alone. The latent heat of paraffin wax — 180,000 J/kg — is roughly fifty times larger than its sensible heat capacity over a 10°C range.</p>
+        <p>Simulation also clarified how important <strong>partial melting</strong> is as a design goal. The right combination of mass, melting point, and thermal resistance keeps the PCM actively absorbing heat for the entire high-load window. This project was developed alongside <strong>Lehar Goenka</strong>.</p>
+      </div>
+    </div>
+  </main>
+
+  <div class="bottom-bar">
+    <span class="year">© 2026</span>
+    <blockquote class="quote">"I know of no better life purpose than to perish in attempting the great and the impossible"<cite>— Friedrich Nietzsche</cite></blockquote>
+  </div>
+
+  <script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.165.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.165.0/examples/jsm/"}}</script>
+  <script type="module">
+    import * as THREE from 'three';
+    import { RGBELoader } from 'three/addons/loaders/RGBELoader.js';
+    const canvas=document.getElementById('bg'),scene=new THREE.Scene();
+    const camera=new THREE.PerspectiveCamera(75,innerWidth/innerHeight,.1,1000);
+    const renderer=new THREE.WebGLRenderer({canvas,antialias:true});
+    renderer.setSize(innerWidth,innerHeight); renderer.setPixelRatio(Math.min(devicePixelRatio,2));
+    renderer.toneMapping=THREE.ACESFilmicToneMapping; renderer.toneMappingExposure=0.82;
+    renderer.outputColorSpace=THREE.SRGBColorSpace; scene.background=new THREE.Color(0x0d1520);
+    const pmrem=new THREE.PMREMGenerator(renderer); pmrem.compileEquirectangularShader();
+    new RGBELoader().setPath('./').load('mountain.hdr',
+      tex=>{const env=pmrem.fromEquirectangular(tex).texture;scene.background=env;scene.environment=env;tex.dispose();pmrem.dispose();},null,
+      ()=>{const geo=new THREE.SphereGeometry(500,32,16);const mat=new THREE.ShaderMaterial({side:THREE.BackSide,uniforms:{top:{value:new THREE.Color(0x060b14)},mid:{value:new THREE.Color(0x112030)},bottom:{value:new THREE.Color(0x2d5470)}},vertexShader:`varying vec3 vP;void main(){vP=position;gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.);}`,fragmentShader:`varying vec3 vP;uniform vec3 top,mid,bottom;void main(){float h=normalize(vP).y;vec3 c=mix(bottom,mid,smoothstep(-.3,.3,h));c=mix(c,top,smoothstep(.2,1.,h));gl_FragColor=vec4(c,1.);}`});scene.add(new THREE.Mesh(geo,mat));scene.background=null;}
+    );
+    const tgt={lon:0,lat:0},state={lon:0,lat:0},euler=new THREE.Euler(0,0,0,'YXZ');
+    window.addEventListener('mousemove',e=>{tgt.lon=(e.clientX/innerWidth-.5)*14;tgt.lat=-(e.clientY/innerHeight-.5)*9;});
+    const dot=document.getElementById('cur'),ring=document.getElementById('cur-o');
+    let mx=0,my=0,rx=0,ry=0;
+    window.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;});
+    (function tc(){dot.style.left=mx+'px';dot.style.top=my+'px';rx+=(mx-rx)*.14;ry+=(my-ry)*.14;ring.style.left=rx+'px';ring.style.top=ry+'px';requestAnimationFrame(tc);})();
+    window.addEventListener('resize',()=>{camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();renderer.setSize(innerWidth,innerHeight);});
+    (function animate(){requestAnimationFrame(animate);state.lon+=(tgt.lon-state.lon)*.06;state.lat+=(tgt.lat-state.lat)*.06;state.lat=Math.max(-85,Math.min(85,state.lat));euler.y=THREE.MathUtils.degToRad(-state.lon);euler.x=THREE.MathUtils.degToRad(state.lat);camera.quaternion.setFromEuler(euler);renderer.render(scene,camera);})();
+  </script>
+  <script>
+    const obs=new IntersectionObserver(entries=>{entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('visible');obs.unobserve(e.target);}});},{threshold:0.08});
+    document.querySelectorAll('.proj-section').forEach(el=>obs.observe(el));
+    // Lightbox
+    const lb=document.getElementById('lightbox'),lbImg=document.getElementById('lightbox-img');
+    document.querySelectorAll('.proj-img').forEach(wrap=>{
+      wrap.addEventListener('click',()=>{const img=wrap.querySelector('img');if(img){lbImg.src=img.src;lb.classList.add('open');}});
+    });
+    document.getElementById('lightbox-close').addEventListener('click',()=>lb.classList.remove('open'));
+    lb.addEventListener('click',e=>{if(e.target===lb)lb.classList.remove('open');});
+    document.addEventListener('keydown',e=>{if(e.key==='Escape')lb.classList.remove('open');});
+  </script>
+</body>
+</html>
