@@ -239,7 +239,6 @@
     const dot=document.getElementById('cur'),ring=document.getElementById('cur-o');
     let mx=0,my=0,rx=0,ry=0;
     window.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;});
-    window.addEventListener('mousemove',()=>{dot.style.opacity='1';ring.style.opacity='1';},{once:true});
     (function tc(){dot.style.left=mx+'px';dot.style.top=my+'px';rx+=(mx-rx)*.14;ry+=(my-ry)*.14;ring.style.left=rx+'px';ring.style.top=ry+'px';requestAnimationFrame(tc);})();
     window.addEventListener('resize',()=>{camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();renderer.setSize(innerWidth,innerHeight);});
     (function animate(){requestAnimationFrame(animate);state.lon+=(tgt.lon-state.lon)*.06;state.lat+=(tgt.lat-state.lat)*.06;state.lat=Math.max(-85,Math.min(85,state.lat));euler.y=THREE.MathUtils.degToRad(-state.lon);euler.x=THREE.MathUtils.degToRad(state.lat);camera.quaternion.setFromEuler(euler);renderer.render(scene,camera);})();
