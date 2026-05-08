@@ -35,7 +35,7 @@
     }
     #cur { position:fixed; width:5px; height:5px; border-radius:50%; background:#fff; transform:translate(-50%,-50%); pointer-events:none; z-index:300; mix-blend-mode:difference; left:-50px; top:-50px; }
     #cur-o { position:fixed; width:28px; height:28px; border-radius:50%; border:1px solid rgba(255,255,255,0.26); transform:translate(-50%,-50%); pointer-events:none; z-index:299; left:-50px; top:-50px; }
-    nav { position:fixed; top:2.2rem; right:var(--px); z-index:50; display:flex; gap:2.4rem; }
+    nav { position:fixed; top:2.2rem; right:var(--px); z-index:200; display:flex; gap:2.4rem; }
     nav a { font-family:'Jost',sans-serif; font-weight:400; font-size:13px; letter-spacing:0.26em; text-transform:uppercase; color:var(--w60); text-decoration:none; transition:color .25s; cursor:pointer; }
     nav a:hover, nav a.active { color:var(--white); }
     .view { position:fixed; inset:0; z-index:10; opacity:0; pointer-events:none; transition:opacity .5s cubic-bezier(.22,1,.36,1); overflow-y:auto; overflow-x:hidden; visibility:hidden; }
@@ -461,7 +461,9 @@
         </form>
         <script>
           window.formspree = window.formspree || function(){ (formspree.q = formspree.q || []).push(arguments); };
-          formspree('initForm', { formElement: '#contactForm', formId: 'mgodlpdp' });
+          window.addEventListener('load', function() {
+            formspree('initForm', { formElement: '#contactForm', formId: 'mgodlpdp' });
+          });
           document.getElementById('contactForm').addEventListener('submit', function() {
             setTimeout(function(){
               var s = document.querySelector('[data-fs-success]');
