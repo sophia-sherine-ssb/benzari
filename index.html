@@ -33,8 +33,8 @@
       background: radial-gradient(ellipse at center,transparent 35%,rgba(0,0,0,0.55) 100%),
                   linear-gradient(to bottom,rgba(4,8,14,0.55) 0%,rgba(4,8,14,0.30) 50%,rgba(4,8,14,0.55) 100%);
     }
-    #cur { position:fixed; width:5px; height:5px; border-radius:50%; background:#fff; transform:translate(-50%,-50%); pointer-events:none; z-index:300; mix-blend-mode:difference; opacity:0; transition:opacity .2s; }
-    #cur-o { position:fixed; width:28px; height:28px; border-radius:50%; border:1px solid rgba(255,255,255,0.26); transform:translate(-50%,-50%); pointer-events:none; z-index:299; opacity:0; transition:opacity .2s; }
+    #cur { position:fixed; width:5px; height:5px; border-radius:50%; background:#fff; transform:translate(-50%,-50%); pointer-events:none; z-index:300; mix-blend-mode:difference; left:-50px; top:-50px; }
+    #cur-o { position:fixed; width:28px; height:28px; border-radius:50%; border:1px solid rgba(255,255,255,0.26); transform:translate(-50%,-50%); pointer-events:none; z-index:299; left:-50px; top:-50px; }
     nav { position:fixed; top:2.2rem; right:var(--px); z-index:50; display:flex; gap:2.4rem; }
     nav a { font-family:'Jost',sans-serif; font-weight:400; font-size:13px; letter-spacing:0.26em; text-transform:uppercase; color:var(--w60); text-decoration:none; transition:color .25s; cursor:pointer; }
     nav a:hover, nav a.active { color:var(--white); }
@@ -514,7 +514,6 @@
     const dot=document.getElementById('cur'),ring=document.getElementById('cur-o');
     let mx=0,my=0,rx=0,ry=0;
     window.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;});
-    window.addEventListener('mousemove',()=>{dot.style.opacity='1';ring.style.opacity='1';},{once:true});
     (function tc(){dot.style.left=mx+'px';dot.style.top=my+'px';rx+=(mx-rx)*.14;ry+=(my-ry)*.14;ring.style.left=rx+'px';ring.style.top=ry+'px';requestAnimationFrame(tc);})();
     window.addEventListener('resize',()=>{camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();renderer.setSize(innerWidth,innerHeight);});
     (function animate(){requestAnimationFrame(animate);state.lon+=(tgt.lon-state.lon)*.06;state.lat+=(tgt.lat-state.lat)*.06;state.lat=Math.max(-85,Math.min(85,state.lat));euler.y=THREE.MathUtils.degToRad(-state.lon);euler.x=THREE.MathUtils.degToRad(state.lat);camera.quaternion.setFromEuler(euler);renderer.render(scene,camera);})();
