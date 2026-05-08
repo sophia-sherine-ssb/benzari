@@ -29,16 +29,17 @@
     .back-btn{display:inline-flex;align-items:center;gap:0.6rem;font-family:'Jost',sans-serif;font-weight:300;font-size:11px;letter-spacing:0.28em;text-transform:uppercase;color:var(--w42);text-decoration:none;margin-bottom:clamp(2.5rem,5vh,4rem);transition:color .25s;}
     .back-btn:hover{color:var(--w85);} .back-btn:hover svg{transform:translateX(-3px);} .back-btn svg{transition:transform .25s;}
     .proj-eyebrow{font-family:'Jost',sans-serif;font-weight:300;font-size:11px;letter-spacing:0.40em;text-transform:uppercase;color:var(--w42);margin-bottom:1rem;}
-    .proj-title{font-family:'Cormorant Garamond',serif;font-weight:300;font-size:clamp(36px,5vw,68px);line-height:0.95;color:var(--white);margin-bottom:1.4rem;}
+    .proj-title{font-family:'Cormorant Garamond',serif;font-weight:300;font-size:clamp(42px,6vw,80px);line-height:0.95;color:var(--white);margin-bottom:1.4rem;}
     .proj-tags{display:flex;flex-wrap:wrap;gap:0.5rem;margin-bottom:clamp(2.5rem,5vh,4rem);}
     .proj-tag{font-family:'Jost',sans-serif;font-weight:300;font-size:10.5px;letter-spacing:0.16em;text-transform:uppercase;color:var(--w42);border:1px solid var(--w22);padding:4px 11px;border-radius:1px;}
     .proj-section{margin-bottom:clamp(3rem,6vh,5rem);opacity:0;transform:translateY(18px);transition:opacity .8s cubic-bezier(.22,1,.36,1),transform .8s cubic-bezier(.22,1,.36,1);}
     .proj-section.visible{opacity:1;transform:translateY(0);}
     .proj-section-label{font-family:'Jost',sans-serif;font-weight:300;font-size:10.5px;letter-spacing:0.40em;text-transform:uppercase;color:var(--w42);margin-bottom:1rem;}
     .proj-rule{height:1px;background:linear-gradient(to right,var(--w16) 0%,transparent 85%);margin-bottom:1.8rem;}
-    .proj-body{font-family:'Jost',sans-serif;font-weight:300;font-size:clamp(13.5px,1.1vw,15.5px);line-height:1.96;color:var(--w85);}
+    .proj-body{font-family:'Jost',sans-serif;font-weight:300;font-size:clamp(14.5px,1.2vw,17px);line-height:1.96;color:var(--w85);}
     .proj-body p+p{margin-top:1.1em;} .proj-body strong{font-weight:400;color:var(--white);}
-    .proj-img{border-radius:2px;overflow:hidden;border:1px solid var(--w12);margin-bottom:0.8rem;background:#111620;}
+    .proj-img{border-radius:2px;overflow:hidden;border:1px solid var(--w12);margin-bottom:0.8rem;background:#111620;cursor:zoom-in;transition:border-color .2s;}
+    .proj-img:hover{border-color:var(--w22);}
     .proj-img img{width:100%;display:block;object-fit:contain;}
     .proj-img-caption{font-family:'Cormorant Garamond',serif;font-style:italic;font-weight:300;font-size:clamp(12px,0.95vw,14px);color:var(--w42);text-align:center;margin-bottom:clamp(1.5rem,3vh,2.5rem);}
     .proj-img-grid{display:grid;grid-template-columns:1fr 1fr;gap:clamp(1rem,2vw,1.6rem);margin-bottom:0.8rem;}
@@ -50,19 +51,27 @@
     .proj-params tr:last-child td,.proj-params tr:last-child th{border-bottom:none;}
     .proj-result{border-left:1px solid var(--w22);padding:1rem 1.4rem;margin:1.6rem 0;}
     .proj-result p{font-family:'Cormorant Garamond',serif;font-style:italic;font-weight:300;font-size:clamp(15px,1.4vw,20px);line-height:1.7;color:var(--w85);}
+
+    /* LIGHTBOX */
+    #lightbox{display:none;position:fixed;inset:0;z-index:500;background:rgba(5,9,15,0.92);align-items:center;justify-content:center;cursor:zoom-out;}
+    #lightbox.open{display:flex;}
+    #lightbox img{max-width:90vw;max-height:88vh;object-fit:contain;border-radius:2px;border:1px solid var(--w12);}
+    #lightbox-close{position:fixed;top:2rem;right:2rem;width:40px;height:40px;display:flex;align-items:center;justify-content:center;background:var(--w06);border:1px solid var(--w22);border-radius:50%;cursor:pointer;color:var(--w85);font-size:18px;transition:background .2s;}
+    #lightbox-close:hover{background:var(--w12);}
   </style>
 </head>
 <body>
+    <div id="lightbox"><span id="lightbox-close">✕</span><img id="lightbox-img" src="" alt=""/></div>
   <div id="cur"></div><div id="cur-o"></div><canvas id="bg"></canvas><div id="fog"></div>
   <nav>
     <a href="index.html">Home</a>
-    <a href="index.html">Work</a>
-    <a href="index.html">About</a>
-    <a href="index.html">Contact</a>
+    <a href="index.html?view=work">Work</a>
+    <a href="index.html?view=about">About</a>
+    <a href="index.html?view=contact">Contact</a>
   </nav>
 
   <main>
-    <a class="back-btn" href="index.html"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M9 2L4 7l5 5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>Back to Work</a>
+    <a class="back-btn" href="index.html?view=work"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M9 2L4 7l5 5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>Back to Work</a>
     <p class="proj-eyebrow">Woodworking &thinsp;&middot;&thinsp; Electronics &thinsp;&middot;&thinsp; EE 202L &thinsp;&middot;&thinsp; Spring 2026</p>
     <h1 class="proj-title">Electric Guitar —<br>Wood Component</h1>
     <div class="proj-tags"><span class="proj-tag">Woodworking</span><span class="proj-tag">Bandsaw</span><span class="proj-tag">Table Router</span><span class="proj-tag">Hand Tools</span><span class="proj-tag">Finishing</span><span class="proj-tag">USC EE 202L</span></div>
@@ -79,30 +88,34 @@
     <div class="proj-section">
       <p class="proj-section-label">System Architecture</p><div class="proj-rule"></div>
       <div class="proj-body"><p>The guitar is a complete electro-acoustic system. The pickup captures string vibration, feeds it through the notch filter PCB in the blue box, and outputs filtered audio through a jack to an external speaker.</p></div>
-      <div style="margin-top:1.6rem;background:var(--w06);border:1px solid var(--w12);border-radius:2px;padding:2rem 1.5rem;">
-        <svg viewBox="0 0 820 120" xmlns="http://www.w3.org/2000/svg" style="width:100%;display:block;">
-          <rect x="10" y="30" width="120" height="50" rx="2" fill="none" stroke="rgba(255,255,255,0.22)" stroke-width="1"/>
-          <rect x="185" y="30" width="120" height="50" rx="2" fill="none" stroke="rgba(255,255,255,0.22)" stroke-width="1"/>
-          <rect x="360" y="10" width="160" height="90" rx="2" fill="rgba(255,255,255,0.04)" stroke="rgba(255,255,255,0.35)" stroke-width="1" stroke-dasharray="4,3"/>
-          <rect x="375" y="30" width="130" height="50" rx="2" fill="none" stroke="rgba(255,255,255,0.22)" stroke-width="1"/>
-          <rect x="585" y="30" width="100" height="50" rx="2" fill="none" stroke="rgba(255,255,255,0.22)" stroke-width="1"/>
-          <rect x="715" y="30" width="95" height="50" rx="2" fill="none" stroke="rgba(255,255,255,0.22)" stroke-width="1"/>
-          <line x1="130" y1="55" x2="183" y2="55" stroke="rgba(255,255,255,0.30)" stroke-width="1"/><polygon points="183,51 183,59 190,55" fill="rgba(255,255,255,0.30)"/>
-          <line x1="305" y1="55" x2="373" y2="55" stroke="rgba(255,255,255,0.30)" stroke-width="1"/><polygon points="373,51 373,59 380,55" fill="rgba(255,255,255,0.30)"/>
-          <line x1="505" y1="55" x2="583" y2="55" stroke="rgba(255,255,255,0.30)" stroke-width="1"/><polygon points="583,51 583,59 590,55" fill="rgba(255,255,255,0.30)"/>
-          <line x1="685" y1="55" x2="713" y2="55" stroke="rgba(255,255,255,0.30)" stroke-width="1"/><polygon points="713,51 713,59 720,55" fill="rgba(255,255,255,0.30)"/>
-          <text x="70" y="52" text-anchor="middle" fill="rgba(255,255,255,0.85)" font-size="9" font-family="Jost,sans-serif" letter-spacing="0.5">STRING</text>
-          <text x="70" y="66" text-anchor="middle" fill="rgba(255,255,255,0.50)" font-size="8" font-family="Jost,sans-serif">vibration</text>
-          <text x="245" y="52" text-anchor="middle" fill="rgba(255,255,255,0.85)" font-size="9" font-family="Jost,sans-serif" letter-spacing="0.5">PICKUP</text>
-          <text x="245" y="66" text-anchor="middle" fill="rgba(255,255,255,0.50)" font-size="8" font-family="Jost,sans-serif">electromagnetic</text>
-          <text x="440" y="46" text-anchor="middle" fill="rgba(255,255,255,0.85)" font-size="9" font-family="Jost,sans-serif" letter-spacing="0.5">BLUE BOX</text>
-          <text x="440" y="60" text-anchor="middle" fill="rgba(255,255,255,0.85)" font-size="8" font-family="Jost,sans-serif">196 Hz Notch Filter</text>
-          <text x="440" y="73" text-anchor="middle" fill="rgba(255,255,255,0.45)" font-size="7" font-family="Jost,sans-serif">PCB + battery</text>
-          <text x="635" y="52" text-anchor="middle" fill="rgba(255,255,255,0.85)" font-size="9" font-family="Jost,sans-serif" letter-spacing="0.5">JACK</text>
-          <text x="635" y="66" text-anchor="middle" fill="rgba(255,255,255,0.50)" font-size="8" font-family="Jost,sans-serif">output</text>
-          <text x="762" y="52" text-anchor="middle" fill="rgba(255,255,255,0.85)" font-size="9" font-family="Jost,sans-serif" letter-spacing="0.5">SPEAKER</text>
-          <text x="762" y="66" text-anchor="middle" fill="rgba(255,255,255,0.50)" font-size="8" font-family="Jost,sans-serif">filtered audio</text>
-          <text x="440" y="108" text-anchor="middle" fill="rgba(255,255,255,0.25)" font-size="7" font-family="Jost,sans-serif" letter-spacing="0.5">HOUSED INSIDE GUITAR BODY</text>
+      <div style="margin-top:1.8rem;background:var(--w06);border:1px solid var(--w12);border-radius:2px;padding:3rem 2rem;">
+        <svg viewBox="0 0 960 160" xmlns="http://www.w3.org/2000/svg" style="width:100%;display:block;">
+          <!-- Blocks -->
+          <rect x="10" y="40" width="150" height="70" rx="3" fill="none" stroke="rgba(255,255,255,0.22)" stroke-width="1.5"/>
+          <rect x="220" y="40" width="150" height="70" rx="3" fill="none" stroke="rgba(255,255,255,0.22)" stroke-width="1.5"/>
+          <rect x="425" y="12" width="200" height="126" rx="3" fill="rgba(255,255,255,0.04)" stroke="rgba(255,255,255,0.40)" stroke-width="1.5" stroke-dasharray="5,4"/>
+          <rect x="445" y="40" width="160" height="70" rx="3" fill="none" stroke="rgba(255,255,255,0.22)" stroke-width="1.5"/>
+          <rect x="695" y="40" width="120" height="70" rx="3" fill="none" stroke="rgba(255,255,255,0.22)" stroke-width="1.5"/>
+          <rect x="875" y="40" width="80" height="70" rx="3" fill="none" stroke="rgba(255,255,255,0.22)" stroke-width="1.5"/>
+          <!-- Arrows -->
+          <line x1="160" y1="75" x2="218" y2="75" stroke="rgba(255,255,255,0.35)" stroke-width="1.5"/><polygon points="218,70 218,80 228,75" fill="rgba(255,255,255,0.35)"/>
+          <line x1="370" y1="75" x2="443" y2="75" stroke="rgba(255,255,255,0.35)" stroke-width="1.5"/><polygon points="443,70 443,80 453,75" fill="rgba(255,255,255,0.35)"/>
+          <line x1="605" y1="75" x2="693" y2="75" stroke="rgba(255,255,255,0.35)" stroke-width="1.5"/><polygon points="693,70 693,80 703,75" fill="rgba(255,255,255,0.35)"/>
+          <line x1="815" y1="75" x2="873" y2="75" stroke="rgba(255,255,255,0.35)" stroke-width="1.5"/><polygon points="873,70 873,80 883,75" fill="rgba(255,255,255,0.35)"/>
+          <!-- Labels -->
+          <text x="85" y="70" text-anchor="middle" fill="rgba(255,255,255,0.90)" font-size="12" font-family="Jost,sans-serif" letter-spacing="1">STRING</text>
+          <text x="85" y="88" text-anchor="middle" fill="rgba(255,255,255,0.50)" font-size="10" font-family="Jost,sans-serif">vibration</text>
+          <text x="295" y="70" text-anchor="middle" fill="rgba(255,255,255,0.90)" font-size="12" font-family="Jost,sans-serif" letter-spacing="1">PICKUP</text>
+          <text x="295" y="88" text-anchor="middle" fill="rgba(255,255,255,0.50)" font-size="10" font-family="Jost,sans-serif">electromagnetic</text>
+          <text x="525" y="62" text-anchor="middle" fill="rgba(255,255,255,0.90)" font-size="12" font-family="Jost,sans-serif" letter-spacing="1">BLUE BOX</text>
+          <text x="525" y="78" text-anchor="middle" fill="rgba(255,255,255,0.85)" font-size="11" font-family="Jost,sans-serif">196 Hz Notch Filter</text>
+          <text x="525" y="96" text-anchor="middle" fill="rgba(255,255,255,0.45)" font-size="9.5" font-family="Jost,sans-serif">PCB + battery + LED + switch</text>
+          <text x="755" y="70" text-anchor="middle" fill="rgba(255,255,255,0.90)" font-size="12" font-family="Jost,sans-serif" letter-spacing="1">JACK</text>
+          <text x="755" y="88" text-anchor="middle" fill="rgba(255,255,255,0.50)" font-size="10" font-family="Jost,sans-serif">output</text>
+          <text x="915" y="70" text-anchor="middle" fill="rgba(255,255,255,0.90)" font-size="12" font-family="Jost,sans-serif" letter-spacing="1">SPEAKER</text>
+          <text x="915" y="88" text-anchor="middle" fill="rgba(255,255,255,0.50)" font-size="10" font-family="Jost,sans-serif">filtered audio</text>
+          <!-- Blue box brace label -->
+          <text x="525" y="150" text-anchor="middle" fill="rgba(255,255,255,0.25)" font-size="9" font-family="Jost,sans-serif" letter-spacing="2">HOUSED INSIDE GUITAR BODY</text>
         </svg>
       </div>
       <p class="proj-img-caption" style="margin-top:0.8rem;">Signal chain from string to speaker. The blue box — notch filter PCB, battery, LED, switch — lives inside the routed body cavity.</p>
@@ -217,6 +230,14 @@
   <script>
     const obs=new IntersectionObserver(e=>{e.forEach(e=>{if(e.isIntersecting){e.target.classList.add('visible');obs.unobserve(e.target);}});},{threshold:0.08});
     document.querySelectorAll('.proj-section').forEach(el=>obs.observe(el));
+    // Lightbox
+    const lb=document.getElementById('lightbox'),lbImg=document.getElementById('lightbox-img');
+    document.querySelectorAll('.proj-img').forEach(wrap=>{
+      wrap.addEventListener('click',()=>{const img=wrap.querySelector('img');if(img){lbImg.src=img.src;lb.classList.add('open');}});
+    });
+    document.getElementById('lightbox-close').addEventListener('click',()=>lb.classList.remove('open'));
+    lb.addEventListener('click',e=>{if(e.target===lb)lb.classList.remove('open');});
+    document.addEventListener('keydown',e=>{if(e.key==='Escape')lb.classList.remove('open');});
   </script>
 </body>
 </html>
