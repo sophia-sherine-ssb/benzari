@@ -501,7 +501,16 @@
     const tgt={lon:0,lat:0},state={lon:0,lat:0},euler=new THREE.Euler(0,0,0,'YXZ');
     let speed=180;
     window.addEventListener('view-changed',e=>{speed=e.detail==='home'?180:e.detail==='contact'?18:14;});
-    window.addEventListener('mousemove',e=>{tgt.lon=(e.clientX/innerWidth-.5)*speed;tgt.lat=-(e.clientY/innerHeight-.5)*(speed*0.67);});
+    window.addEventListener('mousemove',e=>{
+      // Dead zone: top-right corner where nav lives — return toward center smoothly
+      const inNavZone = e.clientX > innerWidth - 320 && e.clientY < 80;
+      if (inNavZone) {
+        tgt.lon *= 0.85; tgt.lat *= 0.85; // drift back to center
+      } else {
+        tgt.lon=(e.clientX/innerWidth-.5)*speed;
+        tgt.lat=-(e.clientY/innerHeight-.5)*(speed*0.67);
+      }
+    });
     const dot=document.getElementById('cur'),ring=document.getElementById('cur-o');
     let mx=0,my=0,rx=0,ry=0;
     window.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;});
@@ -517,14 +526,17 @@
       const t=document.getElementById('view-'+id); if(t)t.classList.add('active');
       document.body.className='view-'+id;
       window.dispatchEvent(new CustomEvent('view-changed',{detail:id}));
-      if(id==='about')triggerReveal();
+      if(id==='about') setTimeout(triggerReveal, 80);
     }
     document.querySelectorAll('[data-view]').forEach(el=>{
       el.addEventListener('click',e=>{e.preventDefault();showView(el.dataset.view);});
     });
     // Support ?view=work|about|contact from project pages
     const urlView = new URLSearchParams(location.search).get('view');
-    showView(urlView && document.getElementById('view-'+urlView) ? urlView : 'home');
+    const startView = (urlView && document.getElementById('view-'+urlView)) ? urlView : 'home';
+    // Clean the URL so the param doesn't persist on back-navigation
+    if (urlView) history.replaceState(null,'',location.pathname);
+    showView(startView);
     function triggerReveal(){
       const view=document.getElementById('view-about');
       const obs=new IntersectionObserver(entries=>{entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('visible');obs.unobserve(e.target);}});},{root:view,threshold:0.1});
