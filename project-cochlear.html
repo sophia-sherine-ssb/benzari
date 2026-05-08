@@ -17,8 +17,8 @@
     #fog{position:fixed;inset:0;z-index:1;pointer-events:none;background:linear-gradient(110deg,rgba(4,8,14,0.82) 0%,rgba(4,8,14,0.55) 50%,rgba(4,8,14,0.20) 100%),radial-gradient(ellipse at center,transparent 30%,rgba(0,0,0,0.45) 100%);}
     #cur{position:fixed;width:5px;height:5px;border-radius:50%;background:#fff;transform:translate(-50%,-50%);pointer-events:none;z-index:300;mix-blend-mode:difference;}
     #cur-o{position:fixed;width:28px;height:28px;border-radius:50%;border:1px solid rgba(255,255,255,0.26);transform:translate(-50%,-50%);pointer-events:none;z-index:299;}
-    nav{position:fixed;top:2.2rem;right:var(--px);z-index:50;display:flex;gap:2.4rem;}
-    nav a{font-family:'Jost',sans-serif;font-weight:400;font-size:13px;letter-spacing:0.26em;text-transform:uppercase;color:var(--w60);text-decoration:none;transition:color .25s;}
+    nav{position:fixed;top:0;right:0;left:0;z-index:50;display:flex;justify-content:flex-end;gap:2.4rem;padding:1.6rem var(--px);background:linear-gradient(to bottom,rgba(5,9,14,0.72) 0%,rgba(5,9,14,0.00) 100%);pointer-events:none;}
+    nav a{font-family:'Jost',sans-serif;font-weight:400;font-size:13px;letter-spacing:0.26em;text-transform:uppercase;color:var(--w60);text-decoration:none;transition:color .25s;pointer-events:auto;}
     nav a:hover{color:var(--white);}
     .bottom-bar{position:fixed;bottom:0;left:0;right:0;z-index:40;padding:0 var(--px) 1.8rem;display:flex;align-items:flex-end;justify-content:space-between;pointer-events:none;}
     .year{font-family:'Jost',sans-serif;font-weight:300;font-size:10px;letter-spacing:0.22em;color:var(--w42);}
@@ -34,6 +34,209 @@
     .proj-tags{display:flex;flex-wrap:wrap;gap:0.5rem;margin-bottom:clamp(3rem,6vh,5rem);}
     .proj-tag{font-family:'Jost',sans-serif;font-weight:300;font-size:11px;letter-spacing:0.16em;text-transform:uppercase;color:var(--w42);border:1px solid var(--w22);padding:5px 12px;border-radius:1px;}
     .proj-section{margin-bottom:clamp(3.5rem,7vh,6rem);opacity:0;transform:translateY(18px);transition:opacity .8s cubic-bezier(.22,1,.36,1),transform .8s cubic-bezier(.22,1,.36,1);}
+    .proj-section.visible{opacity:1;transform:translateY(0);}
+    .proj-section-label{font-family:'Jost',sans-serif;font-weight:300;font-size:11px;letter-spacing:0.40em;text-transform:uppercase;color:var(--w42);margin-bottom:1.2rem;}
+    .proj-rule{height:1px;background:linear-gradient(to right,var(--w16) 0%,transparent 85%);margin-bottom:2rem;}
+    .proj-body{font-family:'Jost',sans-serif;font-weight:300;font-size:clamp(14.5px,1.2vw,17px);line-height:2.0;color:var(--w85);}
+    .proj-body p+p{margin-top:1.2em;} .proj-body strong{font-weight:400;color:var(--white);}
+    .proj-img{border-radius:2px;overflow:hidden;border:1px solid var(--w12);margin-bottom:0.8rem;background:#111620;cursor:zoom-in;transition:border-color .2s;}
+    .proj-img:hover{border-color:var(--w22);}
+    .proj-img img{width:100%;display:block;object-fit:contain;}
+    .proj-img-caption{font-family:'Cormorant Garamond',serif;font-style:italic;font-weight:300;font-size:clamp(12.5px,1vw,15px);color:var(--w42);text-align:center;margin-bottom:clamp(2rem,4vh,3rem);}
+    .proj-img-grid{display:grid;grid-template-columns:1fr 1fr;gap:clamp(1.2rem,2.5vw,2rem);margin-bottom:0.8rem;}
+    .proj-img-grid .proj-img{margin-bottom:0;}
+    .proj-params{width:100%;border-collapse:collapse;margin-bottom:0.8rem;}
+    .proj-params th,.proj-params td{padding:0.9rem 1.1rem;text-align:left;border-bottom:1px solid var(--w10);font-family:'Jost',sans-serif;font-weight:300;font-size:clamp(13px,1.05vw,15px);}
+    .proj-params th{font-weight:400;font-size:11px;letter-spacing:0.22em;text-transform:uppercase;color:var(--w42);}
+    .proj-params td{color:var(--w85);} .proj-params td:first-child{color:var(--white);font-weight:400;}
+    .proj-params tr:last-child td,.proj-params tr:last-child th{border-bottom:none;}
+    .proj-result{border-left:2px solid var(--w22);padding:1.2rem 1.6rem;margin:2rem 0;}
+    .proj-result p{font-family:'Cormorant Garamond',serif;font-style:italic;font-weight:300;font-size:clamp(17px,1.6vw,24px);line-height:1.65;color:var(--w85);}
+
+    /* AUDIO layout */
+    .audio-featured{margin-top:1.6rem;background:var(--w06);border:1px solid var(--w12);border-radius:3px;padding:1.8rem 2rem;}
+    .audio-featured-label{font-family:'Jost',sans-serif;font-weight:300;font-size:11px;letter-spacing:0.30em;text-transform:uppercase;color:var(--w42);margin-bottom:1rem;}
+    .audio-featured audio{width:100%;height:38px;opacity:0.85;}
+    .audio-featured-caption{font-family:'Cormorant Garamond',serif;font-style:italic;font-weight:300;font-size:clamp(13px,1vw,15px);color:var(--w60);margin-top:0.8rem;}
+    .audio-pair{display:grid;grid-template-columns:1fr 1fr;gap:clamp(1rem,2vw,1.6rem);margin-top:1.2rem;}
+    .audio-card{background:var(--w06);border:1px solid var(--w12);border-radius:3px;padding:1.4rem 1.6rem;}
+    .audio-card-label{font-family:'Jost',sans-serif;font-weight:300;font-size:10.5px;letter-spacing:0.28em;text-transform:uppercase;color:var(--w42);margin-bottom:0.8rem;}
+    .audio-card audio{width:100%;height:34px;opacity:0.8;}
+    .audio-card-caption{font-family:'Cormorant Garamond',serif;font-style:italic;font-weight:300;font-size:clamp(12px,0.9vw,13.5px);color:var(--w42);margin-top:0.6rem;}
+    .audio-full{margin-top:1.2rem;background:var(--w06);border:1px solid var(--w12);border-radius:3px;padding:1.4rem 1.6rem;}
+
+    /* LIGHTBOX */
+    #lightbox{display:none;position:fixed;inset:0;z-index:500;background:rgba(5,9,15,0.92);align-items:center;justify-content:center;cursor:zoom-out;}
+    #lightbox.open{display:flex;}
+    #lightbox img{max-width:90vw;max-height:88vh;object-fit:contain;border-radius:2px;border:1px solid var(--w12);}
+    #lightbox-close{position:fixed;top:2rem;right:2rem;width:40px;height:40px;display:flex;align-items:center;justify-content:center;background:var(--w06);border:1px solid var(--w22);border-radius:50%;cursor:pointer;color:var(--w85);font-size:18px;transition:background .2s;}
+    #lightbox-close:hover{background:var(--w12);}
+  </style>
+</head>
+<body>
+  <div id="cur"></div><div id="cur-o"></div><canvas id="bg"></canvas><div id="fog"></div>
+
+  <!-- Lightbox -->
+  <div id="lightbox"><span id="lightbox-close">✕</span><img id="lightbox-img" src="" alt=""/></div>
+
+  <nav>
+    <a href="index.html">Home</a>
+    <a href="index.html?view=work">Work</a>
+    <a href="index.html?view=about">About</a>
+    <a href="index.html?view=contact">Contact</a>
+  </nav>
+
+  <main>
+    <a class="back-btn" href="index.html?view=work">
+      <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M9 2L4 7l5 5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      Back to Work
+    </a>
+    <p class="proj-eyebrow">Matlab &thinsp;&middot;&thinsp; Signal Processing &thinsp;&middot;&thinsp; Biomedical Engineering &thinsp;&middot;&thinsp; 2025</p>
+    <h1 class="proj-title">Cochlear Implant<br>Vocoder Simulation</h1>
+    <div class="proj-tags"><span class="proj-tag">MATLAB</span><span class="proj-tag">Signal Processing</span><span class="proj-tag">Biomedical</span><span class="proj-tag">Auditory Perception</span><span class="proj-tag">Filter Banks</span><span class="proj-tag">Hilbert Transform</span></div>
+
+    <div class="proj-section">
+      <p class="proj-section-label">Overview</p><div class="proj-rule"></div>
+      <div class="proj-body">
+        <p>This project explores how cochlear implants transform sound — and what that transformation means for human perception. Cochlear implants don't restore normal hearing. Instead, they deliver a highly simplified version of sound by breaking it into a small number of frequency channels and transmitting only the most essential information.</p>
+        <p>While this is often enough for speech understanding, it comes at the cost of spectral detail — making things like pitch and music much harder to perceive. I built a cochlear implant vocoder in MATLAB to simulate this degradation. This work was completed under the supervision of <strong>Raymond Goldsworthy</strong> in the Cochlear Implant Lab at USC.</p>
+      </div>
+      <div class="proj-result"><p>Temporal envelopes are enough for speech. They are not enough for rich auditory experience.</p></div>
+    </div>
+
+    <div class="proj-section">
+      <p class="proj-section-label">Listen — Audio Comparison</p><div class="proj-rule"></div>
+      <div class="proj-body"><p>The phrase being processed: <strong>"The park opens in eleven months."</strong> Listen to how it sounds at each stage of cochlear implant processing — from the original recording through to the final multi-channel vocoded output.</p></div>
+
+      <!-- ORIGINAL — big and centered -->
+      <div class="audio-featured">
+        <p class="audio-featured-label">Original</p>
+        <audio controls><source src="Original_Audio.wav" type="audio/wav"/></audio>
+        <p class="audio-featured-caption">Unprocessed speech signal — the reference</p>
+      </div>
+
+      <!-- LP left, HP right -->
+      <div class="audio-pair">
+        <div class="audio-card">
+          <p class="audio-card-label">Low-pass filtered</p>
+          <audio controls><source src="Audio_Low_Pass_Filter.wav" type="audio/wav"/></audio>
+          <p class="audio-card-caption">Low-frequency content only</p>
+        </div>
+        <div class="audio-card">
+          <p class="audio-card-label">High-pass filtered</p>
+          <audio controls><source src="Audio_High_Pass_Filter.wav" type="audio/wav"/></audio>
+          <p class="audio-card-caption">High-frequency content only</p>
+        </div>
+      </div>
+
+      <!-- Multi-channel full width -->
+      <div class="audio-full">
+        <p class="audio-card-label">Multi-channel vocoded</p>
+        <audio controls style="width:100%;height:34px;opacity:0.85;"><source src="Audio_Multi_Channel_Vocoded.wav" type="audio/wav"/></audio>
+        <p class="audio-card-caption">8-channel cochlear implant simulation — the final output</p>
+      </div>
+    </div>
+
+    <div class="proj-section">
+      <p class="proj-section-label">Signal Processing Pipeline</p><div class="proj-rule"></div>
+      <table class="proj-params">
+        <thead><tr><th>Stage</th><th>Operation</th><th>Purpose</th></tr></thead>
+        <tbody>
+          <tr><td>1 — Filter Bank</td><td>Bandpass filter per channel</td><td>Divide audio into frequency bands simulating electrodes</td></tr>
+          <tr><td>2 — Envelope Extraction</td><td>Hilbert transform</td><td>Capture amplitude fluctuations carrying speech</td></tr>
+          <tr><td>3 — Low-pass Smoothing</td><td>LP filter at 400 Hz</td><td>Keep only temporal envelope, discard fine structure</td></tr>
+          <tr><td>4 — Carrier Modulation</td><td>envelope × sine</td><td>Re-synthesize without pitch information</td></tr>
+        </tbody>
+      </table>
+      <div class="proj-body" style="margin-top:1.4rem;"><p>The multi-channel version implements <strong>Greenwood frequency spacing</strong> — a mathematically derived mapping mirroring the tonotopic organisation of the human cochlea, making the simulation biologically accurate.</p></div>
+    </div>
+
+    <div class="proj-section">
+      <p class="proj-section-label">Single-Channel Model — Step by Step</p><div class="proj-rule"></div>
+      <div class="proj-body"><p>The single-channel model is the most extreme case of information loss — the entire audio spectrum collapsed into one band, making the processing steps visible and audible in isolation.</p></div>
+      <div class="proj-img-grid" style="margin-top:1.6rem;">
+        <div><div class="proj-img"><img src="Single_Vocoder-Hiberlt_Envelope.png" alt="Hilbert envelope"/></div><p class="proj-img-caption">Bandpassed signal (blue) with Hilbert envelope (orange) — tracing the energy contour of speech.</p></div>
+        <div><div class="proj-img"><img src="Single_Vocoder-Hilbert_Env2.png" alt="Raw vs low-pass envelope"/></div><p class="proj-img-caption">Raw Hilbert envelope vs low-pass filtered at 400 Hz — smoothing discards fine spectral detail.</p></div>
+      </div>
+      <div class="proj-img-grid">
+        <div><div class="proj-img"><img src="Single_Vocoder-Modulated_Signal.png" alt="Modulated signal"/></div><p class="proj-img-caption">Modulated output: envelope × 1000 Hz sine carrier. Rhythm preserved; pitch gone.</p></div>
+        <div><div class="proj-img"><img src="Single_Vocoder-Env_x_Carrier.png" alt="Three-panel pipeline"/></div><p class="proj-img-caption">Three-panel view: envelope, 1000 Hz carrier (zoomed), and modulated output.</p></div>
+      </div>
+    </div>
+
+    <div class="proj-section">
+      <p class="proj-section-label">Multi-Channel Model — Results</p><div class="proj-rule"></div>
+      <div class="proj-img"><img src="Multi_Vocoder-Spectrograms.png" alt="Spectrogram comparison"/></div>
+      <p class="proj-img-caption">Spectrogram: original (top) vs 8-channel vocoded (bottom). Fine harmonic structure is largely gone.</p>
+      <div class="proj-img-grid">
+        <div><div class="proj-img"><img src="Multi_Vocoder-Original_vs_Vocoded.png" alt="Waveform comparison"/></div><p class="proj-img-caption">Waveform comparison — temporal shape preserved as spectral detail is lost.</p></div>
+        <div><div class="proj-img"><img src="Multi_Vocoder-Lp_Envelopes_per_channel.png" alt="Envelope heatmap"/></div><p class="proj-img-caption">Envelope heatmap across 8 channels — energy concentrates in lower channels.</p></div>
+      </div>
+      <div class="proj-img"><img src="Multi_Vocoder-LP_Envelopes_stacked.png" alt="Stacked envelopes"/></div>
+      <p class="proj-img-caption">Stacked envelopes — each channel's amplitude contour offset for clarity.</p>
+    </div>
+
+    <div class="proj-section">
+      <p class="proj-section-label">MATLAB GUI</p><div class="proj-rule"></div>
+      <div class="proj-body">
+        <p>The simulation was built with a custom MATLAB GUI — allowing real-time adjustment of the number of channels, frequency spacing method, envelope cutoff, and carrier type. The interface makes it possible to audition changes instantly and observe how each parameter affects the vocoded output.</p>
+        <p>MATLAB GUIs (App Designer .mlapp files) run natively in the MATLAB environment and cannot be embedded directly in a web browser. To explore the vocoder interactively, the MATLAB source files are available on request.</p>
+      </div>
+    </div>
+
+    <div class="proj-section">
+      <p class="proj-section-label">Reflections</p><div class="proj-rule"></div>
+      <div class="proj-body">
+        <p>The key realisation was how asymmetric the information requirements for hearing actually are — temporal envelopes, which carry very little data, are sufficient for speech intelligibility. But the fine spectral structure that envelopes discard is exactly what makes music and pitch recognisable.</p>
+        <p>Working in the Cochlear Implant Lab also introduced me to the idea of <strong>multisensory integration</strong> — combining auditory and tactile signals to improve pitch perception for cochlear implant users. This connects the simulation work directly to ongoing experimental research.</p>
+      </div>
+    </div>
+  </main>
+
+  <div class="bottom-bar">
+    <span class="year">© 2026</span>
+    <blockquote class="quote">"I know of no better life purpose than to perish in attempting the great and the impossible"<cite>— Friedrich Nietzsche</cite></blockquote>
+  </div>
+
+  <script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.165.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.165.0/examples/jsm/"}}</script>
+  <script type="module">
+    import * as THREE from 'three';
+    import { RGBELoader } from 'three/addons/loaders/RGBELoader.js';
+    const canvas=document.getElementById('bg'),scene=new THREE.Scene();
+    const camera=new THREE.PerspectiveCamera(75,innerWidth/innerHeight,.1,1000);
+    const renderer=new THREE.WebGLRenderer({canvas,antialias:true});
+    renderer.setSize(innerWidth,innerHeight); renderer.setPixelRatio(Math.min(devicePixelRatio,2));
+    renderer.toneMapping=THREE.ACESFilmicToneMapping; renderer.toneMappingExposure=0.82;
+    renderer.outputColorSpace=THREE.SRGBColorSpace; scene.background=new THREE.Color(0x0d1520);
+    const pmrem=new THREE.PMREMGenerator(renderer); pmrem.compileEquirectangularShader();
+    new RGBELoader().setPath('./').load('mountain.hdr',
+      tex=>{const env=pmrem.fromEquirectangular(tex).texture;scene.background=env;scene.environment=env;tex.dispose();pmrem.dispose();},null,
+      ()=>{const geo=new THREE.SphereGeometry(500,32,16);const mat=new THREE.ShaderMaterial({side:THREE.BackSide,uniforms:{top:{value:new THREE.Color(0x060b14)},mid:{value:new THREE.Color(0x112030)},bottom:{value:new THREE.Color(0x2d5470)}},vertexShader:`varying vec3 vP;void main(){vP=position;gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.);}`,fragmentShader:`varying vec3 vP;uniform vec3 top,mid,bottom;void main(){float h=normalize(vP).y;vec3 c=mix(bottom,mid,smoothstep(-.3,.3,h));c=mix(c,top,smoothstep(.2,1.,h));gl_FragColor=vec4(c,1.);}`});scene.add(new THREE.Mesh(geo,mat));scene.background=null;}
+    );
+    const tgt={lon:0,lat:0},state={lon:0,lat:0},euler=new THREE.Euler(0,0,0,'YXZ');
+    window.addEventListener('mousemove',e=>{tgt.lon=(e.clientX/innerWidth-.5)*14;tgt.lat=-(e.clientY/innerHeight-.5)*9;});
+    const dot=document.getElementById('cur'),ring=document.getElementById('cur-o');
+    let mx=0,my=0,rx=0,ry=0;
+    window.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;});
+    (function tc(){dot.style.left=mx+'px';dot.style.top=my+'px';rx+=(mx-rx)*.14;ry+=(my-ry)*.14;ring.style.left=rx+'px';ring.style.top=ry+'px';requestAnimationFrame(tc);})();
+    window.addEventListener('resize',()=>{camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();renderer.setSize(innerWidth,innerHeight);});
+    (function animate(){requestAnimationFrame(animate);state.lon+=(tgt.lon-state.lon)*.06;state.lat+=(tgt.lat-state.lat)*.06;state.lat=Math.max(-85,Math.min(85,state.lat));euler.y=THREE.MathUtils.degToRad(-state.lon);euler.x=THREE.MathUtils.degToRad(state.lat);camera.quaternion.setFromEuler(euler);renderer.render(scene,camera);})();
+  </script>
+  <script>
+    // Scroll reveal
+    const obs=new IntersectionObserver(e=>{e.forEach(e=>{if(e.isIntersecting){e.target.classList.add('visible');obs.unobserve(e.target);}});},{threshold:0.06});
+    document.querySelectorAll('.proj-section').forEach(el=>obs.observe(el));
+    // Lightbox
+    const lb=document.getElementById('lightbox'),lbImg=document.getElementById('lightbox-img');
+    document.querySelectorAll('.proj-img').forEach(wrap=>{
+      wrap.addEventListener('click',()=>{const img=wrap.querySelector('img');if(img){lbImg.src=img.src;lb.classList.add('open');}});
+    });
+    document.getElementById('lightbox-close').addEventListener('click',()=>lb.classList.remove('open'));
+    lb.addEventListener('click',e=>{if(e.target===lb)lb.classList.remove('open');});
+    document.addEventListener('keydown',e=>{if(e.key==='Escape')lb.classList.remove('open');});
+  </script>
+</body>
+</html>
     .proj-section.visible{opacity:1;transform:translateY(0);}
     .proj-section-label{font-family:'Jost',sans-serif;font-weight:300;font-size:11px;letter-spacing:0.40em;text-transform:uppercase;color:var(--w42);margin-bottom:1.2rem;}
     .proj-rule{height:1px;background:linear-gradient(to right,var(--w16) 0%,transparent 85%);margin-bottom:2rem;}
