@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Contact — Sophia Benzari</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Jost:wght@300;400&display=swap" rel="stylesheet" />
+
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --white: rgba(255,255,255,1.00);
+      --w85:   rgba(255,255,255,0.85);
+      --w60:   rgba(255,255,255,0.60);
+      --w42:   rgba(255,255,255,0.42);
+      --w22:   rgba(255,255,255,0.22);
+      --w12:   rgba(255,255,255,0.12);
+      --w06:   rgba(255,255,255,0.06);
+      --px:    clamp(2rem, 5vw, 5rem);
+    }
+
+    html, body {
+      width: 100%; height: 100%;
+      overflow: hidden; /* single viewport — no scroll needed */
+      background: #0b0f14;
+      color: var(--white);
+      cursor: none;
+    }
+
+    #bg { position: fixed; inset: 0; z-index: 0; }
+
+    #fog {
+      position: fixed; inset: 0; z-index: 1; pointer-events: none;
+      background:
+        radial-gradient(ellipse at center, transparent 35%, rgba(0,0,0,0.55) 100%),
+        linear-gradient(to bottom, rgba(4,8,14,0.55) 0%, rgba(4,8,14,0.30) 50%, rgba(4,8,14,0.55) 100%);
+    }
+
+    /* ── Custom cursor ── */
+    #cur {
+      position: fixed; width: 5px; height: 5px; border-radius: 50%;
+      background: #fff; transform: translate(-50%,-50%);
+      pointer-events: none; z-index: 300; mix-blend-mode: difference;
+    }
+    #cur-o {
+      position: fixed; width: 28px; height: 28px; border-radius: 50%;
+      border: 1px solid rgba(255,255,255,0.26); transform: translate(-50%,-50%);
+      pointer-events: none; z-index: 299;
+    }
+
+    /* ── Nav ── */
+    nav {
+      position: fixed; top: 2.2rem; right: var(--px); z-index: 20;
+      display: flex; gap: 2.4rem;
+    }
+    nav a {
+      font-family: 'Jost', sans-serif; font-weight: 400;
+      font-size: 11.5px; letter-spacing: 0.26em; text-transform: uppercase;
+      color: var(--w60); text-decoration: none; transition: color .25s;
+    }
+    nav a:hover { color: var(--white); }
+    nav a.active { color: var(--white); }
+
+    /* ── Full-viewport centered layout ── */
+    #page {
+      position: fixed; inset: 0; z-index: 10;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      padding: 6rem var(--px) 5rem;
+      text-align: center;
+    }
+
+    /* ── Section label ── */
+    .section-label {
+      font-family: 'Jost', sans-serif; font-weight: 300;
+      font-size: 10px; letter-spacing: 0.40em; text-transform: uppercase;
+      color: var(--w42); margin-bottom: 2.5rem;
+      opacity: 0; animation: rise .8s ease .2s forwards;
+    }
+
+    /* ── Contact list ── */
+    .contact-list {
+      display: flex; flex-direction: column;
+      align-items: center; gap: 1.4rem;
+      margin-bottom: clamp(2.5rem, 5vh, 4rem);
+      opacity: 0; animation: rise 1s cubic-bezier(.22,1,.36,1) .4s forwards;
+    }
+
+    .contact-row {
+      display: flex; align-items: center; gap: 0.9rem;
+    }
+
+    .contact-item {
+      font-family: 'Cormorant Garamond', serif; font-weight: 300;
+      font-size: clamp(20px, 2.6vw, 34px);
+      color: var(--w85); text-decoration: none;
+      letter-spacing: 0.01em; line-height: 1;
+      transition: color .25s;
+    }
+    .contact-item:hover { color: var(--white); }
+
+    .contact-phone {
+      font-family: 'Jost', sans-serif; font-weight: 300;
+      font-size: clamp(13px, 1.3vw, 18px);
+      color: var(--w60); letter-spacing: 0.08em;
+    }
+
+    /* ── Copy button ── */
+    .copy-btn {
+      background: none; border: 1px solid var(--w22);
+      width: 26px; height: 26px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer; color: var(--w42); flex-shrink: 0;
+      transition: border-color .2s, color .2s;
+    }
+    .copy-btn:hover { border-color: var(--w60); color: var(--w85); }
+    .copy-btn svg { display: block; }
+    .copy-btn .icon-check { display: none; }
+    .copy-btn.copied { border-color: rgba(120,200,140,0.5); color: rgba(120,200,140,0.9); }
+    .copy-btn.copied .icon-clip  { display: none; }
+    .copy-btn.copied .icon-check { display: block; }
+
+    /* ── Cities ── */
+    .contact-cities {
+      font-family: 'Jost', sans-serif; font-weight: 300;
+      font-size: clamp(10px, 0.9vw, 12px);
+      letter-spacing: 0.30em; text-transform: uppercase;
+      color: var(--w42);
+      margin-bottom: clamp(2.2rem, 4.5vh, 3.5rem);
+      opacity: 0; animation: rise .8s ease .75s forwards;
+    }
+
+    /* ── Closing line ── */
+    .contact-closing {
+      opacity: 0; animation: rise .9s ease 1s forwards;
+    }
+    .closing-en {
+      display: block;
+      font-family: 'Cormorant Garamond', serif; font-weight: 300;
+      font-size: clamp(13px, 1.3vw, 17px);
+      color: var(--w42); letter-spacing: 0.04em;
+      margin-bottom: 0.4rem;
+    }
+    .closing-fr {
+      display: block;
+      font-family: 'Cormorant Garamond', serif; font-style: italic; font-weight: 300;
+      font-size: clamp(16px, 1.9vw, 24px);
+      color: var(--w60); letter-spacing: 0.02em;
+    }
+
+    /* ── Bottom bar ── */
+    .bottom-bar {
+      position: fixed; bottom: 0; left: 0; right: 0; z-index: 20;
+      padding: 0 var(--px) 1.8rem;
+      display: flex; align-items: flex-end; justify-content: space-between;
+      pointer-events: none;
+    }
+    .year {
+      font-family: 'Jost', sans-serif; font-weight: 300;
+      font-size: 10px; letter-spacing: 0.22em; color: var(--w42);
+    }
+    .quote {
+      font-family: 'Cormorant Garamond', serif; font-style: italic; font-weight: 300;
+      font-size: clamp(9.5px, 0.80vw, 11.5px);
+      color: var(--w42); text-align: right; max-width: 400px; line-height: 1.65;
+    }
+    .quote cite {
+      display: block; margin-top: 0.35em;
+      font-style: normal; font-family: 'Jost', sans-serif;
+      font-weight: 300; font-size: 9px; letter-spacing: 0.20em;
+      text-transform: uppercase; color: var(--w42);
+    }
+
+    @keyframes rise { to { opacity: 1; transform: translateY(0); } }
+    ::-webkit-scrollbar { display: none; }
+  </style>
+</head>
+<body>
+
+  <div id="cur"></div>
+  <div id="cur-o"></div>
+  <canvas id="bg"></canvas>
+  <div id="fog"></div>
+
+  <nav>
+    <a href="index.html">Home</a>
+    <a href="projects.html">Work</a>
+    <a href="about.html">About</a>
+    <a href="contact.html" class="active">Contact</a>
+  </nav>
+
+  <div id="page">
+
+    <p class="section-label">Get in touch</p>
+
+    <div class="contact-list">
+
+      <div class="contact-row">
+        <a class="contact-item" href="mailto:benzari@usc.edu">benzari@usc.edu</a>
+        <button class="copy-btn" data-copy="benzari@usc.edu" aria-label="Copy email">
+          <svg class="icon-clip" width="12" height="12" viewBox="0 0 12 12" fill="none">
+            <rect x="4" y="1" width="7" height="8" rx="1" stroke="currentColor" stroke-width="1.1"/>
+            <path d="M1 4h3M1 4v6h6V9" stroke="currentColor" stroke-width="1.1" stroke-linecap="round"/>
+          </svg>
+          <svg class="icon-check" width="12" height="12" viewBox="0 0 12 12" fill="none">
+            <path d="M2 6.5l3 3 5-5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
+      </div>
+
+      <div class="contact-row">
+        <a class="contact-item" href="mailto:sophia.benzari22@gmail.com">sophia.benzari22@gmail.com</a>
+        <button class="copy-btn" data-copy="sophia.benzari22@gmail.com" aria-label="Copy email">
+          <svg class="icon-clip" width="12" height="12" viewBox="0 0 12 12" fill="none">
+            <rect x="4" y="1" width="7" height="8" rx="1" stroke="currentColor" stroke-width="1.1"/>
+            <path d="M1 4h3M1 4v6h6V9" stroke="currentColor" stroke-width="1.1" stroke-linecap="round"/>
+          </svg>
+          <svg class="icon-check" width="12" height="12" viewBox="0 0 12 12" fill="none">
+            <path d="M2 6.5l3 3 5-5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
+      </div>
+
+      <div class="contact-row">
+        <span class="contact-item contact-phone">+1 (858) 388-2000</span>
+      </div>
+
+    </div>
+
+    <p class="contact-cities">Rabat &nbsp;&middot;&nbsp; Los Angeles &nbsp;&middot;&nbsp; Paris</p>
+
+    <div class="contact-closing">
+      <span class="closing-en">I only look forward.</span>
+      <span class="closing-fr">Je marche de l'avant.</span>
+    </div>
+
+  </div>
+
+  <div class="bottom-bar">
+    <span class="year">© 2026</span>
+    <blockquote class="quote">
+      "I know of no better life purpose than to perish in attempting the great and the impossible"
+      <cite>— Friedrich Nietzsche</cite>
+    </blockquote>
+  </div>
+
+  <script type="importmap">
+    {
+      "imports": {
+        "three":         "https://cdn.jsdelivr.net/npm/three@0.165.0/build/three.module.js",
+        "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.165.0/examples/jsm/"
+      }
+    }
+  </script>
+
+  <script type="module">
+    import * as THREE from 'three';
+    import { RGBELoader } from 'three/addons/loaders/RGBELoader.js';
+
+    const canvas   = document.getElementById('bg');
+    const scene    = new THREE.Scene();
+    const camera   = new THREE.PerspectiveCamera(75, innerWidth / innerHeight, .1, 1000);
+    const renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
+    renderer.setSize(innerWidth, innerHeight);
+    renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+    renderer.toneMapping         = THREE.ACESFilmicToneMapping;
+    renderer.toneMappingExposure = 0.82;
+    renderer.outputColorSpace    = THREE.SRGBColorSpace;
+    scene.background = new THREE.Color(0x0d1520);
+
+    const pmrem = new THREE.PMREMGenerator(renderer);
+    pmrem.compileEquirectangularShader();
+
+    new RGBELoader().setPath('./').load('mountain.hdr',
+      tex => {
+        const env = pmrem.fromEquirectangular(tex).texture;
+        scene.background = env; scene.environment = env;
+        tex.dispose(); pmrem.dispose();
+      },
+      null,
+      () => {
+        const geo = new THREE.SphereGeometry(500, 32, 16);
+        const mat = new THREE.ShaderMaterial({
+          side: THREE.BackSide,
+          uniforms: {
+            top:    { value: new THREE.Color(0x060b14) },
+            mid:    { value: new THREE.Color(0x112030) },
+            bottom: { value: new THREE.Color(0x2d5470) },
+          },
+          vertexShader:   `varying vec3 vP; void main(){ vP=position; gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.); }`,
+          fragmentShader: `varying vec3 vP; uniform vec3 top,mid,bottom; void main(){ float h=normalize(vP).y; vec3 c=mix(bottom,mid,smoothstep(-.3,.3,h)); c=mix(c,top,smoothstep(.2,1.,h)); gl_FragColor=vec4(c,1.); }`,
+        });
+        scene.add(new THREE.Mesh(geo, mat));
+        scene.background = null;
+      }
+    );
+
+    /* Gentle movement — same as projects page */
+    const tgt = { lon:0, lat:0 }, state = { lon:0, lat:0 };
+    const euler = new THREE.Euler(0,0,0,'YXZ');
+    window.addEventListener('mousemove', e => {
+      tgt.lon =  (e.clientX/innerWidth  - .5) * 18;
+      tgt.lat = -(e.clientY/innerHeight - .5) *  8;
+    });
+
+    const dot = document.getElementById('cur'), ring = document.getElementById('cur-o');
+    let mx=0,my=0,rx=0,ry=0;
+    window.addEventListener('mousemove', e=>{ mx=e.clientX; my=e.clientY; });
+    (function tc(){ dot.style.left=mx+'px'; dot.style.top=my+'px'; rx+=(mx-rx)*.14; ry+=(my-ry)*.14; ring.style.left=rx+'px'; ring.style.top=ry+'px'; requestAnimationFrame(tc); })();
+
+    window.addEventListener('resize', () => {
+      camera.aspect = innerWidth/innerHeight;
+      camera.updateProjectionMatrix();
+      renderer.setSize(innerWidth, innerHeight);
+    });
+
+    (function animate(){
+      requestAnimationFrame(animate);
+      state.lon += (tgt.lon-state.lon)*.05;
+      state.lat += (tgt.lat-state.lat)*.05;
+      state.lat  = Math.max(-60, Math.min(60, state.lat));
+      euler.y = THREE.MathUtils.degToRad(-state.lon);
+      euler.x = THREE.MathUtils.degToRad( state.lat);
+      camera.quaternion.setFromEuler(euler);
+      renderer.render(scene, camera);
+    })();
+  </script>
+
+  <script>
+    /* Copy buttons */
+    document.querySelectorAll('.copy-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        navigator.clipboard.writeText(btn.dataset.copy).then(() => {
+          btn.classList.add('copied');
+          setTimeout(() => btn.classList.remove('copied'), 2000);
+        });
+      });
+    });
+  </script>
+
+</body>
+</html>

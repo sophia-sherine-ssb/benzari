@@ -1,0 +1,1033 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>About — Sophia Benzari</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Jost:wght@300;400&display=swap" rel="stylesheet" />
+
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --white: rgba(255,255,255,1.00);
+      --w85:   rgba(255,255,255,0.85);
+      --w60:   rgba(255,255,255,0.60);
+      --w42:   rgba(255,255,255,0.42);
+      --w22:   rgba(255,255,255,0.22);
+      --w12:   rgba(255,255,255,0.12);
+      --w06:   rgba(255,255,255,0.06);
+      --px:    clamp(2rem, 5vw, 5rem);
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      width: 100%;
+      background: #0b0f14;
+      color: var(--white);
+      cursor: none;
+      overflow-x: hidden;
+      overflow-y: auto;
+    }
+
+    /* ── 3D canvas ── */
+    #bg { position: fixed; inset: 0; z-index: 0; }
+
+    /* ── Vignette — heavier here for readability ── */
+    #fog {
+      position: fixed; inset: 0; z-index: 1; pointer-events: none;
+      background:
+        linear-gradient(to bottom,
+          rgba(4,8,14,0.70) 0%,
+          rgba(4,8,14,0.55) 50%,
+          rgba(4,8,14,0.70) 100%
+        ),
+        radial-gradient(ellipse at center, transparent 30%, rgba(0,0,0,0.50) 100%);
+    }
+
+    /* ── Custom cursor ── */
+    #cur {
+      position: fixed; width: 5px; height: 5px; border-radius: 50%;
+      background: #fff; transform: translate(-50%,-50%);
+      pointer-events: none; z-index: 300; mix-blend-mode: difference;
+    }
+    #cur-o {
+      position: fixed; width: 28px; height: 28px; border-radius: 50%;
+      border: 1px solid rgba(255,255,255,0.26); transform: translate(-50%,-50%);
+      pointer-events: none; z-index: 299;
+    }
+
+    /* ── Nav ── */
+    nav {
+      position: fixed; top: 2.2rem; right: var(--px); z-index: 20;
+      display: flex; gap: 2.4rem;
+    }
+    nav a {
+      font-family: 'Jost', sans-serif; font-weight: 400;
+      font-size: 11.5px; letter-spacing: 0.26em; text-transform: uppercase;
+      color: var(--w60); text-decoration: none; transition: color .25s;
+    }
+    nav a:hover { color: var(--white); }
+    nav a.active { color: var(--white); }
+
+    /* ── Page content ── */
+    #page {
+      position: relative; z-index: 10;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: clamp(6rem, 13vh, 10rem) var(--px) clamp(6rem, 10vh, 9rem);
+      display: flex; flex-direction: column;
+      gap: clamp(5rem, 10vh, 8rem);
+    }
+
+    /* ── Scroll reveal ── */
+    .reveal {
+      opacity: 0;
+      transform: translateY(22px);
+      transition: opacity .85s cubic-bezier(.22,1,.36,1), transform .85s cubic-bezier(.22,1,.36,1);
+    }
+    .reveal.visible {
+      opacity: 1; transform: translateY(0);
+    }
+
+    /* ── Section label ── */
+    .section-label {
+      font-family: 'Jost', sans-serif; font-weight: 300;
+      font-size: 10px; letter-spacing: 0.40em; text-transform: uppercase;
+      color: var(--w42); margin-bottom: 1.8rem;
+    }
+
+    /* ── Hairline ── */
+    .rule {
+      height: 1px; width: 100%;
+      background: linear-gradient(to right, var(--w22) 0%, transparent 85%);
+      margin-bottom: clamp(2rem, 4vh, 3rem);
+    }
+
+    /* ════════════════════════
+       INTRO SECTION
+    ════════════════════════ */
+    .intro-greeting {
+      display: grid;
+      grid-template-columns: 1fr 1px 1fr;
+      column-gap: clamp(1.6rem, 3vw, 2.8rem);
+      margin-bottom: clamp(1.8rem, 3.5vh, 2.8rem);
+    }
+
+    .intro-greeting .vline { background: var(--w12); }
+
+    .greeting-en {
+      font-family: 'Cormorant Garamond', serif; font-weight: 300;
+      font-size: clamp(26px, 3.2vw, 44px);
+      line-height: 1.05; letter-spacing: 0.01em;
+      color: var(--white);
+    }
+
+    .greeting-fr {
+      font-family: 'Cormorant Garamond', serif; font-style: italic; font-weight: 300;
+      font-size: clamp(24px, 3vw, 40px);
+      line-height: 1.05; letter-spacing: 0.01em;
+      color: var(--w60);
+      align-self: center;
+    }
+
+    .intro-body {
+      font-family: 'Jost', sans-serif; font-weight: 300;
+      font-size: clamp(12px, 1vw, 14px);
+      line-height: 1.90; color: var(--w85);
+      max-width: 600px;
+    }
+
+    /* ════════════════════════
+       EDUCATION + SKILLS
+    ════════════════════════ */
+    .edu-skills {
+      display: grid;
+      grid-template-columns: 1fr 1px 1fr;
+      column-gap: clamp(1.6rem, 3vw, 2.8rem);
+      align-items: start;
+    }
+
+    .edu-skills .vline { background: var(--w12); }
+
+    .block-title {
+      font-family: 'Jost', sans-serif; font-weight: 400;
+      font-size: 10.5px; letter-spacing: 0.32em; text-transform: uppercase;
+      color: var(--w42); margin-bottom: 1.6rem;
+    }
+
+    /* Education entries */
+    .edu-entry { margin-bottom: 1.8rem; }
+    .edu-entry:last-child { margin-bottom: 0; }
+
+    .edu-school {
+      font-family: 'Cormorant Garamond', serif; font-weight: 400;
+      font-size: clamp(14px, 1.3vw, 18px);
+      color: var(--white); line-height: 1.2; margin-bottom: 0.25rem;
+    }
+
+    .edu-degree {
+      font-family: 'Jost', sans-serif; font-weight: 300;
+      font-size: clamp(11px, 0.92vw, 13px);
+      color: var(--w85); line-height: 1.5; margin-bottom: 0.2rem;
+    }
+
+    .edu-detail {
+      font-family: 'Jost', sans-serif; font-weight: 300;
+      font-size: clamp(10px, 0.82vw, 11.5px);
+      color: var(--w42); line-height: 1.6;
+      font-style: normal;
+    }
+
+    /* Skills groups */
+    .skill-group { margin-bottom: 1.5rem; }
+    .skill-group:last-child { margin-bottom: 0; }
+
+    .skill-group-name {
+      font-family: 'Jost', sans-serif; font-weight: 300;
+      font-size: 9.5px; letter-spacing: 0.28em; text-transform: uppercase;
+      color: var(--w42); margin-bottom: 0.6rem;
+    }
+
+    .skill-tags {
+      display: flex; flex-wrap: wrap; gap: 0.4rem;
+    }
+
+    .skill-tag {
+      font-family: 'Jost', sans-serif; font-weight: 300;
+      font-size: clamp(10px, 0.82vw, 11.5px);
+      color: var(--w85); border: 1px solid var(--w22);
+      padding: 3px 9px; border-radius: 1px;
+      line-height: 1.6;
+    }
+
+    /* ════════════════════════
+       SPATIAL STACK GALLERY
+    ════════════════════════ */
+    .stack-wrap {
+      position: relative;
+      padding: 2.5rem 0 3.5rem;
+      user-select: none;
+    }
+
+    .stack-stage {
+      position: relative;
+      width: 100%;
+      padding-bottom: 75%; /* 4:3 */
+    }
+
+    .stack-card {
+      position: absolute;
+      inset: 0;
+      border-radius: 3px;
+      overflow: hidden;
+      border: 1px solid var(--w12);
+      background: #111620;
+      display: flex; align-items: center; justify-content: center;
+      box-shadow: 0 8px 48px rgba(0,0,0,0.55);
+      will-change: transform, opacity;
+    }
+
+    .stack-card img {
+      width: 100%; height: 100%;
+      object-fit: cover; display: block;
+      pointer-events: none;
+    }
+
+    .slide-placeholder {
+      font-family: 'Jost', sans-serif; font-weight: 300;
+      font-size: 10px; letter-spacing: 0.22em; text-transform: uppercase;
+      color: var(--w22); position: absolute; pointer-events: none;
+    }
+
+    /* ── Hover zones — transparent strips on left/right of the stage ── */
+    .hover-zone {
+      position: absolute;
+      top: 0; bottom: 0;
+      width: 28%;          /* how wide the trigger area is */
+      z-index: 10;
+      cursor: pointer;
+    }
+    .hover-zone-left  { left: 0; }
+    .hover-zone-right { right: 0; }
+
+    /* Subtle arrow hints that appear on hover */
+    .hover-zone::after {
+      content: '';
+      position: absolute;
+      top: 50%; transform: translateY(-50%);
+      width: 10px; height: 10px;
+      border-style: solid;
+      border-color: rgba(255,255,255,0.22);
+      opacity: 0;
+      transition: opacity .3s ease, border-color .3s ease;
+    }
+    .hover-zone-left::after {
+      left: 1.2rem;
+      border-width: 1px 0 0 1px;
+      transform: translateY(-50%) rotate(-45deg);
+    }
+    .hover-zone-right::after {
+      right: 1.2rem;
+      border-width: 1px 1px 0 0;
+      transform: translateY(-50%) rotate(45deg);
+    }
+    .hover-zone:hover::after {
+      opacity: 1;
+      border-color: rgba(255,255,255,0.55);
+    }
+
+    /* Controls row — dots only */
+    .stack-controls {
+      display: flex; align-items: center; justify-content: center;
+      margin-top: 1.6rem;
+    }
+
+    .carousel-dots { display: flex; gap: 6px; align-items: center; }
+    .dot {
+      width: 5px; height: 5px; border-radius: 50%;
+      background: var(--w22); cursor: pointer;
+      transition: background .3s, transform .3s;
+    }
+    .dot.active { background: var(--w85); transform: scale(1.3); }
+
+    .carousel-caption {
+      margin-top: 1.1rem; text-align: center;
+      font-family: 'Cormorant Garamond', serif; font-style: italic; font-weight: 300;
+      font-size: clamp(11px, 0.92vw, 13px); color: var(--w42);
+    }
+
+    /* ════════════════════════
+       MUSIC / VIDEO
+    ════════════════════════ */
+    .video-wrap {
+      width: 100%;
+      aspect-ratio: 16/9;
+      background: var(--w06);
+      border: 1px solid var(--w12);
+      border-radius: 2px;
+      overflow: hidden;
+      position: relative;
+      display: flex; align-items: center; justify-content: center;
+    }
+
+    .video-wrap iframe,
+    .video-wrap video {
+      width: 100%; height: 100%;
+      border: none; display: block;
+    }
+
+    /* Placeholder for video */
+    .video-placeholder {
+      text-align: center;
+    }
+    .video-placeholder p {
+      font-family: 'Jost', sans-serif; font-weight: 300;
+      font-size: 10px; letter-spacing: 0.22em; text-transform: uppercase;
+      color: var(--w22); margin-bottom: 0.4rem;
+    }
+    .video-placeholder span {
+      font-family: 'Cormorant Garamond', serif; font-style: italic;
+      font-size: 11px; color: var(--w22);
+    }
+
+    .video-caption {
+      margin-top: 1rem; text-align: center;
+      font-family: 'Cormorant Garamond', serif; font-style: italic; font-weight: 300;
+      font-size: clamp(11px, 0.92vw, 13px); color: var(--w42);
+    }
+
+    /* ════════════════════════
+       RESUME + CONTACT
+    ════════════════════════ */
+    .resume-row {
+      display: flex; align-items: center;
+      gap: clamp(1.2rem, 2.5vw, 2.2rem);
+      margin-bottom: clamp(2.5rem, 5vh, 4rem);
+    }
+
+    .resume-link {
+      font-family: 'Jost', sans-serif; font-weight: 300;
+      font-size: clamp(11px, 0.95vw, 13.5px);
+      letter-spacing: 0.22em; text-transform: uppercase;
+      color: var(--w85); text-decoration: none;
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      transition: color .25s;
+    }
+    .resume-link:hover { color: var(--white); }
+    .resume-link svg { opacity: 0.6; transition: opacity .25s, transform .25s; }
+    .resume-link:hover svg { opacity: 1; transform: translateY(-1px); }
+
+    .resume-divider {
+      width: 1px; height: 1.1rem;
+      background: var(--w22); flex-shrink: 0;
+    }
+
+    .contact-list {
+      display: flex; flex-direction: column;
+      align-items: center;
+      gap: 1.4rem;
+      margin-bottom: clamp(2.5rem, 5vh, 4rem);
+    }
+
+    /* Each contact row: the link/text + copy button */
+    .contact-row {
+      display: flex; align-items: center; gap: 0.9rem;
+    }
+
+    .contact-item {
+      font-family: 'Cormorant Garamond', serif; font-weight: 300;
+      font-size: clamp(18px, 2.2vw, 28px);
+      color: var(--w85); text-decoration: none;
+      letter-spacing: 0.01em; line-height: 1;
+      transition: color .25s;
+    }
+    .contact-item:hover { color: var(--white); }
+
+    .contact-phone {
+      font-family: 'Jost', sans-serif; font-weight: 300;
+      font-size: clamp(13px, 1.3vw, 18px);
+      color: var(--w60); letter-spacing: 0.08em;
+    }
+
+    /* Copy button */
+    .copy-btn {
+      background: none; border: 1px solid var(--w22);
+      width: 26px; height: 26px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer; color: var(--w42); flex-shrink: 0;
+      transition: border-color .2s, color .2s;
+      position: relative;
+    }
+    .copy-btn:hover { border-color: var(--w60); color: var(--w85); }
+    .copy-btn svg { display: block; transition: opacity .2s; }
+
+    /* Copied confirmation state */
+    .copy-btn.copied { border-color: rgba(120,200,140,0.5); color: rgba(120,200,140,0.9); }
+    .copy-btn .icon-check { display: none; }
+    .copy-btn.copied .icon-clip { display: none; }
+    .copy-btn.copied .icon-check { display: block; }
+
+    /* Cities */
+    .contact-cities {
+      font-family: 'Jost', sans-serif; font-weight: 300;
+      font-size: clamp(10px, 0.9vw, 12px);
+      letter-spacing: 0.30em; text-transform: uppercase;
+      color: var(--w42);
+      margin-bottom: clamp(2rem, 4vh, 3rem);
+    }
+
+    /* Closing line */
+    .contact-closing {
+      text-align: center;
+    }
+    .contact-closing .closing-en {
+      font-family: 'Cormorant Garamond', serif; font-weight: 300;
+      font-size: clamp(13px, 1.4vw, 18px);
+      color: var(--w42); letter-spacing: 0.04em;
+      display: block; margin-bottom: 0.4rem;
+    }
+    .contact-closing .closing-fr {
+      font-family: 'Cormorant Garamond', serif; font-style: italic; font-weight: 300;
+      font-size: clamp(15px, 1.7vw, 22px);
+      color: var(--w60); letter-spacing: 0.02em;
+      display: block;
+    }
+
+    /* ── Bottom bar ── */
+    .bottom-bar {
+      position: fixed; bottom: 0; left: 0; right: 0; z-index: 20;
+      padding: 0 var(--px) 1.8rem;
+      display: flex; align-items: flex-end; justify-content: space-between;
+      pointer-events: none;
+    }
+    .year {
+      font-family: 'Jost', sans-serif; font-weight: 300;
+      font-size: 10px; letter-spacing: 0.22em; color: var(--w42);
+    }
+    .quote {
+      font-family: 'Cormorant Garamond', serif; font-style: italic; font-weight: 300;
+      font-size: clamp(9.5px, 0.80vw, 11.5px);
+      color: var(--w42); text-align: right; max-width: 400px; line-height: 1.65;
+    }
+    .quote cite {
+      display: block; margin-top: 0.35em;
+      font-style: normal; font-family: 'Jost', sans-serif;
+      font-weight: 300; font-size: 9px; letter-spacing: 0.20em;
+      text-transform: uppercase; color: var(--w42);
+    }
+
+    @keyframes rise { to { opacity: 1; transform: translateY(0); } }
+    ::-webkit-scrollbar { width: 2px; }
+    ::-webkit-scrollbar-thumb { background: var(--w12); border-radius: 2px; }
+  </style>
+</head>
+<body>
+
+  <div id="cur"></div>
+  <div id="cur-o"></div>
+  <canvas id="bg"></canvas>
+  <div id="fog"></div>
+
+  <nav>
+    <a href="index.html">Home</a>
+    <a href="projects.html">Work</a>
+    <a href="about.html" class="active">About</a>
+    <a href="contact.html">Contact</a>
+  </nav>
+
+  <div id="page">
+
+    <!-- ════════════════════════════════════
+         1. INTRO
+    ════════════════════════════════════ -->
+    <section class="reveal">
+      <p class="section-label">Introduction</p>
+
+      <div class="intro-greeting">
+        <h1 class="greeting-en">Fancy seeing<br>you here!</h1>
+        <div class="vline"></div>
+        <p class="greeting-fr">C'est un plaisir<br>de vous rencontrer !</p>
+      </div>
+
+      <div class="rule"></div>
+
+      <p class="intro-body">
+        If you're reading this, it means I either shared this portfolio with you directly or you found it through an application. Either way, I hope you enjoyed exploring the projects I care deeply about. Below, you'll find more details about my background, education, and skills. If you enjoy art and music, scroll to the bottom.
+      </p>
+    </section>
+
+    <!-- ════════════════════════════════════
+         2. EDUCATION + SKILLS
+    ════════════════════════════════════ -->
+    <section class="reveal">
+      <p class="section-label">Background</p>
+      <div class="rule"></div>
+
+      <div class="edu-skills">
+
+        <!-- Education -->
+        <div>
+          <p class="block-title">Education</p>
+
+          <div class="edu-entry">
+            <p class="edu-school">University of Southern California</p>
+            <p class="edu-degree">B.S. Biomedical Engineering &thinsp;·&thinsp; Class of 2028</p>
+            <p class="edu-detail">Relevant coursework: Signal Processing, Data Analysis, Biomedical Instrumentation</p>
+          </div>
+
+          <div class="edu-entry">
+            <p class="edu-school">Harvard University — Summer Studies</p>
+            <p class="edu-degree">Microeconomics &amp; Physics (Mechanics) — 2023</p>
+            <p class="edu-degree">Macroeconomics &amp; Physics (Electromagnetism) — 2025</p>
+          </div>
+
+          <div class="edu-entry">
+            <p class="edu-school">Lycée Descartes, Rabat</p>
+            <p class="edu-degree">French Baccalaureate — <em>Très Bien</em></p>
+            <p class="edu-detail">Focus: Mathematics, Physics-Chemistry, Biology</p>
+          </div>
+        </div>
+
+        <div class="vline"></div>
+
+        <!-- Skills -->
+        <div>
+          <p class="block-title">Skills &amp; Tools</p>
+
+          <div class="skill-group">
+            <p class="skill-group-name">Technical</p>
+            <div class="skill-tags">
+              <span class="skill-tag">MATLAB</span>
+              <span class="skill-tag">Python</span>
+              <span class="skill-tag">C++</span>
+              <span class="skill-tag">Signal Processing</span>
+              <span class="skill-tag">Data Analysis</span>
+              <span class="skill-tag">Excel</span>
+            </div>
+          </div>
+
+          <div class="skill-group">
+            <p class="skill-group-name">Engineering &amp; Design</p>
+            <div class="skill-tags">
+              <span class="skill-tag">Fusion 360</span>
+              <span class="skill-tag">3D Modeling</span>
+              <span class="skill-tag">Prototyping</span>
+              <span class="skill-tag">Simulation</span>
+            </div>
+          </div>
+
+          <div class="skill-group">
+            <p class="skill-group-name">Hardware &amp; Fabrication</p>
+            <div class="skill-tags">
+              <span class="skill-tag">Arduino</span>
+              <span class="skill-tag">Electronics</span>
+              <span class="skill-tag">PCB Design</span>
+              <span class="skill-tag">Woodworking</span>
+            </div>
+          </div>
+
+          <div class="skill-group">
+            <p class="skill-group-name">Languages</p>
+            <div class="skill-tags">
+              <span class="skill-tag">English — native</span>
+              <span class="skill-tag">French — native</span>
+              <span class="skill-tag">Arabic — conversational</span>
+              <span class="skill-tag">Spanish — basic</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ════════════════════════════════════
+         3. CREATIVE — PAINTINGS
+    ════════════════════════════════════ -->
+    <section class="reveal">
+      <p class="section-label">Art</p>
+      <div class="rule"></div>
+
+      <div class="stack-wrap" id="stackWrap">
+        <div class="stack-stage" id="stackStage">
+
+          <!-- Hover zones — transparent, sit above cards -->
+          <div class="hover-zone hover-zone-left"  id="zoneLeft"></div>
+          <div class="hover-zone hover-zone-right" id="zoneRight"></div>
+
+          <!-- Card 1 — replace src="" with your painting path when ready -->
+          <div class="stack-card" data-index="0">
+            <img src="" alt="Painting 1" onerror="this.style.display='none'" />
+            <span class="slide-placeholder">Painting I — image coming soon</span>
+          </div>
+
+          <!-- Card 2 -->
+          <div class="stack-card" data-index="1">
+            <img src="" alt="Painting 2" onerror="this.style.display='none'" />
+            <span class="slide-placeholder">Painting II — image coming soon</span>
+          </div>
+
+          <!-- Card 3 -->
+          <div class="stack-card" data-index="2">
+            <img src="" alt="Painting 3" onerror="this.style.display='none'" />
+            <span class="slide-placeholder">Painting III — image coming soon</span>
+          </div>
+
+          <!-- Card 4 -->
+          <div class="stack-card" data-index="3">
+            <img src="" alt="Painting 4" onerror="this.style.display='none'" />
+            <span class="slide-placeholder">Painting IV — image coming soon</span>
+          </div>
+
+        </div><!-- /stack-stage -->
+
+        <!-- Subtle dot indicators only — navigation is via hover zones -->
+        <div class="stack-controls">
+          <div class="carousel-dots" id="carouselDots"></div>
+        </div>
+
+        <p class="carousel-caption">Oil paintings — backyard studio, 2022–2025</p>
+      </div>
+    </section>
+
+    <!-- ════════════════════════════════════
+         3b. MUSIC / VIDEO
+    ════════════════════════════════════ -->
+    <section class="reveal">
+      <p class="section-label">Music</p>
+      <div class="rule"></div>
+
+      <div class="video-wrap">
+        <!--
+          TO ADD YOUR VIDEO:
+          Option A — Local file:
+            <video controls>
+              <source src="liebestraum.mp4" type="video/mp4" />
+            </video>
+
+          Option B — YouTube embed:
+            <iframe
+              src="https://www.youtube.com/embed/YOUR_VIDEO_ID"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              allowfullscreen>
+            </iframe>
+
+          Remove the placeholder div below once you add the video.
+        -->
+        <div class="video-placeholder">
+          <p>Video coming soon</p>
+          <span>Liebestraum — F. Liszt</span>
+        </div>
+      </div>
+
+      <p class="video-caption">Video recording of me playing Liebestraum — Franz Liszt</p>
+    </section>
+
+    <!-- ════════════════════════════════════
+         4. RESUME + CONTACT
+    ════════════════════════════════════ -->
+    <section class="reveal" style="text-align:center;">
+      <p class="section-label">Resume &amp; Contact</p>
+      <div class="rule"></div>
+
+      <!-- Resume links -->
+      <div class="resume-row" style="justify-content:center; margin-bottom: clamp(3rem,6vh,5rem);">
+        <a class="resume-link" href="#" target="_blank">
+          <svg width="13" height="13" viewBox="0 0 13 13" fill="none">
+            <path d="M2 10.5h9M6.5 2v7M4 6.5l2.5 3 2.5-3" stroke="currentColor" stroke-width="1.1" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          English Resume
+        </a>
+        <div class="resume-divider"></div>
+        <a class="resume-link" href="#" target="_blank">
+          <svg width="13" height="13" viewBox="0 0 13 13" fill="none">
+            <path d="M2 10.5h9M6.5 2v7M4 6.5l2.5 3 2.5-3" stroke="currentColor" stroke-width="1.1" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          CV en Français
+        </a>
+      </div>
+
+      <!-- Contact list — centered, large -->
+      <div class="contact-list">
+
+        <div class="contact-row">
+          <a class="contact-item" href="mailto:benzari@usc.edu">benzari@usc.edu</a>
+          <button class="copy-btn" data-copy="benzari@usc.edu" aria-label="Copy email">
+            <svg class="icon-clip" width="12" height="12" viewBox="0 0 12 12" fill="none">
+              <rect x="4" y="1" width="7" height="8" rx="1" stroke="currentColor" stroke-width="1.1"/>
+              <path d="M1 4h3M1 4v6h6V9" stroke="currentColor" stroke-width="1.1" stroke-linecap="round"/>
+            </svg>
+            <svg class="icon-check" width="12" height="12" viewBox="0 0 12 12" fill="none">
+              <path d="M2 6.5l3 3 5-5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </button>
+        </div>
+
+        <div class="contact-row">
+          <a class="contact-item" href="mailto:sophia.benzari22@gmail.com">sophia.benzari22@gmail.com</a>
+          <button class="copy-btn" data-copy="sophia.benzari22@gmail.com" aria-label="Copy email">
+            <svg class="icon-clip" width="12" height="12" viewBox="0 0 12 12" fill="none">
+              <rect x="4" y="1" width="7" height="8" rx="1" stroke="currentColor" stroke-width="1.1"/>
+              <path d="M1 4h3M1 4v6h6V9" stroke="currentColor" stroke-width="1.1" stroke-linecap="round"/>
+            </svg>
+            <svg class="icon-check" width="12" height="12" viewBox="0 0 12 12" fill="none">
+              <path d="M2 6.5l3 3 5-5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </button>
+        </div>
+
+        <div class="contact-row">
+          <span class="contact-item contact-phone">+1 (858) 388-2000</span>
+        </div>
+
+      </div>
+
+      <!-- Cities -->
+      <p class="contact-cities">Rabat &nbsp;&middot;&nbsp; Los Angeles &nbsp;&middot;&nbsp; Paris</p>
+
+      <!-- Closing line — bilingual -->
+      <div class="contact-closing">
+        <span class="closing-en">I only look forward.</span>
+        <span class="closing-fr">Je marche de l'avant.</span>
+      </div>
+
+    </section>
+
+    <!-- breathing room above fixed bottom bar -->
+    <div style="height: 3rem"></div>
+
+  </div><!-- /page -->
+
+  <div class="bottom-bar">
+    <span class="year">© 2026</span>
+    <blockquote class="quote">
+      "I know of no better life purpose than to perish in attempting the great and the impossible"
+      <cite>— Friedrich Nietzsche</cite>
+    </blockquote>
+  </div>
+
+  <!-- Three.js -->
+  <script type="importmap">
+    {
+      "imports": {
+        "three":         "https://cdn.jsdelivr.net/npm/three@0.165.0/build/three.module.js",
+        "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.165.0/examples/jsm/"
+      }
+    }
+  </script>
+
+  <script type="module">
+    import * as THREE from 'three';
+    import { RGBELoader } from 'three/addons/loaders/RGBELoader.js';
+
+    const canvas   = document.getElementById('bg');
+    const scene    = new THREE.Scene();
+    const camera   = new THREE.PerspectiveCamera(75, innerWidth / innerHeight, .1, 1000);
+    const renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
+    renderer.setSize(innerWidth, innerHeight);
+    renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+    renderer.toneMapping         = THREE.ACESFilmicToneMapping;
+    renderer.toneMappingExposure = 0.75;
+    renderer.outputColorSpace    = THREE.SRGBColorSpace;
+    scene.background = new THREE.Color(0x0d1520);
+
+    const pmrem = new THREE.PMREMGenerator(renderer);
+    pmrem.compileEquirectangularShader();
+
+    new RGBELoader().setPath('./').load('mountain.hdr',
+      tex => {
+        const env = pmrem.fromEquirectangular(tex).texture;
+        scene.background = env; scene.environment = env;
+        tex.dispose(); pmrem.dispose();
+      },
+      null,
+      () => {
+        const geo = new THREE.SphereGeometry(500, 32, 16);
+        const mat = new THREE.ShaderMaterial({
+          side: THREE.BackSide,
+          uniforms: {
+            top:    { value: new THREE.Color(0x060b14) },
+            mid:    { value: new THREE.Color(0x112030) },
+            bottom: { value: new THREE.Color(0x2d5470) },
+          },
+          vertexShader:   `varying vec3 vP; void main(){ vP=position; gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.); }`,
+          fragmentShader: `varying vec3 vP; uniform vec3 top,mid,bottom; void main(){ float h=normalize(vP).y; vec3 c=mix(bottom,mid,smoothstep(-.3,.3,h)); c=mix(c,top,smoothstep(.2,1.,h)); gl_FragColor=vec4(c,1.); }`,
+        });
+        scene.add(new THREE.Mesh(geo, mat));
+        scene.background = null;
+      }
+    );
+
+    /* Very gentle movement — reading comfort */
+    const tgt = { lon:0, lat:0 }, state = { lon:0, lat:0 };
+    const euler = new THREE.Euler(0,0,0,'YXZ');
+    window.addEventListener('mousemove', e => {
+      tgt.lon =  (e.clientX/innerWidth  - .5) * 14;
+      tgt.lat = -(e.clientY/innerHeight - .5) *  6;
+    });
+
+    /* Cursor */
+    const dot = document.getElementById('cur'), ring = document.getElementById('cur-o');
+    let mx=0,my=0,rx=0,ry=0;
+    window.addEventListener('mousemove', e=>{ mx=e.clientX; my=e.clientY; });
+    (function tc(){ dot.style.left=mx+'px'; dot.style.top=my+'px'; rx+=(mx-rx)*.14; ry+=(my-ry)*.14; ring.style.left=rx+'px'; ring.style.top=ry+'px'; requestAnimationFrame(tc); })();
+
+    window.addEventListener('resize', () => {
+      camera.aspect = innerWidth/innerHeight;
+      camera.updateProjectionMatrix();
+      renderer.setSize(innerWidth, innerHeight);
+    });
+
+    (function animate(){
+      requestAnimationFrame(animate);
+      state.lon += (tgt.lon-state.lon)*.04;
+      state.lat += (tgt.lat-state.lat)*.04;
+      state.lat  = Math.max(-60, Math.min(60, state.lat));
+      euler.y = THREE.MathUtils.degToRad(-state.lon);
+      euler.x = THREE.MathUtils.degToRad( state.lat);
+      camera.quaternion.setFromEuler(euler);
+      renderer.render(scene, camera);
+    })();
+  </script>
+
+  <script>
+    /* ── Scroll reveal ── */
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.12 });
+
+    document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+    /* ── Spatial stack gallery — hover to peek, click to advance ── */
+    (function() {
+      const cards   = Array.from(document.querySelectorAll('.stack-card'));
+      const dotsEl  = document.getElementById('carouselDots');
+      const zoneL   = document.getElementById('zoneLeft');
+      const zoneR   = document.getElementById('zoneRight');
+      const wrap    = document.getElementById('stackWrap');
+      const total   = cards.length;
+      let   current = 0;
+      let   peek    = null;    // null | 'left' | 'right'
+      let   animating = false;
+
+      // Parallax mouse state
+      let mx = 0, my = 0, pmx = 0, pmy = 0;
+      wrap.addEventListener('mousemove', e => {
+        const r = wrap.getBoundingClientRect();
+        mx = (e.clientX - r.left) / r.width  - 0.5;
+        my = (e.clientY - r.top)  / r.height - 0.5;
+      });
+      wrap.addEventListener('mouseleave', () => {
+        mx = 0; my = 0;
+        if (peek) { peek = null; applyTransforms(false); }
+      });
+
+      /*
+        Position table — index is "depth from front"
+        front=0, behind-right-1=1, behind-right-2=2 …
+        peeking-left = special: slide in from left side
+        peeking-right = special: slide in from right side
+      */
+      // [translateX%, translateY%, scale, opacity, zIndex, blurPx]
+      const POS = {
+        front:        [  0,    0,    1.00, 1.00, 5, 0 ],
+        peekRight:    [ 30,    1.5,  0.90, 0.60, 4, 0 ],  // next, peeking right
+        peekLeft:     [-30,    1.5,  0.90, 0.60, 4, 0 ],  // prev, peeking left
+        behind1:      [  5,    1.2,  0.91, 0.40, 3, 1 ],
+        behind2:      [  8.5,  2.2,  0.83, 0.18, 2, 2 ],
+        hidden:       [ 12,    3,    0.76, 0.00, 1, 3 ],
+      };
+
+      function getCardTransform(relPos, isPeekTarget, peekDir) {
+        if (relPos === 0) return POS.front;
+        if (isPeekTarget) return peekDir === 'right' ? POS.peekRight : POS.peekLeft;
+        if (relPos === 1) return POS.behind1;
+        if (relPos === 2) return POS.behind2;
+        return POS.hidden;
+      }
+
+      function applyTransforms(withParallax) {
+        // figure out which card is the peek target
+        const peekIdx = peek === 'right'
+          ? (current + 1) % total
+          : peek === 'left'
+            ? (current - 1 + total) % total
+            : -1;
+
+        cards.forEach((card, i) => {
+          const isFront      = i === current;
+          const isPeekTarget = i === peekIdx;
+
+          // relative stack depth (0=front, 1=first behind, etc.)
+          let rel = (i - current + total) % total;
+
+          const [ox, oy, sc, op, zi, bl] = getCardTransform(rel, isPeekTarget, peek);
+
+          // Parallax — only for back cards, not front or peek target
+          const pFactor = (isFront || isPeekTarget) ? 0 : rel * 0.5;
+          const px = withParallax ? pmx * pFactor * 14 : 0;
+          const py = withParallax ? pmy * pFactor * 6  : 0;
+
+          card.style.zIndex   = zi;
+          card.style.opacity  = op;
+          card.style.filter   = bl > 0 ? `blur(${bl}px)` : 'none';
+          card.style.transform = `translate(${ox + px}%, ${oy + py}%) scale(${sc})`;
+          card.style.pointerEvents = (isFront || isPeekTarget) ? 'none' : 'none';
+        });
+
+        dotsEl.querySelectorAll('.dot').forEach((d, i) =>
+          d.classList.toggle('active', i === current)
+        );
+      }
+
+      function setTransition(dur) {
+        const t = `transform ${dur}s cubic-bezier(.22,1,.36,1), opacity ${dur}s ease, filter ${dur}s ease`;
+        cards.forEach(c => c.style.transition = t);
+      }
+
+      function goTo(idx) {
+        if (animating) return;
+        animating = true;
+        setTransition(0.72);
+        current = ((idx % total) + total) % total;
+        peek = null;
+        applyTransforms(true);
+        setTimeout(() => { animating = false; }, 720);
+      }
+
+      // ── Hover zones ── peek on enter, advance on click, restore on leave
+      zoneR.addEventListener('mouseenter', () => {
+        if (animating) return;
+        peek = 'right';
+        setTransition(0.55);
+        applyTransforms(true);
+      });
+      zoneR.addEventListener('mouseleave', () => {
+        if (peek !== 'right') return;
+        peek = null;
+        setTransition(0.55);
+        applyTransforms(true);
+      });
+      zoneR.addEventListener('click', () => goTo(current + 1));
+
+      zoneL.addEventListener('mouseenter', () => {
+        if (animating) return;
+        peek = 'left';
+        setTransition(0.55);
+        applyTransforms(true);
+      });
+      zoneL.addEventListener('mouseleave', () => {
+        if (peek !== 'left') return;
+        peek = null;
+        setTransition(0.55);
+        applyTransforms(true);
+      });
+      zoneL.addEventListener('click', () => goTo(current - 1));
+
+      // Keyboard support
+      document.addEventListener('keydown', e => {
+        if (e.key === 'ArrowRight') goTo(current + 1);
+        if (e.key === 'ArrowLeft')  goTo(current - 1);
+      });
+
+      // Build dots
+      cards.forEach((_, i) => {
+        const d = document.createElement('div');
+        d.className = 'dot' + (i === 0 ? ' active' : '');
+        d.addEventListener('click', () => goTo(i));
+        dotsEl.appendChild(d);
+      });
+
+      // Initial placement — no transition
+      cards.forEach(c => c.style.transition = 'none');
+      applyTransforms(false);
+      requestAnimationFrame(() => setTransition(0.72));
+
+      // Parallax RAF loop
+      (function parallaxLoop() {
+        requestAnimationFrame(parallaxLoop);
+        pmx += (mx - pmx) * 0.055;
+        pmy += (my - pmy) * 0.055;
+        if (!animating && !peek) {
+          // gently drift back cards with parallax
+          const peekIdx = -1;
+          cards.forEach((card, i) => {
+            if (i === current) return;
+            let rel = (i - current + total) % total;
+            const [ox, oy, sc] = getCardTransform(rel, false, null);
+            const pFactor = rel * 0.5;
+            const px = pmx * pFactor * 14;
+            const py = pmy * pFactor * 6;
+            card.style.transform = `translate(${ox + px}%, ${oy + py}%) scale(${sc})`;
+          });
+        }
+      })();
+
+    })();
+  </script>
+
+  <script>
+    /* ── Copy buttons ── */
+    document.querySelectorAll('.copy-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        navigator.clipboard.writeText(btn.dataset.copy).then(() => {
+          btn.classList.add('copied');
+          setTimeout(() => btn.classList.remove('copied'), 2000);
+        });
+      });
+    });
+  </script>
+
+</body>
+</html>
