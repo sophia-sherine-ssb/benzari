@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Paint Box — Sophia Benzari</title>
+  <link rel="icon" href="assets/favicon.ico">
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Jost:wght@300;400&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+    :root {
+      --white:rgba(255,255,255,1.00); --w85:rgba(255,255,255,0.96);
+      --w60:rgba(255,255,255,0.82);   --w42:rgba(255,255,255,0.62);
+      --w22:rgba(255,255,255,0.30);   --w16:rgba(255,255,255,0.22);
+      --w12:rgba(255,255,255,0.18);   --w10:rgba(255,255,255,0.14);
+      --w06:rgba(255,255,255,0.08);   --px:clamp(2rem,5vw,5rem);
+    }
+    html { scroll-behavior:smooth; }
+    body { background:#0b0f14; color:var(--white); cursor:none; min-height:100vh; }
+    #bg { position:fixed; inset:0; z-index:0; }
+    #fog { position:fixed; inset:0; z-index:1; pointer-events:none;
+      background: linear-gradient(110deg,rgba(4,8,14,0.82) 0%,rgba(4,8,14,0.55) 50%,rgba(4,8,14,0.20) 100%),
+                  radial-gradient(ellipse at center,transparent 30%,rgba(0,0,0,0.45) 100%);
+    }
+    #cur { position:fixed; width:5px; height:5px; border-radius:50%; background:#fff; transform:translate(-50%,-50%); pointer-events:none; z-index:300; mix-blend-mode:difference; left:-50px; top:-50px; }
+    #cur-o { position:fixed; width:28px; height:28px; border-radius:50%; border:1px solid rgba(255,255,255,0.26); transform:translate(-50%,-50%); pointer-events:none; z-index:299; left:-50px; top:-50px; }
+    nav { position:fixed; top:2.2rem; right:var(--px); z-index:50; display:flex; gap:2.4rem; }
+    nav a { font-family:'Jost',sans-serif; font-weight:400; font-size:13px; letter-spacing:0.26em; text-transform:uppercase; color:var(--w60); text-decoration:none; transition:color .25s; }
+    nav a:hover { color:var(--white); }
+    .bottom-bar { position:fixed; bottom:0; left:0; right:0; z-index:40; padding:0 var(--px) 1.8rem; display:flex; align-items:flex-end; justify-content:space-between; pointer-events:none; }
+    .year { font-family:'Jost',sans-serif; font-weight:300; font-size:10px; letter-spacing:0.22em; color:var(--w42); }
+    .quote { font-family:'Cormorant Garamond',serif; font-style:italic; font-weight:300; font-size:clamp(9.5px,0.80vw,11.5px); color:var(--w42); text-align:right; max-width:400px; line-height:1.65; }
+    .quote cite { display:block; margin-top:0.35em; font-style:normal; font-family:'Jost',sans-serif; font-weight:300; font-size:9px; letter-spacing:0.20em; text-transform:uppercase; color:var(--w42); }
+    ::-webkit-scrollbar { width:2px; }
+    ::-webkit-scrollbar-thumb { background:var(--w12); border-radius:2px; }
+    main { position:relative; z-index:10; padding:clamp(5rem,11vh,8rem) var(--px) clamp(3rem,5vh,4rem); max-width:820px; margin:0 auto; }
+    .back-btn { display:inline-flex; align-items:center; gap:0.6rem; font-family:'Jost',sans-serif; font-weight:300; font-size:11px; letter-spacing:0.28em; text-transform:uppercase; color:var(--w42); text-decoration:none; transition:color .25s; }
+    @media (min-width:681px) { .back-btn { position:fixed; top:clamp(4rem,8vh,6rem); left:var(--px); z-index:60; } }
+    @media (max-width:680px) { .back-btn { display:inline-flex; margin-bottom:clamp(2rem,4vh,3rem); } }
+    .back-btn:hover { color:var(--w85); }
+    .back-btn:hover svg { transform:translateX(-3px); }
+    .back-btn svg { transition:transform .25s; }
+    .proj-eyebrow { font-family:'Jost',sans-serif; font-weight:300; font-size:11px; letter-spacing:0.40em; text-transform:uppercase; color:var(--w42); margin-bottom:1rem; }
+    .proj-title { font-family:'Cormorant Garamond',serif; font-weight:300; font-size:clamp(42px,6vw,80px); line-height:0.95; color:var(--white); margin-bottom:1.4rem; }
+    .proj-tags { display:flex; flex-wrap:wrap; gap:0.5rem; margin-bottom:clamp(2.5rem,5vh,4rem); }
+    .proj-tag { font-family:'Jost',sans-serif; font-weight:300; font-size:10.5px; letter-spacing:0.16em; text-transform:uppercase; color:var(--w42); border:1px solid var(--w22); padding:4px 11px; border-radius:1px; }
+    .proj-section { margin-bottom:clamp(3rem,6vh,5rem); opacity:0; transform:translateY(18px); transition:opacity .8s cubic-bezier(.22,1,.36,1),transform .8s cubic-bezier(.22,1,.36,1); }
+    .proj-section.visible { opacity:1; transform:translateY(0); }
+    .proj-section-label { font-family:'Jost',sans-serif; font-weight:300; font-size:10.5px; letter-spacing:0.40em; text-transform:uppercase; color:var(--w42); margin-bottom:1rem; }
+    .proj-rule { height:1px; background:linear-gradient(to right,var(--w16) 0%,transparent 85%); margin-bottom:1.8rem; }
+    .proj-body { font-family:'Jost',sans-serif; font-weight:300; font-size:clamp(14.5px,1.2vw,17px); line-height:1.96; color:var(--w85); }
+    .proj-body p+p { margin-top:1.1em; }
+    .proj-body strong { font-weight:400; color:var(--white); }
+    .proj-img { border-radius:2px; overflow:hidden; border:1px solid var(--w12); margin-bottom:0.8rem; background:#111620; cursor:zoom-in; transition:border-color .2s; }
+    .proj-img:hover { border-color:var(--w22); }
+    .proj-img img { width:100%; display:block; object-fit:contain; }
+    .proj-img-caption { font-family:'Cormorant Garamond',serif; font-style:italic; font-weight:300; font-size:clamp(12px,0.95vw,14px); color:var(--w42); text-align:center; margin-bottom:clamp(1.5rem,3vh,2.5rem); }
+    .proj-img-grid { display:grid; grid-template-columns:1fr 1fr; gap:clamp(1rem,2vw,1.6rem); margin-bottom:0.8rem; }
+    .proj-img-grid .proj-img { margin-bottom:0; }
+    .proj-params { width:100%; border-collapse:collapse; margin-bottom:0.8rem; }
+    .proj-params th,.proj-params td { padding:0.8rem 1rem; text-align:left; border-bottom:1px solid var(--w10); font-family:'Jost',sans-serif; font-weight:300; font-size:clamp(12px,0.95vw,14px); }
+    .proj-params th { font-weight:400; font-size:10.5px; letter-spacing:0.22em; text-transform:uppercase; color:var(--w42); }
+    .proj-params td { color:var(--w85); }
+    .proj-params td:first-child { color:var(--white); font-weight:400; }
+    .proj-params tr:last-child td,.proj-params tr:last-child th { border-bottom:none; }
+    .proj-result { border-left:1px solid var(--w22); padding:1rem 1.4rem; margin:1.6rem 0; }
+    .proj-result p { font-family:'Cormorant Garamond',serif; font-style:italic; font-weight:300; font-size:clamp(15px,1.4vw,20px); line-height:1.7; color:var(--w85); }
+    #lightbox{display:none;position:fixed;inset:0;z-index:500;background:rgba(5,9,15,0.92);align-items:center;justify-content:center;cursor:zoom-out;}
+    #lightbox.open{display:flex;}
+    #lightbox img{max-width:90vw;max-height:88vh;object-fit:contain;border-radius:2px;border:1px solid var(--w12);}
+    #lightbox-close{position:fixed;top:2rem;right:2rem;width:40px;height:40px;display:flex;align-items:center;justify-content:center;background:var(--w06);border:1px solid var(--w22);border-radius:50%;cursor:pointer;color:var(--w85);font-size:18px;transition:background .2s;}
+    #lightbox-close:hover{background:var(--w12);}
+
+    body.access-public .admin-only { display:none !important; }
+  </style>
+</head>
+<body>
+  <div id="lightbox"><span id="lightbox-close">✕</span><img id="lightbox-img" src="" alt=""/></div>
+  <div id="cur"></div>
+  <div id="cur-o"></div>
+  <canvas id="bg"></canvas>
+  <div id="fog"></div>
+
+  <nav>
+    <a href="index.html">Home</a>
+    <a href="index.html?view=work">Work</a>
+    <a href="index.html?view=about">About</a>
+    <a href="index.html?view=contact">Contact</a>
+  </nav>
+
+  <main>
+    <a class="back-btn" href="index.html?view=work">
+      <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M9 2L4 7l5 5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      Back to Work
+    </a>
+
+    <p class="proj-eyebrow">Woodworking &thinsp;&middot;&thinsp; Fusion 360 &thinsp;&middot;&thinsp; Personal Project &thinsp;&middot;&thinsp; 2025</p>
+    <h1 class="proj-title">Boîte à peinture</h1>
+    <div class="proj-tags">
+      <span class="proj-tag">Woodworking</span><span class="proj-tag">Fusion 360</span>
+      <span class="proj-tag">Hand Tools</span><span class="proj-tag">Joinery</span>
+      <span class="proj-tag">Laser Engraving</span><span class="proj-tag">Product Design</span>
+    </div>
+
+    <!-- OVERVIEW -->
+    <div class="proj-section">
+      <p class="proj-section-label">Overview</p><div class="proj-rule"></div>
+      <div class="proj-body">
+        <p>A custom oil painting supply box, designed and built from scratch as a personal project. The brief was self-imposed: a compact, portable case that could hold a glass palette, three small glass jars for turpentine and medium, and a set of brushes — all secured, all accessible, nothing rattling around. The box had to open flat, close with a satisfying click, and look like something worth keeping.</p>
+        <p>The design went through multiple sketched iterations before moving to CAD, and the fabrication required working through joinery decisions that weren't obvious until the material was in hand. It was made with the guidance of <strong>Andrew</strong>, who runs the USC Maker Space woodshop.</p>
+      </div>
+      <div class="proj-result"><p>A fully functional, hand-built paint box in walnut and ebonised wood, with laser-engraved lid, magnetic closure, and fitted glass palette insert.</p></div>
+    </div>
+
+    <!-- FINISHED BOX -->
+    <div class="proj-section">
+      <p class="proj-section-label">The Finished Box</p><div class="proj-rule"></div>
+      <div class="proj-img"><img src="images/paintbox/PB-front.png" alt="Paint box — front view, closed"/></div>
+      <p class="proj-img-caption">Finished box closed — walnut lid with routed border detail, ebonised body, brass piano hinge.</p>
+      <div class="proj-img-grid">
+        <div>
+          <div class="proj-img"><img src="images/paintbox/PB-back.png" alt="Paint box — back view showing hinge"/></div>
+          <p class="proj-img-caption">Back — 4-inch brass piano hinge seated flush into the wood.</p>
+        </div>
+        <div>
+          <div class="proj-img"><img src="images/paintbox/PB-name_engraving.png" alt="Laser engraving — Boîte à peinture de Sophia S. Benzari"/></div>
+          <p class="proj-img-caption"><em>Boîte à peinture de Sophia S. Benzari</em> — laser engraved on the walnut base panel.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- DESIGN PROCESS -->
+    <div class="proj-section">
+      <p class="proj-section-label">Design Process — Sketches</p><div class="proj-rule"></div>
+      <div class="proj-body">
+        <p>The design started entirely on paper. The first sketches established the core requirements: a glass palette recessed into the base, three small glass jars seated in routed circular holders, a brush compartment along one side, and a hinged lid that opens to 180°. Magnet pairs — one set in the lid, one in the body — would hold the box closed without a latch.</p>
+        <p>The most time-consuming part of the sketch phase was working out the joinery and tolerances. The sketches show multiple iterations of the wall cross-section — testing rabbeted joints, tongue-and-groove, and dado options — to find a construction method that would allow the wood to expand and contract without splitting the joints. A <strong>rabbeted joint</strong> was selected for the frame walls, with the base panel floating inside to accommodate seasonal movement.</p>
+      </div>
+      <div class="proj-img-grid" style="margin-top:1.4rem;">
+        <div>
+          <div class="proj-img"><img src="images/paintbox/PB-sketch1.png" alt="Design sketch 1 — overall layout, dimensions, magnet placement"/></div>
+          <p class="proj-img-caption">First sketches — establishing overall dimensions, lid/base split, jar holder positions, and magnet locations.</p>
+        </div>
+        <div>
+          <div class="proj-img"><img src="images/paintbox/PB-sketch2.png" alt="Design sketch 2 — wall cross sections and glass palette dimensions"/></div>
+          <p class="proj-img-caption">Wall cross-section studies — working out the palette recess depth and frame thickness.</p>
+        </div>
+      </div>
+      <div class="proj-img-grid" style="margin-top:0.8rem;">
+        <div>
+          <div class="proj-img"><img src="images/paintbox/PB-sketch3.png" alt="Design sketch 3 — joinery options and container placement"/></div>
+          <p class="proj-img-caption">Joinery options — tongue-and-groove, rabbet, dado, and half-lap studied side by side.</p>
+        </div>
+        <div>
+          <div class="proj-img"><img src="images/paintbox/PB-sketch4.png" alt="Design sketch 4 — final dimensions and lid detail"/></div>
+          <p class="proj-img-caption">Final dimensioned sketch — 108 × 126 mm footprint, rabbeted walls, lid border routed to 4mm depth.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- CAD -->
+    <div class="proj-section">
+      <p class="proj-section-label">CAD — Fusion 360</p><div class="proj-rule"></div>
+      <div class="proj-body">
+        <p>The sketched design was modelled in Fusion 360 before any wood was cut. The CAD served two purposes: validating that all components fit within the intended dimensions, and checking that the lid panel, base panel, jar holders, and glass palette could all coexist in the interior without interference. The model included the glass jars and palette as bodies so their clearances could be verified directly.</p>
+        <p>Two versions were produced — one showing the box with opaque lids on the jars (as they would normally sit) and one with transparent glass jar bodies visible, to check the recess depths. The lid's circular cutouts in the model correspond to the magnet positions, which were matched to recesses routed in both the lid and the body.</p>
+      </div>
+      <div class="proj-img-grid" style="margin-top:1.4rem;">
+        <div>
+          <div class="proj-img"><img src="images/paintbox/PB-CADver1.png" alt="Fusion 360 render — version 1, solid jar lids"/></div>
+          <p class="proj-img-caption">CAD version 1 — jar holders and glass palette seated in the base, magnet positions on lid interior.</p>
+        </div>
+        <div>
+          <div class="proj-img"><img src="images/paintbox/PB-CADver2.png" alt="Fusion 360 render — version 2, transparent jars"/></div>
+          <p class="proj-img-caption">CAD version 2 — glass jar bodies shown transparent to verify recess depth and clearance.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- FABRICATION -->
+    <div class="proj-section">
+      <p class="proj-section-label">Fabrication</p><div class="proj-rule"></div>
+      <div class="proj-body">
+        <p>The body walls were cut from ebonised hardwood stock — dark, dense, and finished with a natural oil that deepened the colour. The base panel and lid were cut from a single piece of walnut, chosen for its grain pattern and warm contrast against the dark walls. All pieces were dimensioned on the table saw, then the rabbets were cut using a router table to the tolerances specified in the sketches.</p>
+        <p>The circular recesses for the glass jars were routed using a forstner bit, sized to hold the jars snugly without glue. Neodymium magnets were press-fit into matching recesses drilled in both the lid and the body — a 7/8" blade was used for the fat magnets, a smaller bit for the skinny rod magnets in the lid. The glass palette sits in a shallow routed channel, retained by the frame walls.</p>
+        <p>The walnut lid was then laser engraved with <em>Boîte à peinture de Sophia S. Benzari</em> in a serif font, followed by a routed border detail and a final hand-sand before assembly. The brass piano hinge was set into a shallow dado cut along the back edge of both pieces so it sits flush.</p>
+      </div>
+
+      <div class="proj-img" style="margin-top:1.4rem;"><img src="images/paintbox/PB-materials.png" alt="All components laid out before assembly"/></div>
+      <p class="proj-img-caption">All components before assembly — walnut base panel, ebonised wall pieces, glass palette, glass jars, and magnets.</p>
+
+      <div class="proj-img-grid" style="margin-top:0.8rem;">
+        <div>
+          <div class="proj-img"><img src="images/paintbox/PB-bottom1.png" alt="Parts laid out — walnut panel with routed jar recess and ebonised walls"/></div>
+          <p class="proj-img-caption">Base panel and wall components — jar recess routed, walls cut to length with rabbets.</p>
+        </div>
+        <div>
+          <div class="proj-img"><img src="images/paintbox/PB-bottom2.png" alt="Assembly in progress — walls positioned around base panel with engraving visible"/></div>
+          <p class="proj-img-caption">Dry assembly — laser engraving on the base panel visible before the walls were glued up.</p>
+        </div>
+      </div>
+
+      <div class="proj-img-grid" style="margin-top:0.8rem;">
+        <div>
+          <div class="proj-img"><img src="images/paintbox/PB-bottom3.png" alt="Bottom components spread out — top view showing all parts"/></div>
+          <p class="proj-img-caption">All base components spread flat — walnut panel, four wall pieces, and acrylic palette guard.</p>
+        </div>
+        <div>
+          <div class="proj-img"><img src="images/paintbox/PB-bottom4.png" alt="Box body partially assembled — walls joined, palette fitting checked"/></div>
+          <p class="proj-img-caption">Body frame assembled — palette fit checked before the hinge was installed.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- INSIDE -->
+    <div class="proj-section">
+      <p class="proj-section-label">Interior</p><div class="proj-rule"></div>
+      <div class="proj-body">
+        <p>The interior holds three small glass jars in routed circular seats on the right side of the base, with a removable acrylic-protected glass palette occupying the left. The lid interior has matching recesses for the three neodymium magnets that pair with the body magnets to close the box firmly. When the lid is lifted, the magnet pull is satisfying but not excessive — calibrated by the magnet size and the wood thickness above each recess.</p>
+      </div>
+      <div class="proj-img-grid" style="margin-top:1.4rem;">
+        <div>
+          <div class="proj-img"><img src="images/paintbox/PB-inside.png" alt="Interior — glass jar being placed into routed recess, palette visible"/></div>
+          <p class="proj-img-caption">Interior with glass jar being seated — routed circular recess holds it without adhesive.</p>
+        </div>
+        <div>
+          <div class="proj-img"><img src="images/paintbox/PB-inside2.png" alt="Interior — lid open showing magnets in lid and jar in body"/></div>
+          <p class="proj-img-caption">Lid interior showing three neodymium magnets, paired with magnets recessed in the body below.</p>
+        </div>
+      </div>
+      <div class="proj-img" style="margin-top:0.8rem;"><img src="images/paintbox/PB-glassware.png" alt="Glassware fitting — palette and jar being placed together"/></div>
+      <p class="proj-img-caption">Palette and jar fitting together in the base — the palette sits in a shallow channel, retained by the surrounding frame.</p>
+    </div>
+
+    <!-- SPECS -->
+    <div class="proj-section">
+      <p class="proj-section-label">Specifications</p><div class="proj-rule"></div>
+      <table class="proj-params">
+        <thead><tr><th>Item</th><th>Detail</th></tr></thead>
+        <tbody>
+          <tr><td>Exterior dimensions</td><td>~126 × 108 × 40 mm</td></tr>
+          <tr><td>Lid material</td><td>Walnut — natural finish</td></tr>
+          <tr><td>Body material</td><td>Ebonised hardwood — oil finished</td></tr>
+          <tr><td>Joinery</td><td>Rabbeted frame walls, floating base panel</td></tr>
+          <tr><td>Closure</td><td>Neodymium magnet pairs — lid + body recesses</td></tr>
+          <tr><td>Hinge</td><td>4-inch brass piano hinge, flush-set</td></tr>
+          <tr><td>Palette</td><td>Glass palette — 100 × 70 mm, acrylic-protected</td></tr>
+          <tr><td>Jar holders</td><td>3 × routed circular recesses — 21 mm diameter</td></tr>
+          <tr><td>Engraving</td><td>Laser engraved walnut — <em>Boîte à peinture de Sophia S. Benzari</em></td></tr>
+          <tr><td>CAD software</td><td>Fusion 360</td></tr>
+          <tr><td>Tools</td><td>Table saw, router table, forstner bits, laser engraver, hand sanding</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- REFLECTIONS -->
+    <div class="proj-section">
+      <p class="proj-section-label">Reflections</p><div class="proj-rule"></div>
+      <div class="proj-body">
+        <p>The joinery phase took longer than any other part of the project. Getting the rabbet depths right so that the walls sat flush, the base panel floated correctly, and the lid closed evenly required several rounds of test cuts on scrap before committing to the final pieces. The floating panel decision in particular — leaving the walnut base panel unglued so it can move with humidity — was a constraint learned from the sketching and research phase, not from prior experience.</p>
+        <p>The magnet calibration was also non-trivial. The first attempt used magnets that were too strong — the lid would slam shut and was difficult to open single-handed. The final configuration uses a combination of fat and rod magnets at staggered depths to achieve a closure force that holds securely but opens cleanly.</p>
+        <p>This was a personal project, built because I needed the object. That changes how you approach decisions — there's no rubric, no checkoff, and no one to approve it. You either like it or you don't. I like it.</p>
+      </div>
+    </div>
+  </main>
+
+  <div class="bottom-bar">
+    <span class="year">© 2026</span>
+    <blockquote class="quote">"I know of no better life purpose than to perish in attempting the great and the impossible"<cite>— Friedrich Nietzsche</cite></blockquote>
+  </div>
+
+  <script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.165.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.165.0/examples/jsm/"}}</script>
+  <script type="module">
+    import * as THREE from 'three';
+    import { RGBELoader } from 'three/addons/loaders/RGBELoader.js';
+    const canvas=document.getElementById('bg'),scene=new THREE.Scene();
+    const camera=new THREE.PerspectiveCamera(75,innerWidth/innerHeight,.1,1000);
+    const renderer=new THREE.WebGLRenderer({canvas,antialias:true});
+    renderer.setSize(innerWidth,innerHeight); renderer.setPixelRatio(Math.min(devicePixelRatio,2));
+    renderer.toneMapping=THREE.ACESFilmicToneMapping; renderer.toneMappingExposure=0.82;
+    renderer.outputColorSpace=THREE.SRGBColorSpace; scene.background=new THREE.Color(0x0d1520);
+    const pmrem=new THREE.PMREMGenerator(renderer); pmrem.compileEquirectangularShader();
+    new RGBELoader().setPath('./').load('assets/mountain.hdr',
+      tex=>{const env=pmrem.fromEquirectangular(tex).texture;scene.background=env;scene.environment=env;tex.dispose();pmrem.dispose();},null,
+      ()=>{const geo=new THREE.SphereGeometry(500,32,16);const mat=new THREE.ShaderMaterial({side:THREE.BackSide,uniforms:{top:{value:new THREE.Color(0x060b14)},mid:{value:new THREE.Color(0x112030)},bottom:{value:new THREE.Color(0x2d5470)}},vertexShader:`varying vec3 vP;void main(){vP=position;gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.);}`,fragmentShader:`varying vec3 vP;uniform vec3 top,mid,bottom;void main(){float h=normalize(vP).y;vec3 c=mix(bottom,mid,smoothstep(-.3,.3,h));c=mix(c,top,smoothstep(.2,1.,h));gl_FragColor=vec4(c,1.);}`});scene.add(new THREE.Mesh(geo,mat));scene.background=null;}
+    );
+    const tgt={lon:0,lat:0},state={lon:0,lat:0},euler=new THREE.Euler(0,0,0,'YXZ');
+    window.addEventListener('mousemove',e=>{tgt.lon=(e.clientX/innerWidth-.5)*14;tgt.lat=-(e.clientY/innerHeight-.5)*9;});
+    const dot=document.getElementById('cur'),ring=document.getElementById('cur-o');
+    let mx=0,my=0,rx=0,ry=0;
+    window.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;});
+    (function tc(){dot.style.left=mx+'px';dot.style.top=my+'px';rx+=(mx-rx)*.14;ry+=(my-ry)*.14;ring.style.left=rx+'px';ring.style.top=ry+'px';requestAnimationFrame(tc);})();
+    window.addEventListener('resize',()=>{camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();renderer.setSize(innerWidth,innerHeight);});
+    (function animate(){requestAnimationFrame(animate);state.lon+=(tgt.lon-state.lon)*.06;state.lat+=(tgt.lat-state.lat)*.06;state.lat=Math.max(-85,Math.min(85,state.lat));euler.y=THREE.MathUtils.degToRad(-state.lon);euler.x=THREE.MathUtils.degToRad(state.lat);camera.quaternion.setFromEuler(euler);renderer.render(scene,camera);})();
+  </script>
+  <script>
+    const obs=new IntersectionObserver(entries=>{entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('visible');obs.unobserve(e.target);}});},{threshold:0.08});
+    document.querySelectorAll('.proj-section').forEach(el=>obs.observe(el));
+    const lb=document.getElementById('lightbox'),lbImg=document.getElementById('lightbox-img');
+    document.querySelectorAll('.proj-img').forEach(wrap=>{
+      wrap.addEventListener('click',()=>{const img=wrap.querySelector('img');if(img){lbImg.src=img.src;lb.classList.add('open');}});
+    });
+    document.getElementById('lightbox-close').addEventListener('click',()=>lb.classList.remove('open'));
+    lb.addEventListener('click',e=>{if(e.target===lb)lb.classList.remove('open');});
+    document.addEventListener('keydown',e=>{if(e.key==='Escape')lb.classList.remove('open');});
+
+    // Access control
+    (function(){
+      var access = sessionStorage.getItem('sb_access');
+      if (!access) {
+        // Not authenticated — redirect to homepage gate
+        window.location.href = 'index.html';
+      } else if (access === 'public') {
+        document.body.classList.add('access-public');
+      }
+    })();
+  </script>
+</body>
+</html>
