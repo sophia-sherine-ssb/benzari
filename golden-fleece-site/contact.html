@@ -1,194 +1,92 @@
-<!doctype html>
-<html lang="en">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Contact | Golden Fleece</title>
-<meta name="description" content="Pilot Golden Fleece with us. Contact the team.">
-<meta property="og:title" content="Contact | Golden Fleece">
-<meta property="og:description" content="Pilot Golden Fleece with us. Contact the team.">
-<meta name="theme-color" content="#000000">
-<link rel="icon" href="favicon.svg" type="image/svg+xml">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600;800&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Contact | Golden Fleece</title><meta name="description" content="A wax thermal buffer for pad-mounted transformers, plus a risk dashboard."><link rel="icon" href="favicon.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
-body{margin:0;font-family:'IBM Plex Sans',system-ui,sans-serif;color:#F4F4F5;background:#000}
-a{color:#4C9AFF}a:hover{color:#8DBEFF}
-.gf-layer{position:absolute;left:0;top:0;width:100%;height:100%;display:block}
-.gf-heat{opacity:0;animation:gfHeat 16s ease-in-out infinite}
-.gf-blue{opacity:0;animation:gfBlue 16s ease-in-out infinite}
-.gf-move{position:absolute;left:0;top:0;width:100%;height:100%;animation:gfMove 16s ease-in-out infinite}
-.gf-glow-red{opacity:0;animation:gfHeat 16s ease-in-out infinite}
-.gf-glow-blue{opacity:0;animation:gfBlue 16s ease-in-out infinite}
-.gf-cap{position:absolute;left:0;top:0;right:0;opacity:0}
-.gf-capA{opacity:1;animation:gfCapA 16s ease-in-out infinite}
-.gf-capB{animation:gfCapB 16s ease-in-out infinite}
-.gf-capC{animation:gfCapC 16s ease-in-out infinite}
-.gf-capD{animation:gfCapD 16s ease-in-out infinite}
-.gf-bar{width:0;animation:gfBar 16s linear infinite}
-@keyframes gfHeat{0%,12%{opacity:0}38%,54%{opacity:1}80%,100%{opacity:0}}
-@keyframes gfBlue{0%,46%{opacity:0}54%,80%{opacity:1}88%,100%{opacity:0}}
-@keyframes gfMove{0%,46%{transform:translate(0,0) scale(1)}54%,80%{transform:translate(-7%,5%) scale(1.03)}88%,100%{transform:translate(0,0) scale(1)}}
-@keyframes gfCapA{0%,10%{opacity:1}14%,96%{opacity:0}100%{opacity:1}}
-@keyframes gfCapB{0%,10%{opacity:0}14%,42%{opacity:1}46%,100%{opacity:0}}
-@keyframes gfCapC{0%,46%{opacity:0}50%,76%{opacity:1}80%,100%{opacity:0}}
-@keyframes gfCapD{0%,80%{opacity:0}86%,94%{opacity:1}98%,100%{opacity:0}}
-@keyframes gfBar{0%{width:0}100%{width:100%}}
-.gf-blob{position:absolute;border-radius:0 100%;will-change:transform;background-image:radial-gradient(circle,var(--c) 0,var(--c) 2.2px,transparent 2.9px),radial-gradient(circle,var(--c) 0,var(--c) 1px,transparent 1.7px),radial-gradient(closest-side,var(--cg),transparent);background-size:11px 11px,6px 6px,100% 100%;background-position:0 0,3px 4px,0 0;-webkit-mask-image:radial-gradient(closest-side,#000 10%,rgba(0,0,0,0.75) 45%,transparent 100%);mask-image:radial-gradient(closest-side,#000 10%,rgba(0,0,0,0.75) 45%,transparent 100%)}
-.gf-pulse{position:absolute;width:0;height:0}
-.gf-ring{position:absolute;left:0;top:0;width:130px;height:130px;margin:-65px 0 0 -65px;border-radius:50%;border:1.5px solid var(--pc);opacity:0;animation:gfRing var(--pd,3s) ease-out infinite}
-.gf-ring2{animation-delay:calc(var(--pd,3s) * -0.5)}
-.gf-dot{position:absolute;left:0;top:0;width:8px;height:8px;margin:-4px 0 0 -4px;border-radius:50%;background:var(--pc);box-shadow:0 0 12px var(--pc)}
-.gf-tag{position:absolute;left:18px;top:-16px;white-space:nowrap;font-size:12px;line-height:1.4;color:var(--pc);opacity:0.55;pointer-events:none}
-@keyframes gfRing{0%{transform:scale(0.12);opacity:0.75}100%{transform:scale(1);opacity:0}}
-.gf-dots-base{background-image:radial-gradient(circle at 50% 50%,rgba(255,255,255,0.09) 0,rgba(255,255,255,0.09) 1.5px,transparent 2.1px);background-size:13px 13px}
-.gf-dots-lit{-webkit-mask-image:radial-gradient(circle at 50% 50%,#000 0,#000 1.6px,transparent 2.2px);mask-image:radial-gradient(circle at 50% 50%,#000 0,#000 1.6px,transparent 2.2px);-webkit-mask-size:13px 13px;mask-size:13px 13px;-webkit-mask-repeat:repeat;mask-repeat:repeat}
-.gf-glow{position:absolute;border-radius:50%;will-change:transform,opacity}
-.gf-l1{animation:gfL1 26s ease-in-out infinite}
-.gf-l2{animation:gfL2 34s ease-in-out infinite}
-.gf-l3{animation:gfL3 30s ease-in-out infinite}
-@keyframes gfL1{0%,100%{transform:translate(0,0) scale(1);opacity:0.75}50%{transform:translate(110px,70px) scale(1.15);opacity:1}}
-@keyframes gfL2{0%,100%{transform:translate(0,0) scale(1);opacity:1}33%{transform:translate(-100px,50px) scale(0.92);opacity:0.65}66%{transform:translate(50px,-80px) scale(1.1);opacity:0.9}}
-@keyframes gfL3{0%,100%{transform:translate(0,0) scale(1);opacity:0.9}50%{transform:translate(-80px,-90px) scale(1.2);opacity:0.6}}
-.gf-mk{position:absolute;width:0;height:0}
-.gf-ico{position:absolute;left:-23px;top:-23px;width:46px;height:46px;border-radius:50%;border:2px solid var(--pc);background:rgba(0,0,0,0.45);color:var(--pc);display:flex;align-items:center;justify-content:center;box-sizing:border-box;opacity:0.5}
-.gf-mt{position:absolute;left:36px;top:-19px;white-space:nowrap;color:var(--pc);opacity:0.5;display:flex;flex-direction:column;gap:2px}
-.gf-mt b{font-size:13px;letter-spacing:1.5px}
-.gf-mt span{font-size:12px}
-.gf-blink{position:absolute;left:14px;top:-30px;width:10px;height:10px;border-radius:50%;background:var(--pc);box-shadow:0 0 10px var(--pc);animation:gfBlink 1.1s steps(1,end) infinite}
-.gf-bd{position:absolute;width:9px;height:9px;margin:-4px 0 0 -4px;border-radius:50%;background:var(--pc);box-shadow:0 0 10px var(--pc);animation:gfBlink 1.1s steps(1,end) infinite}
-@keyframes gfBlink{0%,49%{opacity:1}50%,100%{opacity:0.1}}
-@media (prefers-reduced-motion: reduce){
-.gf-l1,.gf-l2,.gf-l3,.gf-ring,.gf-blink,.gf-bd{animation:none!important}
-}
-.gf-scrim{background:linear-gradient(180deg,rgba(0,0,0,0) 0,rgba(0,0,0,0.72) 140px,rgba(0,0,0,0.72) calc(100% - 140px),rgba(0,0,0,0) 100%)}
-.gf-stage{perspective:1500px}
-.gf-stack{transform-style:preserve-3d;transform:rotateX(60deg) rotateZ(-38deg)}
-.gf-plate{position:absolute;left:0;top:0;width:100%;height:100%;border-radius:12px;box-sizing:border-box;transform:translateZ(var(--z1))}
-.gf-base{position:absolute;left:0;top:0;width:100%;height:100%;border-radius:12px;box-sizing:border-box;border:1px dashed #3A3A42;background:rgba(255,255,255,0.02);transform:translateZ(-300px)}
-@supports (animation-timeline: view()){
-.gf-plate{transform:translateZ(var(--z0));animation:gfExplode linear both;animation-timeline:view();animation-range:entry 15% cover 55%}
-.gf-lab{opacity:0;animation:gfLab linear both;animation-timeline:view();animation-range:var(--lr)}
-}
-@keyframes gfExplode{from{transform:translateZ(var(--z0))}to{transform:translateZ(var(--z1))}}
-@keyframes gfLab{from{opacity:0;transform:translateX(16px)}to{opacity:1;transform:translateX(0)}}
-.gf-d1{animation:gfD1 26s ease-in-out infinite}
-.gf-d2{animation:gfD2 34s ease-in-out infinite}
-.gf-d3{animation:gfD3 30s ease-in-out infinite}
-@keyframes gfD1{0%,100%{transform:translate(0,0) scale(1)}50%{transform:translate(90px,60px) scale(1.15)}}
-@keyframes gfD2{0%,100%{transform:translate(0,0) scale(1)}33%{transform:translate(-80px,40px) scale(0.9)}66%{transform:translate(40px,-70px) scale(1.1)}}
-@keyframes gfD3{0%,100%{transform:translate(0,0) scale(1)}50%{transform:translate(-60px,-80px) scale(1.2)}}
-.gf-view-btn{background:transparent;color:#F4F4F5;border:1px solid #3A3A42;border-radius:999px;font-family:inherit;font-size:16px;font-weight:600;padding:10px 20px;cursor:pointer}
-.gf-view-btn:hover{border-color:#4C9AFF;color:#8DBEFF}
-@media (prefers-reduced-motion: reduce){
-.gf-heat,.gf-blue,.gf-move,.gf-glow-red,.gf-glow-blue,.gf-cap,.gf-bar,.gf-d1,.gf-d2,.gf-d3{animation:none!important}
-}.gf-nav a:hover{color:#F4F4F5}
-.gf-faq summary{cursor:pointer;font-size:19px;font-weight:600;padding:22px 0;list-style:none;display:flex;justify-content:space-between;gap:16px}
-.gf-faq summary::-webkit-details-marker{display:none}
-.gf-faq summary::after{content:"+";color:#4C9AFF;font-size:24px;line-height:1}
-.gf-faq[open] summary::after{content:"\2212"}
-</style>
-</head>
-<body>
-<div style="position:relative;overflow:hidden;width:100%;background:#000">
-
-<!-- BACKGROUND: dark city map, a dot field that lights up in smooth groups (red at the top, blue at the bottom), and alert markers -->
-<div aria-hidden="true" style="position:absolute;left:0;top:0;width:100%;height:100%;z-index:0;pointer-events:none;overflow:hidden">
-<img src="assets/city-map.jpg" alt="" style="position:absolute;left:0;top:0;width:100%;height:100%;object-fit:cover;opacity:0.55">
-<!-- Warnings near the top -->
-<div class="gf-mk" style="left:7%;top:4%;--pc:#FF5A5F;--pd:2.2s"><div class="gf-ring"></div><div class="gf-ring gf-ring2"></div><div class="gf-ico"><svg width="22" height="22" viewBox="0 0 16 16"><path d="M8 1.5 15 14H1z" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><path d="M8 6v4M8 12v.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></div><div class="gf-blink"></div><div class="gf-mt"><b>WARNING! OVERHEATING SIGNS</b><span>Load 118% of rating · ambient 41°C</span></div></div>
-<div class="gf-mk" style="left:76%;top:8%;--pc:#FF5A5F;--pd:2s"><div class="gf-ring"></div><div class="gf-ring gf-ring2"></div><div class="gf-ico"><svg width="22" height="22" viewBox="0 0 16 16"><path d="M8 1.5 15 14H1z" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><path d="M8 6v4M8 12v.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></div><div class="gf-blink" style="animation-delay:-0.4s"></div><div class="gf-mt"><b>WARNING! OVERHEATING SIGNS</b><span>Night low stayed above 30°C</span></div></div>
-<div class="gf-mk" style="left:36%;top:14%;--pc:#FF5A5F;--pd:2.4s"><div class="gf-ring"></div><div class="gf-ring gf-ring2"></div><div class="gf-ico"><svg width="22" height="22" viewBox="0 0 16 16"><path d="M8 1.5 15 14H1z" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><path d="M8 6v4M8 12v.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></div><div class="gf-blink" style="animation-delay:-0.7s"></div><div class="gf-mt"><b>WARNING! OVERHEATING SIGNS</b><span>Evening event: demand up 35%</span></div></div>
-<div class="gf-mk" style="left:12%;top:25%;--pc:#FF5A5F;--pd:2.3s"><div class="gf-ring"></div><div class="gf-ring gf-ring2"></div><div class="gf-ico"><svg width="22" height="22" viewBox="0 0 16 16"><path d="M8 1.5 15 14H1z" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><path d="M8 6v4M8 12v.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></div><div class="gf-blink" style="animation-delay:-0.2s"></div><div class="gf-mt"><b>WARNING! OVERHEATING SIGNS</b><span>Load 112% · third hot day</span></div></div>
-<div class="gf-bd" style="left:90%;top:17%;--pc:#FF5A5F"></div>
-<div class="gf-bd" style="left:58%;top:6%;--pc:#FF5A5F;animation-delay:-0.5s"></div>
-<div class="gf-bd" style="left:24%;top:3%;--pc:#FF5A5F;animation-delay:-0.8s"></div>
-<div class="gf-bd" style="left:66%;top:27%;--pc:#FF5A5F;animation-delay:-0.3s"></div>
-<div class="gf-bd" style="left:48%;top:21%;--pc:#FF5A5F;animation-delay:-0.9s"></div>
-<div class="gf-bd" style="left:30%;top:36%;--pc:#B07CFF;animation-duration:1.8s"></div>
-<div class="gf-bd" style="left:84%;top:44%;--pc:#B07CFF;animation-duration:2s;animation-delay:-0.6s"></div>
-
-<!-- Crisis averted near the bottom -->
-<div class="gf-mk" style="left:9%;top:58%;--pc:#4C9AFF;--pd:4s"><div class="gf-ring"></div><div class="gf-ring gf-ring2"></div><div class="gf-ico"><svg width="22" height="22" viewBox="0 0 16 16"><path d="M3.5 8.4l3 3 6-6.4" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div class="gf-mt"><b>CRISIS AVERTED!</b><span>Heat absorbed, unit back to normal</span></div></div>
-<div class="gf-mk" style="left:72%;top:66%;--pc:#4C9AFF;--pd:4.4s"><div class="gf-ring"></div><div class="gf-ring gf-ring2"></div><div class="gf-ico"><svg width="22" height="22" viewBox="0 0 16 16"><path d="M3.5 8.4l3 3 6-6.4" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div class="gf-mt"><b>CRISIS AVERTED!</b><span>Peak held lower (simulated)</span></div></div>
-<div class="gf-mk" style="left:22%;top:80%;--pc:#4C9AFF;--pd:4.2s"><div class="gf-ring"></div><div class="gf-ring gf-ring2"></div><div class="gf-ico"><svg width="22" height="22" viewBox="0 0 16 16"><path d="M3.5 8.4l3 3 6-6.4" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div class="gf-mt"><b>CRISIS AVERTED!</b><span>Back to normal after sunset</span></div></div>
-<div class="gf-mk" style="left:60%;top:92%;--pc:#4C9AFF;--pd:4.6s"><div class="gf-ring"></div><div class="gf-ring gf-ring2"></div><div class="gf-ico"><svg width="22" height="22" viewBox="0 0 16 16"><path d="M3.5 8.4l3 3 6-6.4" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div class="gf-mt"><b>CRISIS AVERTED!</b><span>Wax reset overnight</span></div></div>
-<div class="gf-mk" style="left:90%;top:75%;--pc:#4C9AFF;--pd:4.8s"><div class="gf-ring"></div><div class="gf-dot"></div></div>
-<div class="gf-mk" style="left:38%;top:70%;--pc:#4C9AFF;--pd:4.5s"><div class="gf-ring"></div><div class="gf-dot"></div></div>
-<div class="gf-mk" style="left:84%;top:97%;--pc:#4C9AFF;--pd:4.7s"><div class="gf-ring"></div><div class="gf-dot"></div></div>
-
-<div class="gf-dots-base" style="position:absolute;left:0;top:0;width:100%;height:100%"></div>
-<div class="gf-dots-lit" style="position:absolute;left:0;top:0;width:100%;height:100%">
-<div class="gf-glow gf-l1" style="width:1100px;height:700px;left:-12%;top:-2%;background:radial-gradient(closest-side,rgba(255,55,50,0.95),rgba(255,55,50,0.45) 45%,rgba(255,55,50,0))"></div>
-<div class="gf-glow gf-l2" style="width:900px;height:620px;left:50%;top:4%;background:radial-gradient(closest-side,rgba(235,35,55,0.95),rgba(235,35,55,0.45) 45%,rgba(235,35,55,0))"></div>
-<div class="gf-glow gf-l3" style="width:700px;height:500px;left:20%;top:12%;background:radial-gradient(closest-side,rgba(255,90,60,0.9),rgba(255,90,60,0.4) 45%,rgba(255,90,60,0))"></div>
-<div class="gf-glow gf-l1" style="width:800px;height:560px;left:70%;top:16%;animation-delay:-9s;background:radial-gradient(closest-side,rgba(255,55,75,0.9),rgba(255,55,75,0.4) 45%,rgba(255,55,75,0))"></div>
-<div class="gf-glow gf-l2" style="width:900px;height:600px;left:-10%;top:24%;animation-delay:-14s;background:radial-gradient(closest-side,rgba(225,50,110,0.85),rgba(225,50,110,0.4) 45%,rgba(225,50,110,0))"></div>
-<div class="gf-glow gf-l3" style="width:800px;height:560px;left:45%;top:32%;animation-delay:-6s;background:radial-gradient(closest-side,rgba(190,65,170,0.8),rgba(190,65,170,0.38) 45%,rgba(190,65,170,0))"></div>
-<div class="gf-glow gf-l1" style="width:800px;height:560px;left:5%;top:42%;animation-delay:-18s;background:radial-gradient(closest-side,rgba(140,90,230,0.8),rgba(140,90,230,0.38) 45%,rgba(140,90,230,0))"></div>
-<div class="gf-glow gf-l2" style="width:900px;height:600px;left:55%;top:50%;animation-delay:-11s;background:radial-gradient(closest-side,rgba(95,115,245,0.85),rgba(95,115,245,0.4) 45%,rgba(95,115,245,0))"></div>
-<div class="gf-glow gf-l3" style="width:900px;height:620px;left:-8%;top:60%;animation-delay:-20s;background:radial-gradient(closest-side,rgba(76,154,255,0.85),rgba(76,154,255,0.4) 45%,rgba(76,154,255,0))"></div>
-<div class="gf-glow gf-l1" style="width:1000px;height:680px;left:45%;top:70%;animation-delay:-4s;background:radial-gradient(closest-side,rgba(60,130,255,0.9),rgba(60,130,255,0.42) 45%,rgba(60,130,255,0))"></div>
-<div class="gf-glow gf-l2" style="width:900px;height:600px;left:5%;top:80%;animation-delay:-16s;background:radial-gradient(closest-side,rgba(76,154,255,0.9),rgba(76,154,255,0.42) 45%,rgba(76,154,255,0))"></div>
-<div class="gf-glow gf-l3" style="width:1100px;height:720px;left:40%;top:90%;animation-delay:-8s;background:radial-gradient(closest-side,rgba(50,120,255,0.95),rgba(50,120,255,0.45) 45%,rgba(50,120,255,0))"></div>
-<div class="gf-glow gf-l1" style="width:900px;height:600px;left:-10%;top:98%;animation-delay:-13s;background:radial-gradient(closest-side,rgba(40,110,255,0.95),rgba(40,110,255,0.45) 45%,rgba(40,110,255,0))"></div>
-</div>
-
-</div>
-
-<div class="gf-nav" style="position:relative;z-index:1;display:flex;flex-direction:column">
-<div style="display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:16px 32px;padding:28px 64px;box-sizing:border-box">
-<a href="index.html" style="display:flex;align-items:center;gap:12px;text-decoration:none;color:#F4F4F5">
-<svg width="28" height="28" viewBox="0 0 32 32" aria-hidden="true"><circle cx="16" cy="16" r="14" fill="none" stroke="#FF5A5F" stroke-width="3"/><path d="M8 17c4-8 12-8 16-2" fill="none" stroke="#4C9AFF" stroke-width="3" stroke-linecap="round"/></svg>
-<span style="font-family:'Orbitron',sans-serif;font-weight:800;font-size:15px;letter-spacing:3px">GOLDEN FLEECE</span>
-</a>
-<div style="display:flex;flex-wrap:wrap;align-items:center;gap:12px 32px;font-size:15px">
-<a href="index.html" style="color:#B4B4BC;text-decoration:none">Home</a>
-<a href="product.html" style="color:#B4B4BC;text-decoration:none">Product</a>
-<a href="dashboard.html" style="color:#B4B4BC;text-decoration:none">Dashboard</a>
-<a href="about.html" style="color:#B4B4BC;text-decoration:none">About</a>
-<a href="contact.html" style="background:#D12B2F;color:#FFFFFF;text-decoration:none;font-weight:600;padding:11px 22px;border-radius:999px">Become a pilot partner</a>
-</div>
-</div>
-
-<!-- HERO -->
-<div id="pilot" style="display:flex;flex-direction:column;gap:24px;padding:40px 64px 88px;box-sizing:border-box">
-<span style="font-size:13px;letter-spacing:3px;text-transform:uppercase;color:#9A9AA3">Contact</span>
-<h1 style="margin:0;font-family:'Orbitron',sans-serif;font-weight:800;font-size:60px;line-height:1.05;max-width:900px;text-wrap:balance">Pilot Golden Fleece <span style="color:#4C9AFF">with us.</span></h1>
-<p style="margin:0;font-size:21px;line-height:1.55;color:#B4B4BC;max-width:680px">We are looking for a utility or city partner to test the jacket and dashboard on a small group of transformers.</p>
-<div style="display:flex;flex-wrap:wrap;align-items:center;gap:16px 24px">
-<a href="mailto:benzari@usc.edu?subject=Golden%20Fleece%20pilot" style="background:#D12B2F;color:#FFFFFF;text-decoration:none;font-weight:600;font-size:17px;padding:15px 28px;border-radius:999px">Email us</a>
-<span style="font-size:20px;font-weight:600;color:#4C9AFF">benzari@usc.edu</span>
-</div>
-</div>
-
-<div class="gf-scrim" style="border-top:1px solid #1F1F23;padding:88px 64px;box-sizing:border-box;display:flex;flex-direction:column;gap:40px">
-<h2 style="margin:0;font-family:'Orbitron',sans-serif;font-weight:600;font-size:38px;line-height:1.15">What a pilot could look like.</h2>
-<div style="display:flex;flex-wrap:wrap;gap:32px"><div style="flex:1 1 280px;min-width:0;display:flex;flex-direction:column;gap:10px;border-top:3px solid #FF5A5F;padding-top:20px"><h3 style="margin:0;font-size:21px;font-weight:600">1. Talk</h3><p style="margin:0;font-size:17px;line-height:1.55;color:#B4B4BC">We learn about your hottest units and your biggest worries.</p></div><div style="flex:1 1 280px;min-width:0;display:flex;flex-direction:column;gap:10px;border-top:3px solid #B07CFF;padding-top:20px"><h3 style="margin:0;font-size:21px;font-weight:600">2. Choose</h3><p style="margin:0;font-size:17px;line-height:1.55;color:#B4B4BC">Together we pick a small group of transformers for the pilot.</p></div><div style="flex:1 1 280px;min-width:0;display:flex;flex-direction:column;gap:10px;border-top:3px solid #4C9AFF;padding-top:20px"><h3 style="margin:0;font-size:21px;font-weight:600">3. Test</h3><p style="margin:0;font-size:17px;line-height:1.55;color:#B4B4BC">We fit the jackets and compare them with similar units, using the dashboard to track results.</p></div></div>
-<p style="margin:0;font-size:14px;color:#8A8A93">This is our proposal. We would shape the details with you.</p>
-</div>
-
-<div style="border-top:1px solid #1F1F23;padding:88px 64px;box-sizing:border-box;display:flex;flex-direction:column;gap:32px">
-<h2 style="margin:0;font-family:'Orbitron',sans-serif;font-weight:600;font-size:38px;line-height:1.15">Questions we expect.</h2>
-<div style="max-width:880px;border-bottom:1px solid #1F1F23"><details class="gf-faq" style="border-top:1px solid #1F1F23"><summary>Do you have a physical prototype?</summary><p style="margin:0 0 22px;font-size:17px;line-height:1.6;color:#B4B4BC;max-width:760px">Not yet. Our results come from a thermal simulation, and a small bench test of the wax is our next step.</p></details><details class="gf-faq" style="border-top:1px solid #1F1F23"><summary>Does the jacket need power?</summary><p style="margin:0 0 22px;font-size:17px;line-height:1.6;color:#B4B4BC;max-width:760px">The wax absorbs heat passively, with no fans or pumps. [CONFIRM: what powers the moving and sensing parts]</p></details><details class="gf-faq" style="border-top:1px solid #1F1F23"><summary>Does it change the transformer?</summary><p style="margin:0 0 22px;font-size:17px;line-height:1.6;color:#B4B4BC;max-width:760px">It mounts on the outside of the transformer. [CONFIRM: any modifications needed]</p></details><details class="gf-faq" style="border-top:1px solid #1F1F23"><summary>Is the dashboard data real?</summary><p style="margin:0 0 22px;font-size:17px;line-height:1.6;color:#B4B4BC;max-width:760px">The demo uses synthetic data. With a partner, it would use readings from your own units.</p></details><details class="gf-faq" style="border-top:1px solid #1F1F23"><summary>Who is it for?</summary><p style="margin:0 0 22px;font-size:17px;line-height:1.6;color:#B4B4BC;max-width:760px">Utilities and cities that run pad-mounted distribution transformers, starting with hot, dense areas like Los Angeles.</p></details></div>
-</div>
-
-<!-- FOOTER -->
-<div style="border-top:1px solid #1F1F23;padding:36px 64px;box-sizing:border-box;display:flex;flex-wrap:wrap;justify-content:space-between;gap:16px 32px;font-size:14px;color:#8A8A93">
-<span>© 2026 Golden Fleece. Performance figures are simulated. The dashboard demo uses synthetic data. The background alerts are illustrative. Map data © OpenStreetMap contributors.</span>
-<span style="display:flex;flex-wrap:wrap;gap:8px 24px"><a href="index.html">Home</a><a href="product.html">Product</a><a href="dashboard.html">Dashboard</a><a href="about.html">About</a><a href="contact.html">Contact</a></span>
-</div>
-</div>
-</div>
+:root{--bg:#0a0a0b;--fg:#f2f2f3;--mute:#9a9aa3;--line:#1f1f23;--acc:#5b9bff}
+*{box-sizing:border-box}html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--fg);font:400 17px/1.65 Inter,system-ui,-apple-system,Segoe UI,Roboto,sans-serif;-webkit-font-smoothing:antialiased}
+a{color:inherit}
+.wrap{max-width:1080px;margin:0 auto;padding:0 24px}
+header{position:sticky;top:0;z-index:5;background:rgba(10,10,11,.8);backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}
+header .wrap{display:flex;align-items:center;justify-content:space-between;height:60px}
+.logo{font-weight:600;letter-spacing:.14em;font-size:13px;text-decoration:none}
+nav{display:flex;gap:28px;align-items:center}
+nav a{font-size:14px;color:var(--mute);text-decoration:none}nav a:hover,nav a[aria-current]{color:var(--fg)}
+nav a.btn{color:var(--fg);border:1px solid #34343a;padding:7px 14px;border-radius:999px}nav a.btn:hover{border-color:var(--fg)}
+section{padding:112px 0;border-top:1px solid var(--line)}
+section.first{border-top:0}
+h1{font-size:clamp(40px,7vw,76px);line-height:1.04;letter-spacing:-.035em;font-weight:600;margin:0 0 24px}
+h2{font-size:clamp(28px,4vw,44px);line-height:1.12;letter-spacing:-.025em;font-weight:600;margin:0 0 20px}
+h3{font-size:17px;font-weight:600;margin:0 0 6px}
+p{margin:0 0 16px;color:var(--mute)}
+.lead{font-size:20px;max-width:560px}
+.eyebrow{font-size:13px;color:var(--acc);letter-spacing:.08em;text-transform:uppercase;margin-bottom:16px}
+.cta{display:inline-block;margin-top:12px;background:var(--fg);color:#0a0a0b;padding:12px 22px;border-radius:999px;font-weight:500;font-size:15px;text-decoration:none}
+.cta:hover{background:#fff}.link{color:var(--acc);text-decoration:none;font-size:15px}.link:hover{text-decoration:underline}
+.cols{display:grid;grid-template-columns:repeat(3,1fr);gap:40px;margin-top:48px}
+.cols>div{border-top:1px solid var(--line);padding-top:20px}
+.num{font-size:12px;color:var(--acc);margin-bottom:10px}
+.hero{display:grid;grid-template-columns:1fr 1fr;gap:32px;align-items:center}
+.stage{position:relative;user-select:none;touch-action:pan-y;cursor:grab}
+.stage:active{cursor:grabbing}
+.stage canvas{width:100%;height:auto;display:block;outline:none}
+.stage canvas:focus-visible{outline:2px solid var(--acc);outline-offset:4px;border-radius:8px}
+.hint{text-align:center;font-size:12px;color:var(--mute);letter-spacing:.06em;margin-top:6px}
+.note{font-size:13px;color:#6f6f78}
+.big{display:flex;gap:64px;flex-wrap:wrap;margin:36px 0 24px}
+.big b{display:block;font-size:clamp(48px,8vw,88px);line-height:1;letter-spacing:-.04em;font-weight:600}
+.big span{font-size:14px;color:var(--mute)}.big .a b{color:var(--acc)}
+.shot{width:100%;border:1px solid var(--line);border-radius:12px;display:block;margin-top:32px}
+.tabs{display:flex;gap:8px;margin-top:32px}.tabs button{background:none;border:1px solid #2a2a30;color:var(--mute);padding:7px 14px;border-radius:999px;font:inherit;font-size:14px;cursor:pointer}
+.tabs button[aria-selected=true]{color:var(--fg);border-color:var(--fg)}
+.tabs+.shot{margin-top:16px}
+dl{display:grid;grid-template-columns:200px 1fr;margin:32px 0 0}
+dt,dd{margin:0;padding:16px 0;border-top:1px solid var(--line)}dt{color:var(--mute);font-size:15px}
+details{border-top:1px solid var(--line);padding:18px 0}details:last-child{border-bottom:1px solid var(--line)}
+summary{cursor:pointer;font-weight:500;list-style:none}summary::-webkit-details-marker{display:none}
+details p{margin:10px 0 0;max-width:640px}
+.team{display:grid;grid-template-columns:1fr 1fr;gap:40px;margin-top:40px}
+.team h3{font-size:20px}.role{color:var(--acc);font-size:14px;margin-bottom:10px}
+footer{border-top:1px solid var(--line);padding:40px 0 56px;font-size:13px;color:#6f6f78}
+footer .wrap{display:flex;justify-content:space-between;gap:24px;flex-wrap:wrap}
+@media(max-width:760px){.hero{grid-template-columns:1fr}.cols,.team{grid-template-columns:1fr;gap:28px}dl{grid-template-columns:1fr}dt{border-bottom:0;padding-bottom:0}dd{border-top:0;padding-top:4px}section{padding:72px 0}nav{gap:16px}nav a.btn{display:none}}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+</style></head><body>
+<header><div class="wrap"><a class="logo" href="index.html">GOLDEN FLEECE</a><nav><a href="product.html">Product</a><a href="dashboard.html">Dashboard</a><a href="about.html">About</a><a class="btn" href="contact.html">Become a pilot partner</a></nav></div></header>
+<main>
+<section class="first"><div class="wrap"><div class="eyebrow">Contact</div><h1>Pilot Golden Fleece with us.</h1><p class="lead">We are looking for a utility or city partner to test the jacket and dashboard on a small group of transformers.</p><a class="cta" href="mailto:benzari@usc.edu">benzari@usc.edu</a></div></section>
+<section><div class="wrap"><h2>What a pilot could look like.</h2><div class="cols"><div><div class="num">01</div><h3>Talk</h3><p>We learn about your hottest units and biggest worries.</p></div><div><div class="num">02</div><h3>Choose</h3><p>Together we pick a small group of transformers.</p></div><div><div class="num">03</div><h3>Test</h3><p>We fit jackets and compare them with similar units, tracking results on the dashboard.</p></div></div><p class="note" style="margin-top:24px">This is our proposal. We would shape the details with you.</p></div></section>
+<section><div class="wrap"><h2>Questions.</h2>
+<details><summary>Do you have a physical prototype?</summary><p>Not yet. Our results come from a thermal simulation, and a small bench test of the wax is our next step.</p></details>
+<details><summary>Does the jacket need power?</summary><p>The wax absorbs heat passively. [CONFIRM: what powers the moving and sensing parts]</p></details>
+<details><summary>Does it change the transformer?</summary><p>It mounts on the outside of the transformer. [CONFIRM: any modifications needed]</p></details>
+<details><summary>Is the dashboard data real?</summary><p>The demo uses synthetic data. With a partner, it would use readings from your own units.</p></details>
+<details><summary>Who is it for?</summary><p>Utilities and cities that run pad-mounted distribution transformers, starting with hot, dense areas like Los Angeles.</p></details></div></section>
+</main>
+<footer><div class="wrap"><span>© 2026 Golden Fleece. Performance figures are simulated. The dashboard demo uses synthetic data.</span><span><a href="contact.html">Contact</a> · benzari@usc.edu</span></div></footer>
 <script>
 (function(){
-var imgs=document.querySelectorAll('.gf-viewimg'),sl=document.getElementById('viewSlider'),lab=document.getElementById('viewLabel');
-if(!sl)return;var n=imgs.length,v=0;
-function set(i){v=(i+n)%n;for(var k=0;k<n;k++)imgs[k].style.opacity=k===v?'1':'0';sl.value=String(v+1);lab.textContent='View '+(v+1)+' of '+n;}
-sl.addEventListener('input',function(){set(Number(sl.value)-1)});
-document.getElementById('prevView').addEventListener('click',function(){set(v-1)});
-document.getElementById('nextView').addEventListener('click',function(){set(v+1)});
+ var N=36,imgs=[],loaded=0,cv=document.querySelectorAll('canvas[data-turn]');
+ if(!cv.length)return;
+ var reduce=matchMedia('(prefers-reduced-motion:reduce)').matches;
+ for(var i=1;i<=N;i++){(function(i){var im=new Image();im.onload=function(){loaded++;if(i==1)init();};im.src='assets/turn/turn-'+(i<10?'0':'')+i+'.webp';imgs[i-1]=im;})(i);}
+ function init(){cv.forEach(setup);}
+ function setup(c){
+  var w=imgs[0].naturalWidth,h=imgs[0].naturalHeight;c.width=w;c.height=h;
+  var x=c.getContext('2d'),f=0,auto=!reduce,drag=false,sx=0,sf=0,last=0;
+  function draw(){var im=imgs[((Math.round(f)%N)+N)%N];if(im&&im.complete){x.clearRect(0,0,w,h);x.drawImage(im,0,0);}}
+  function tick(t){if(auto){if(t-last>90){f=(f+1)%N;last=t;draw();}}requestAnimationFrame(tick);}
+  draw();requestAnimationFrame(tick);
+  var hint=c.parentNode.querySelector('.hint');
+  function stop(){auto=false;}
+  c.addEventListener('pointerdown',function(e){drag=true;stop();sx=e.clientX;sf=f;c.setPointerCapture(e.pointerId);});
+  c.addEventListener('pointermove',function(e){if(!drag)return;f=sf-(e.clientX-sx)/(c.clientWidth/N*0.9)*-1*-1;f=sf+(e.clientX-sx)/(c.clientWidth/N)*0.9;draw();});
+  c.addEventListener('pointerup',function(){drag=false;});
+  c.addEventListener('pointercancel',function(){drag=false;});
+  c.addEventListener('keydown',function(e){if(e.key=='ArrowLeft'){stop();f-=1;draw();e.preventDefault();}if(e.key=='ArrowRight'){stop();f+=1;draw();e.preventDefault();}});
+  new IntersectionObserver(function(en){if(!en[0].isIntersecting)last=0;}).observe(c);
+ }
+ document.querySelectorAll('.tabs').forEach(function(t){var img=t.nextElementSibling;t.querySelectorAll('button').forEach(function(b){b.onclick=function(){t.querySelectorAll('button').forEach(function(o){o.setAttribute('aria-selected',o===b)});img.src=b.dataset.src;img.alt=b.dataset.alt;};});});
 })();
-</script>
-</body>
-</html>
+</script></body></html>

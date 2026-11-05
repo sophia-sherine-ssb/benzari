@@ -16,4 +16,4 @@ A plain static site: HTML, CSS and a little JavaScript. No build step.
 ## Editing later
 - Contact email: search for `benzari@usc.edu` in the five `.html` files.
 - Team: `about.html`. Headshots go in `assets/` and get an `<img>` in each team card.
-- Dashboard sample units: the script at the bottom of `dashboard.html`.
+- Dashboard: screenshots in `assets/dashboard-*.webp`. Rotating model: 36 frames in `assets/turn/` (turn-01 to turn-36).

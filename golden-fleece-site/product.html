@@ -1,360 +1,89 @@
-<!doctype html>
-<html lang="en">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Product | Golden Fleece</title>
-<meta name="description" content="How the Golden Fleece wax jacket works, with a simulated result and a look inside.">
-<meta property="og:title" content="Product | Golden Fleece">
-<meta property="og:description" content="How the Golden Fleece wax jacket works, with a simulated result and a look inside.">
-<meta name="theme-color" content="#000000">
-<link rel="icon" href="favicon.svg" type="image/svg+xml">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600;800&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Product | Golden Fleece</title><meta name="description" content="A wax thermal buffer for pad-mounted transformers, plus a risk dashboard."><link rel="icon" href="favicon.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
-body{margin:0;font-family:'IBM Plex Sans',system-ui,sans-serif;color:#F4F4F5;background:#000}
-a{color:#4C9AFF}a:hover{color:#8DBEFF}
-.gf-layer{position:absolute;left:0;top:0;width:100%;height:100%;display:block}
-.gf-heat{opacity:0;animation:gfHeat 16s ease-in-out infinite}
-.gf-blue{opacity:0;animation:gfBlue 16s ease-in-out infinite}
-.gf-move{position:absolute;left:0;top:0;width:100%;height:100%;animation:gfMove 16s ease-in-out infinite}
-.gf-glow-red{opacity:0;animation:gfHeat 16s ease-in-out infinite}
-.gf-glow-blue{opacity:0;animation:gfBlue 16s ease-in-out infinite}
-.gf-cap{position:absolute;left:0;top:0;right:0;opacity:0}
-.gf-capA{opacity:1;animation:gfCapA 16s ease-in-out infinite}
-.gf-capB{animation:gfCapB 16s ease-in-out infinite}
-.gf-capC{animation:gfCapC 16s ease-in-out infinite}
-.gf-capD{animation:gfCapD 16s ease-in-out infinite}
-.gf-bar{width:0;animation:gfBar 16s linear infinite}
-@keyframes gfHeat{0%,12%{opacity:0}38%,54%{opacity:1}80%,100%{opacity:0}}
-@keyframes gfBlue{0%,46%{opacity:0}54%,80%{opacity:1}88%,100%{opacity:0}}
-@keyframes gfMove{0%,46%{transform:translate(0,0) scale(1)}54%,80%{transform:translate(-7%,5%) scale(1.03)}88%,100%{transform:translate(0,0) scale(1)}}
-@keyframes gfCapA{0%,10%{opacity:1}14%,96%{opacity:0}100%{opacity:1}}
-@keyframes gfCapB{0%,10%{opacity:0}14%,42%{opacity:1}46%,100%{opacity:0}}
-@keyframes gfCapC{0%,46%{opacity:0}50%,76%{opacity:1}80%,100%{opacity:0}}
-@keyframes gfCapD{0%,80%{opacity:0}86%,94%{opacity:1}98%,100%{opacity:0}}
-@keyframes gfBar{0%{width:0}100%{width:100%}}
-.gf-blob{position:absolute;border-radius:0 100%;will-change:transform;background-image:radial-gradient(circle,var(--c) 0,var(--c) 2.2px,transparent 2.9px),radial-gradient(circle,var(--c) 0,var(--c) 1px,transparent 1.7px),radial-gradient(closest-side,var(--cg),transparent);background-size:11px 11px,6px 6px,100% 100%;background-position:0 0,3px 4px,0 0;-webkit-mask-image:radial-gradient(closest-side,#000 10%,rgba(0,0,0,0.75) 45%,transparent 100%);mask-image:radial-gradient(closest-side,#000 10%,rgba(0,0,0,0.75) 45%,transparent 100%)}
-.gf-pulse{position:absolute;width:0;height:0}
-.gf-ring{position:absolute;left:0;top:0;width:130px;height:130px;margin:-65px 0 0 -65px;border-radius:50%;border:1.5px solid var(--pc);opacity:0;animation:gfRing var(--pd,3s) ease-out infinite}
-.gf-ring2{animation-delay:calc(var(--pd,3s) * -0.5)}
-.gf-dot{position:absolute;left:0;top:0;width:8px;height:8px;margin:-4px 0 0 -4px;border-radius:50%;background:var(--pc);box-shadow:0 0 12px var(--pc)}
-.gf-tag{position:absolute;left:18px;top:-16px;white-space:nowrap;font-size:12px;line-height:1.4;color:var(--pc);opacity:0.55;pointer-events:none}
-@keyframes gfRing{0%{transform:scale(0.12);opacity:0.75}100%{transform:scale(1);opacity:0}}
-.gf-dots-base{background-image:radial-gradient(circle at 50% 50%,rgba(255,255,255,0.09) 0,rgba(255,255,255,0.09) 1.5px,transparent 2.1px);background-size:13px 13px}
-.gf-dots-lit{-webkit-mask-image:radial-gradient(circle at 50% 50%,#000 0,#000 1.6px,transparent 2.2px);mask-image:radial-gradient(circle at 50% 50%,#000 0,#000 1.6px,transparent 2.2px);-webkit-mask-size:13px 13px;mask-size:13px 13px;-webkit-mask-repeat:repeat;mask-repeat:repeat}
-.gf-glow{position:absolute;border-radius:50%;will-change:transform,opacity}
-.gf-l1{animation:gfL1 26s ease-in-out infinite}
-.gf-l2{animation:gfL2 34s ease-in-out infinite}
-.gf-l3{animation:gfL3 30s ease-in-out infinite}
-@keyframes gfL1{0%,100%{transform:translate(0,0) scale(1);opacity:0.75}50%{transform:translate(110px,70px) scale(1.15);opacity:1}}
-@keyframes gfL2{0%,100%{transform:translate(0,0) scale(1);opacity:1}33%{transform:translate(-100px,50px) scale(0.92);opacity:0.65}66%{transform:translate(50px,-80px) scale(1.1);opacity:0.9}}
-@keyframes gfL3{0%,100%{transform:translate(0,0) scale(1);opacity:0.9}50%{transform:translate(-80px,-90px) scale(1.2);opacity:0.6}}
-.gf-mk{position:absolute;width:0;height:0}
-.gf-ico{position:absolute;left:-23px;top:-23px;width:46px;height:46px;border-radius:50%;border:2px solid var(--pc);background:rgba(0,0,0,0.45);color:var(--pc);display:flex;align-items:center;justify-content:center;box-sizing:border-box;opacity:0.5}
-.gf-mt{position:absolute;left:36px;top:-19px;white-space:nowrap;color:var(--pc);opacity:0.5;display:flex;flex-direction:column;gap:2px}
-.gf-mt b{font-size:13px;letter-spacing:1.5px}
-.gf-mt span{font-size:12px}
-.gf-blink{position:absolute;left:14px;top:-30px;width:10px;height:10px;border-radius:50%;background:var(--pc);box-shadow:0 0 10px var(--pc);animation:gfBlink 1.1s steps(1,end) infinite}
-.gf-bd{position:absolute;width:9px;height:9px;margin:-4px 0 0 -4px;border-radius:50%;background:var(--pc);box-shadow:0 0 10px var(--pc);animation:gfBlink 1.1s steps(1,end) infinite}
-@keyframes gfBlink{0%,49%{opacity:1}50%,100%{opacity:0.1}}
-@media (prefers-reduced-motion: reduce){
-.gf-l1,.gf-l2,.gf-l3,.gf-ring,.gf-blink,.gf-bd{animation:none!important}
-}
-.gf-scrim{background:linear-gradient(180deg,rgba(0,0,0,0) 0,rgba(0,0,0,0.72) 140px,rgba(0,0,0,0.72) calc(100% - 140px),rgba(0,0,0,0) 100%)}
-.gf-stage{perspective:1500px}
-.gf-stack{transform-style:preserve-3d;transform:rotateX(60deg) rotateZ(-38deg)}
-.gf-plate{position:absolute;left:0;top:0;width:100%;height:100%;border-radius:12px;box-sizing:border-box;transform:translateZ(var(--z1))}
-.gf-base{position:absolute;left:0;top:0;width:100%;height:100%;border-radius:12px;box-sizing:border-box;border:1px dashed #3A3A42;background:rgba(255,255,255,0.02);transform:translateZ(-300px)}
-@supports (animation-timeline: view()){
-.gf-plate{transform:translateZ(var(--z0));animation:gfExplode linear both;animation-timeline:view();animation-range:entry 15% cover 55%}
-.gf-lab{opacity:0;animation:gfLab linear both;animation-timeline:view();animation-range:var(--lr)}
-}
-@keyframes gfExplode{from{transform:translateZ(var(--z0))}to{transform:translateZ(var(--z1))}}
-@keyframes gfLab{from{opacity:0;transform:translateX(16px)}to{opacity:1;transform:translateX(0)}}
-.gf-d1{animation:gfD1 26s ease-in-out infinite}
-.gf-d2{animation:gfD2 34s ease-in-out infinite}
-.gf-d3{animation:gfD3 30s ease-in-out infinite}
-@keyframes gfD1{0%,100%{transform:translate(0,0) scale(1)}50%{transform:translate(90px,60px) scale(1.15)}}
-@keyframes gfD2{0%,100%{transform:translate(0,0) scale(1)}33%{transform:translate(-80px,40px) scale(0.9)}66%{transform:translate(40px,-70px) scale(1.1)}}
-@keyframes gfD3{0%,100%{transform:translate(0,0) scale(1)}50%{transform:translate(-60px,-80px) scale(1.2)}}
-.gf-view-btn{background:transparent;color:#F4F4F5;border:1px solid #3A3A42;border-radius:999px;font-family:inherit;font-size:16px;font-weight:600;padding:10px 20px;cursor:pointer}
-.gf-view-btn:hover{border-color:#4C9AFF;color:#8DBEFF}
-@media (prefers-reduced-motion: reduce){
-.gf-heat,.gf-blue,.gf-move,.gf-glow-red,.gf-glow-blue,.gf-cap,.gf-bar,.gf-d1,.gf-d2,.gf-d3{animation:none!important}
-}
-.gf-nav a:hover{color:#F4F4F5}
-.gf-tank{position:relative;width:100%;max-width:300px;aspect-ratio:3/4;border:2px solid #3A3A42;border-radius:18px;overflow:hidden;background:#0B0B0D}
-.gf-wsolid{position:absolute;inset:0;background:repeating-linear-gradient(0deg,rgba(255,236,200,0.78) 0,rgba(255,236,200,0.78) 26px,rgba(255,214,150,0.62) 26px,rgba(255,214,150,0.62) 28px);animation:gfSolid 14s ease-in-out infinite}
-.gf-wliq{position:absolute;inset:0;background:linear-gradient(180deg,rgba(255,170,70,0.95),rgba(255,110,50,0.9));opacity:0;animation:gfLiq 14s ease-in-out infinite}
-.gf-wbub{position:absolute;bottom:-20px;width:10px;height:10px;border-radius:50%;background:rgba(255,255,255,0.55);opacity:0;animation:gfBub 14s linear infinite}
-.gf-wsrc{position:absolute;left:0;right:0;bottom:0;height:34%;background:linear-gradient(0deg,rgba(255,90,95,0.75),rgba(255,90,95,0));opacity:0;animation:gfSrc 14s ease-in-out infinite}
-@keyframes gfSolid{0%,18%{opacity:1}38%,64%{opacity:0}82%,100%{opacity:1}}
-@keyframes gfLiq{0%,18%{opacity:0}38%,64%{opacity:1}82%,100%{opacity:0}}
-@keyframes gfSrc{0%,8%{opacity:0}20%,60%{opacity:1}74%,100%{opacity:0}}
-@keyframes gfBub{0%,24%{opacity:0;transform:translateY(0)}32%{opacity:0.8}60%{opacity:0;transform:translateY(-300px)}100%{opacity:0;transform:translateY(-300px)}}
-.gf-curve{stroke-dasharray:1;stroke-dashoffset:1;animation:gfDraw 14s ease-in-out infinite}
-@keyframes gfDraw{0%{stroke-dashoffset:1}60%,88%{stroke-dashoffset:0}100%{stroke-dashoffset:1}}
-.gf-ph{position:absolute;left:0;top:0;right:0;opacity:0}
-.gf-ph1{animation:gfP1 14s ease-in-out infinite}
-.gf-ph2{animation:gfP2 14s ease-in-out infinite}
-.gf-ph3{animation:gfP3 14s ease-in-out infinite}
-.gf-ph4{animation:gfP4 14s ease-in-out infinite}
-@keyframes gfP1{0%,16%{opacity:1}20%,96%{opacity:0}100%{opacity:1}}
-@keyframes gfP2{0%,18%{opacity:0}24%,40%{opacity:1}44%,100%{opacity:0}}
-@keyframes gfP3{0%,42%{opacity:0}48%,62%{opacity:1}68%,100%{opacity:0}}
-@keyframes gfP4{0%,66%{opacity:0}72%,92%{opacity:1}97%,100%{opacity:0}}
-.gf-barfill{transform-origin:left center;animation:gfGrowLoop 7s ease-out infinite}
-@keyframes gfGrowLoop{0%{transform:scaleX(0)}45%,90%{transform:scaleX(1)}100%{transform:scaleX(0)}}
-@supports (animation-timeline: view()){
-.gf-barfill{animation:gfGrow linear both;animation-timeline:view();animation-range:entry 20% cover 50%}
-}
-@keyframes gfGrow{from{transform:scaleX(0)}to{transform:scaleX(1)}}
-@media (prefers-reduced-motion: reduce){
-.gf-wsolid,.gf-wliq,.gf-wbub,.gf-wsrc,.gf-curve,.gf-ph,.gf-barfill{animation:none!important}
-.gf-ph1{opacity:1}.gf-wsolid{opacity:1}.gf-curve{stroke-dashoffset:0}
-}
-</style>
-</head>
-<body>
-<div style="position:relative;overflow:hidden;width:100%;background:#000">
-
-<!-- BACKGROUND: dark city map, a dot field that lights up in smooth groups (red at the top, blue at the bottom), and alert markers -->
-<div aria-hidden="true" style="position:absolute;left:0;top:0;width:100%;height:100%;z-index:0;pointer-events:none;overflow:hidden">
-<img src="assets/city-map.jpg" alt="" style="position:absolute;left:0;top:0;width:100%;height:100%;object-fit:cover;opacity:0.55">
-<!-- Warnings near the top -->
-<div class="gf-mk" style="left:7%;top:4%;--pc:#FF5A5F;--pd:2.2s"><div class="gf-ring"></div><div class="gf-ring gf-ring2"></div><div class="gf-ico"><svg width="22" height="22" viewBox="0 0 16 16"><path d="M8 1.5 15 14H1z" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><path d="M8 6v4M8 12v.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></div><div class="gf-blink"></div><div class="gf-mt"><b>WARNING! OVERHEATING SIGNS</b><span>Load 118% of rating · ambient 41°C</span></div></div>
-<div class="gf-mk" style="left:76%;top:8%;--pc:#FF5A5F;--pd:2s"><div class="gf-ring"></div><div class="gf-ring gf-ring2"></div><div class="gf-ico"><svg width="22" height="22" viewBox="0 0 16 16"><path d="M8 1.5 15 14H1z" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><path d="M8 6v4M8 12v.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></div><div class="gf-blink" style="animation-delay:-0.4s"></div><div class="gf-mt"><b>WARNING! OVERHEATING SIGNS</b><span>Night low stayed above 30°C</span></div></div>
-<div class="gf-mk" style="left:36%;top:14%;--pc:#FF5A5F;--pd:2.4s"><div class="gf-ring"></div><div class="gf-ring gf-ring2"></div><div class="gf-ico"><svg width="22" height="22" viewBox="0 0 16 16"><path d="M8 1.5 15 14H1z" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><path d="M8 6v4M8 12v.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></div><div class="gf-blink" style="animation-delay:-0.7s"></div><div class="gf-mt"><b>WARNING! OVERHEATING SIGNS</b><span>Evening event: demand up 35%</span></div></div>
-<div class="gf-mk" style="left:50%;top:11%;--pc:#FF5A5F;--pd:2.3s"><div class="gf-ring"></div><div class="gf-ring gf-ring2"></div><div class="gf-ico"><svg width="22" height="22" viewBox="0 0 16 16"><path d="M8 1.5 15 14H1z" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><path d="M8 6v4M8 12v.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></div><div class="gf-blink" style="animation-delay:-0.2s"></div><div class="gf-mt"><b>WARNING! OVERHEATING SIGNS</b><span>Load 112% · third hot day</span></div></div>
-<div class="gf-bd" style="left:90%;top:17%;--pc:#FF5A5F"></div>
-<div class="gf-bd" style="left:58%;top:6%;--pc:#FF5A5F;animation-delay:-0.5s"></div>
-<div class="gf-bd" style="left:24%;top:3%;--pc:#FF5A5F;animation-delay:-0.8s"></div>
-<div class="gf-bd" style="left:66%;top:12%;--pc:#FF5A5F;animation-delay:-0.3s"></div>
-<div class="gf-bd" style="left:48%;top:21%;--pc:#FF5A5F;animation-delay:-0.9s"></div>
-<div class="gf-bd" style="left:30%;top:36%;--pc:#B07CFF;animation-duration:1.8s"></div>
-<div class="gf-bd" style="left:84%;top:44%;--pc:#B07CFF;animation-duration:2s;animation-delay:-0.6s"></div>
-
-<!-- Crisis averted near the bottom -->
-<div class="gf-mk" style="left:9%;top:58%;--pc:#4C9AFF;--pd:4s"><div class="gf-ring"></div><div class="gf-ring gf-ring2"></div><div class="gf-ico"><svg width="22" height="22" viewBox="0 0 16 16"><path d="M3.5 8.4l3 3 6-6.4" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div class="gf-mt"><b>CRISIS AVERTED!</b><span>Heat absorbed, unit back to normal</span></div></div>
-<div class="gf-mk" style="left:72%;top:66%;--pc:#4C9AFF;--pd:4.4s"><div class="gf-ring"></div><div class="gf-ring gf-ring2"></div><div class="gf-ico"><svg width="22" height="22" viewBox="0 0 16 16"><path d="M3.5 8.4l3 3 6-6.4" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div class="gf-mt"><b>CRISIS AVERTED!</b><span>Peak held lower (simulated)</span></div></div>
-<div class="gf-mk" style="left:22%;top:80%;--pc:#4C9AFF;--pd:4.2s"><div class="gf-ring"></div><div class="gf-ring gf-ring2"></div><div class="gf-ico"><svg width="22" height="22" viewBox="0 0 16 16"><path d="M3.5 8.4l3 3 6-6.4" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div class="gf-mt"><b>CRISIS AVERTED!</b><span>Back to normal after sunset</span></div></div>
-<div class="gf-mk" style="left:60%;top:92%;--pc:#4C9AFF;--pd:4.6s"><div class="gf-ring"></div><div class="gf-ring gf-ring2"></div><div class="gf-ico"><svg width="22" height="22" viewBox="0 0 16 16"><path d="M3.5 8.4l3 3 6-6.4" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div class="gf-mt"><b>CRISIS AVERTED!</b><span>Wax reset overnight</span></div></div>
-<div class="gf-mk" style="left:90%;top:75%;--pc:#4C9AFF;--pd:4.8s"><div class="gf-ring"></div><div class="gf-dot"></div></div>
-<div class="gf-mk" style="left:38%;top:70%;--pc:#4C9AFF;--pd:4.5s"><div class="gf-ring"></div><div class="gf-dot"></div></div>
-<div class="gf-mk" style="left:84%;top:97%;--pc:#4C9AFF;--pd:4.7s"><div class="gf-ring"></div><div class="gf-dot"></div></div>
-
-<div class="gf-dots-base" style="position:absolute;left:0;top:0;width:100%;height:100%"></div>
-<div class="gf-dots-lit" style="position:absolute;left:0;top:0;width:100%;height:100%">
-<div class="gf-glow gf-l1" style="width:1100px;height:700px;left:-12%;top:-2%;background:radial-gradient(closest-side,rgba(255,55,50,0.95),rgba(255,55,50,0.45) 45%,rgba(255,55,50,0))"></div>
-<div class="gf-glow gf-l2" style="width:900px;height:620px;left:50%;top:4%;background:radial-gradient(closest-side,rgba(235,35,55,0.95),rgba(235,35,55,0.45) 45%,rgba(235,35,55,0))"></div>
-<div class="gf-glow gf-l3" style="width:700px;height:500px;left:20%;top:12%;background:radial-gradient(closest-side,rgba(255,90,60,0.9),rgba(255,90,60,0.4) 45%,rgba(255,90,60,0))"></div>
-<div class="gf-glow gf-l1" style="width:800px;height:560px;left:70%;top:16%;animation-delay:-9s;background:radial-gradient(closest-side,rgba(255,55,75,0.9),rgba(255,55,75,0.4) 45%,rgba(255,55,75,0))"></div>
-<div class="gf-glow gf-l2" style="width:900px;height:600px;left:-10%;top:24%;animation-delay:-14s;background:radial-gradient(closest-side,rgba(225,50,110,0.85),rgba(225,50,110,0.4) 45%,rgba(225,50,110,0))"></div>
-<div class="gf-glow gf-l3" style="width:800px;height:560px;left:45%;top:32%;animation-delay:-6s;background:radial-gradient(closest-side,rgba(190,65,170,0.8),rgba(190,65,170,0.38) 45%,rgba(190,65,170,0))"></div>
-<div class="gf-glow gf-l1" style="width:800px;height:560px;left:5%;top:42%;animation-delay:-18s;background:radial-gradient(closest-side,rgba(140,90,230,0.8),rgba(140,90,230,0.38) 45%,rgba(140,90,230,0))"></div>
-<div class="gf-glow gf-l2" style="width:900px;height:600px;left:55%;top:50%;animation-delay:-11s;background:radial-gradient(closest-side,rgba(95,115,245,0.85),rgba(95,115,245,0.4) 45%,rgba(95,115,245,0))"></div>
-<div class="gf-glow gf-l3" style="width:900px;height:620px;left:-8%;top:60%;animation-delay:-20s;background:radial-gradient(closest-side,rgba(76,154,255,0.85),rgba(76,154,255,0.4) 45%,rgba(76,154,255,0))"></div>
-<div class="gf-glow gf-l1" style="width:1000px;height:680px;left:45%;top:70%;animation-delay:-4s;background:radial-gradient(closest-side,rgba(60,130,255,0.9),rgba(60,130,255,0.42) 45%,rgba(60,130,255,0))"></div>
-<div class="gf-glow gf-l2" style="width:900px;height:600px;left:5%;top:80%;animation-delay:-16s;background:radial-gradient(closest-side,rgba(76,154,255,0.9),rgba(76,154,255,0.42) 45%,rgba(76,154,255,0))"></div>
-<div class="gf-glow gf-l3" style="width:1100px;height:720px;left:40%;top:90%;animation-delay:-8s;background:radial-gradient(closest-side,rgba(50,120,255,0.95),rgba(50,120,255,0.45) 45%,rgba(50,120,255,0))"></div>
-<div class="gf-glow gf-l1" style="width:900px;height:600px;left:-10%;top:98%;animation-delay:-13s;background:radial-gradient(closest-side,rgba(40,110,255,0.95),rgba(40,110,255,0.45) 45%,rgba(40,110,255,0))"></div>
-</div>
-
-</div>
-
-<div class="gf-nav" style="position:relative;z-index:1;display:flex;flex-direction:column">
-<div style="display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:16px 32px;padding:28px 64px;box-sizing:border-box">
-<a href="index.html" style="display:flex;align-items:center;gap:12px;text-decoration:none;color:#F4F4F5">
-<svg width="28" height="28" viewBox="0 0 32 32" aria-hidden="true"><circle cx="16" cy="16" r="14" fill="none" stroke="#FF5A5F" stroke-width="3"/><path d="M8 17c4-8 12-8 16-2" fill="none" stroke="#4C9AFF" stroke-width="3" stroke-linecap="round"/></svg>
-<span style="font-family:'Orbitron',sans-serif;font-weight:800;font-size:15px;letter-spacing:3px">GOLDEN FLEECE</span>
-</a>
-<div style="display:flex;flex-wrap:wrap;align-items:center;gap:12px 32px;font-size:15px">
-<a href="index.html" style="color:#B4B4BC;text-decoration:none">Home</a>
-<a href="#top" style="color:#F4F4F5;text-decoration:none;border-bottom:2px solid #4C9AFF;padding-bottom:3px">Product</a>
-<a href="dashboard.html" style="color:#B4B4BC;text-decoration:none">Dashboard</a>
-<a href="about.html" style="color:#B4B4BC;text-decoration:none">About</a>
-<a href="#inside" style="color:#B4B4BC;text-decoration:none">Inside</a>
-<a href="#specs" style="color:#B4B4BC;text-decoration:none">Specs</a>
-<a href="contact.html" style="background:#D12B2F;color:#FFFFFF;text-decoration:none;font-weight:600;padding:11px 22px;border-radius:999px">Become a pilot partner</a>
-</div>
-</div>
-
-<!-- PRODUCT HERO -->
-<div id="top" style="display:flex;flex-wrap:wrap;align-items:center;gap:40px 56px;padding:40px 64px 96px;box-sizing:border-box">
-<div style="flex:1 1 440px;min-width:0;display:flex;flex-direction:column;gap:28px">
-<span style="font-size:13px;letter-spacing:3px;text-transform:uppercase;color:#9A9AA3">The product</span>
-<h1 style="margin:0;font-family:'Orbitron',sans-serif;font-weight:800;font-size:64px;line-height:1.05;text-wrap:balance">The wax that <span style="color:#4C9AFF">takes the heat.</span></h1>
-<p style="margin:0;font-size:21px;line-height:1.55;color:#B4B4BC;max-width:540px">Golden Fleece is a jacket of paraffin wax for pad-mounted transformers, plus a dashboard that shows which units are running hot. The wax absorbs heat passively, with no fans or pumps.</p>
-<div style="display:flex;flex-wrap:wrap;gap:16px">
-<a href="contact.html" style="background:#D12B2F;color:#FFFFFF;text-decoration:none;font-weight:600;font-size:17px;padding:15px 28px;border-radius:999px">Become a pilot partner</a>
-<a href="#melt" style="color:#F4F4F5;text-decoration:none;font-weight:600;font-size:17px;padding:13px 28px;border-radius:999px;border:1px solid #3A3A42">See it melt</a>
-</div>
-</div>
-<div style="flex:1 1 440px;min-width:0;display:flex;justify-content:center">
-<div style="position:relative;width:100%;max-width:520px">
-<div class="gf-glow gf-d1" style="position:absolute;left:5%;top:5%;width:90%;height:90%;background:radial-gradient(closest-side,rgba(76,154,255,0.35),rgba(76,154,255,0));filter:blur(10px)"></div>
-<img src="assets/jacket.webp" alt="Rendering of the Golden Fleece wax module beside a transformer" style="position:relative;width:100%;height:auto;display:block">
-</div>
-</div>
-</div>
-
-<!-- MELT ANIMATION -->
-<div id="melt" class="gf-scrim" style="border-top:1px solid #1F1F23;padding:88px 64px;box-sizing:border-box;display:flex;flex-wrap:wrap;align-items:center;gap:40px 64px">
-<div style="flex:1 1 360px;min-width:0;display:flex;flex-direction:column;align-items:center;gap:16px">
-<div class="gf-tank" role="img" aria-label="Animation: a block of wax is solid, melts as heat arrives from below, then solidifies again">
-<div class="gf-wsolid"></div>
-<div class="gf-wliq"></div>
-<div class="gf-wbub" style="left:22%;animation-delay:0s"></div>
-<div class="gf-wbub" style="left:48%;animation-delay:-1.1s"></div>
-<div class="gf-wbub" style="left:72%;animation-delay:-2.2s"></div>
-<div class="gf-wsrc"></div>
-</div>
-<span style="font-size:13px;color:#8A8A93;text-align:center">Schematic of the wax. Not measured data.</span>
-</div>
-<div style="flex:1 1 460px;min-width:0;display:flex;flex-direction:column;gap:28px">
-<h2 style="margin:0;font-family:'Orbitron',sans-serif;font-weight:600;font-size:38px;line-height:1.15;text-wrap:balance">Melting is the trick.</h2>
-<p style="margin:0;font-size:19px;line-height:1.6;color:#B4B4BC;max-width:620px">Wax can soak up a large amount of heat while it changes from solid to liquid, and it stays at nearly the same temperature while it does. That flat stretch on the curve is the buffer. When the load drops, the wax gives the heat back to the evening air and solidifies.</p>
-<div style="position:relative;height:84px">
-<div class="gf-ph gf-ph1"><div style="font-size:13px;letter-spacing:2px;text-transform:uppercase;color:#9A9AA3">Solid</div><div style="font-size:18px;line-height:1.4;margin-top:6px">Normal load. The wax sits at the transformer's temperature.</div></div>
-<div class="gf-ph gf-ph2"><div style="font-size:13px;letter-spacing:2px;text-transform:uppercase;color:#FF5A5F">Melting</div><div style="font-size:18px;line-height:1.4;margin-top:6px">Heat arrives and the wax starts to melt. Its temperature holds.</div></div>
-<div class="gf-ph gf-ph3"><div style="font-size:13px;letter-spacing:2px;text-transform:uppercase;color:#4C9AFF">Absorbing</div><div style="font-size:18px;line-height:1.4;margin-top:6px">The peak passes while the wax is still taking the heat in.</div></div>
-<div class="gf-ph gf-ph4"><div style="font-size:13px;letter-spacing:2px;text-transform:uppercase;color:#9A9AA3">Resetting</div><div style="font-size:18px;line-height:1.4;margin-top:6px">Evening air cools the wax and it solidifies for the next day.</div></div>
-</div>
-<svg viewBox="0 0 400 140" width="100%" style="max-width:560px;display:block" role="img" aria-label="Schematic curve: wax temperature rises, flattens while melting, rises again, then falls">
-<line x1="30" y1="120" x2="390" y2="120" stroke="#3A3A42" stroke-width="1"/>
-<line x1="30" y1="10" x2="30" y2="120" stroke="#3A3A42" stroke-width="1"/>
-<path d="M30 105 L100 80 L130 62 L230 60 L260 40 L300 34 L340 90 L390 108" fill="none" stroke="#1F1F23" stroke-width="3" stroke-linejoin="round"/>
-<path class="gf-curve" pathLength="1" d="M30 105 L100 80 L130 62 L230 60 L260 40 L300 34 L340 90 L390 108" fill="none" stroke="#4C9AFF" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/>
-<text x="132" y="52" fill="#9A9AA3" font-size="11" font-family="IBM Plex Sans, sans-serif">melting: temperature holds</text>
-<text x="30" y="136" fill="#8A8A93" font-size="11" font-family="IBM Plex Sans, sans-serif">time</text>
-<text x="2" y="14" fill="#8A8A93" font-size="11" font-family="IBM Plex Sans, sans-serif">temp</text>
-</svg>
-</div>
-</div>
-
-<!-- SIMULATED PEAK -->
-<div id="peak" style="border-top:1px solid #1F1F23;padding:128px 64px 88px;box-sizing:border-box;display:flex;flex-direction:column;gap:40px">
-<h2 style="margin:0;font-family:'Orbitron',sans-serif;font-weight:600;font-size:38px;line-height:1.15;max-width:820px;text-wrap:balance">A peak that is about 25°C lower.</h2>
-<div style="display:flex;flex-direction:column;gap:28px;background:#0B0B0D;border:1px solid #1F1F23;border-radius:20px;padding:48px;box-sizing:border-box;width:100%">
-<div style="display:flex;flex-direction:column;gap:10px">
-<div style="display:flex;justify-content:space-between;font-size:16px"><span style="color:#B4B4BC">Bare transformer</span><span style="font-weight:600;color:#FF5A5F">About 82°C</span></div>
-<div style="height:18px;background:#15151A;border-radius:999px;overflow:hidden"><div class="gf-barfill" style="width:82%;height:18px;background:#FF5A5F;border-radius:999px"></div></div>
-</div>
-<div style="display:flex;flex-direction:column;gap:10px">
-<div style="display:flex;justify-content:space-between;font-size:16px"><span style="color:#B4B4BC">With wax</span><span style="font-weight:600;color:#4C9AFF">About 57°C</span></div>
-<div style="height:18px;background:#15151A;border-radius:999px;overflow:hidden"><div class="gf-barfill" style="width:57%;height:18px;background:#4C9AFF;border-radius:999px"></div></div>
-</div>
-<p style="margin:0;font-size:15px;line-height:1.6;color:#8A8A93">Peak temperature in our thermal simulation: air at 32°C, with the transformer's heat output rising from 3.5 kW to 10 kW for three hours. Values are read from our simulation plot. We plan to validate them with a bench prototype.</p>
-</div>
-</div>
-
-<!-- EXPLORE THE DESIGN: view slider -->
-<div id="explore" style="border-top:1px solid #1F1F23;padding:88px 64px;box-sizing:border-box;display:flex;flex-direction:column;align-items:center;gap:28px;text-align:center">
-<h2 style="margin:0;font-family:'Orbitron',sans-serif;font-weight:600;font-size:38px;line-height:1.15">Explore the design.</h2>
-<p style="margin:0;font-size:18px;line-height:1.55;color:#B4B4BC;max-width:560px">Slide through five views of the Golden Fleece module beside a transformer.</p>
-<div style="position:relative;width:100%;max-width:720px;aspect-ratio:900/800">
-<img class="gf-viewimg" src="assets/view-1.webp" alt="Golden Fleece module and transformer, view 1 of 5" style="position:absolute;left:0;top:0;width:100%;height:100%;opacity:1;transition:opacity 0.45s ease">
-<img class="gf-viewimg" src="assets/view-2.webp" alt="Golden Fleece module and transformer, view 2 of 5" style="position:absolute;left:0;top:0;width:100%;height:100%;opacity:0;transition:opacity 0.45s ease">
-<img class="gf-viewimg" src="assets/view-3.webp" alt="Golden Fleece module and transformer, view 3 of 5" style="position:absolute;left:0;top:0;width:100%;height:100%;opacity:0;transition:opacity 0.45s ease">
-<img class="gf-viewimg" src="assets/view-4.webp" alt="Golden Fleece module and transformer, view 4 of 5" style="position:absolute;left:0;top:0;width:100%;height:100%;opacity:0;transition:opacity 0.45s ease">
-<img class="gf-viewimg" src="assets/view-5.webp" alt="Golden Fleece module and transformer, view 5 of 5" style="position:absolute;left:0;top:0;width:100%;height:100%;opacity:0;transition:opacity 0.45s ease">
-</div>
-<div style="display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:16px 24px;width:100%;max-width:640px">
-<button class="gf-view-btn" id="prevView" aria-label="Previous view">Previous</button>
-<input id="viewSlider" type="range" min="1" max="5" step="1" value="1" aria-label="Rotate the product view" style="flex:1 1 220px;min-width:0;accent-color:#4C9AFF">
-<button class="gf-view-btn" id="nextView" aria-label="Next view">Next</button>
-</div>
-<span id="viewLabel" style="font-size:14px;letter-spacing:2px;text-transform:uppercase;color:#9A9AA3">View 1 of 5</span>
-<p style="margin:0;font-size:13px;color:#8A8A93">Views of our Fusion 360 rendering, shown as separate images, not a live 3D model.</p>
-</div>
-
-<div class="gf-scrim" style="border-top:1px solid #1F1F23;padding:88px 64px 48px;box-sizing:border-box">
-<!-- EXPLODED VIEW: opens as you scroll -->
-<div id="inside" style="display:flex;flex-wrap:wrap;align-items:center;gap:24px 56px;padding:40px 0">
-<div class="gf-stage" style="position:relative;flex:1 1 440px;min-width:0;height:640px" role="img" aria-label="Simplified exploded view of the Golden Fleece jacket: outer heatsink fins, wax panel, transformer wall and a sensor module, spread apart in layers">
-<div class="gf-stack" style="position:absolute;left:50%;top:52%;width:280px;height:280px;margin:-140px 0 0 -140px">
-<div class="gf-base"></div>
-<div class="gf-plate" style="--z0:25px;--z1:-10px;background:repeating-linear-gradient(90deg,#26262c 0,#26262c 7px,#5a5a66 7px,#5a5a66 9px);border:1px solid #6a6a76"></div>
-<div class="gf-plate" style="--z0:45px;--z1:110px;background:repeating-linear-gradient(0deg,rgba(255,214,150,0.8) 0,rgba(255,214,150,0.8) 28px,rgba(255,236,200,0.55) 28px,rgba(255,236,200,0.55) 30px);border:2px solid rgba(255,206,130,0.95)"></div>
-<div class="gf-plate" style="--z0:65px;--z1:230px;border:2px solid #B4B4BC;background:rgba(180,180,190,0.08)"></div>
-<div class="gf-plate" style="--z0:35px;--z1:-230px;left:85px;top:85px;width:110px;height:110px;border-radius:14px;background:#0F2A4D;border:2px solid #4C9AFF;box-shadow:0 0 26px rgba(76,154,255,0.65)"></div>
-</div>
-</div>
-<div style="flex:1 1 360px;min-width:0;display:flex;flex-direction:column;gap:22px">
-<div style="display:flex;flex-direction:column;gap:8px">
-<h3 style="margin:0;font-family:'Orbitron',sans-serif;font-weight:600;font-size:28px;line-height:1.2">Inside the jacket.</h3>
-<p style="margin:0;font-size:16px;line-height:1.5;color:#9A9AA3">Scroll to open it up.</p>
-</div>
-<div class="gf-lab" style="--lr:entry 40% cover 30%;display:flex;flex-direction:column;gap:4px;border-left:3px solid #B4B4BC;padding-left:16px">
-<span style="font-weight:600;font-size:18px">Outer heatsink fins</span>
-<span style="font-size:16px;line-height:1.5;color:#B4B4BC">Aluminum fins that carry the heat out to the air.</span>
-</div>
-<div class="gf-lab" style="--lr:entry 55% cover 38%;display:flex;flex-direction:column;gap:4px;border-left:3px solid #FFCE82;padding-left:16px">
-<span style="font-weight:600;font-size:18px">Paraffin wax panel</span>
-<span style="font-size:16px;line-height:1.5;color:#B4B4BC">The buffer. It melts as the transformer heats up, absorbing the heat, and solidifies again at night.</span>
-</div>
-<div class="gf-lab" style="--lr:entry 70% cover 46%;display:flex;flex-direction:column;gap:4px;border-left:3px solid #8A8A96;padding-left:16px">
-<span style="font-weight:600;font-size:18px">Transformer wall</span>
-<span style="font-size:16px;line-height:1.5;color:#B4B4BC">Where the heat comes from. The wax sits against it.</span>
-</div>
-<div class="gf-lab" style="--lr:entry 100% cover 62%;display:flex;flex-direction:column;gap:4px;border-left:3px solid #4C9AFF;padding-left:16px">
-<span style="font-weight:600;font-size:18px">Sensors and cellular link (planned)</span>
-<span style="font-size:16px;line-height:1.5;color:#B4B4BC">Thermometers on the tank and in the wax, sent to the dashboard so crews can see whether the wax is solid, melting or used up.</span>
-</div>
-<p style="margin:0;font-size:13px;color:#8A8A93">Simplified illustration of the concept. Some parts are left out, and the design may change as we test it.</p>
-</div>
-</div>
-</div>
-<!-- SPECS -->
-<div id="specs" class="gf-scrim" style="border-top:1px solid #1F1F23;padding:88px 64px;box-sizing:border-box;display:flex;flex-direction:column;gap:32px">
-<h2 style="margin:0;font-family:'Orbitron',sans-serif;font-weight:600;font-size:38px;line-height:1.15">At a glance.</h2>
-<div style="max-width:960px;border-bottom:1px solid #1F1F23">
-<div style="display:flex;flex-wrap:wrap;gap:8px 32px;padding:20px 0;border-top:1px solid #1F1F23"><span style="flex:0 0 240px;color:#9A9AA3;font-size:16px">Fits</span><span style="flex:1 1 320px;min-width:0;font-size:18px;line-height:1.5;color:#E4E4E8">Pad-mounted distribution transformers</span></div>
-<div style="display:flex;flex-wrap:wrap;gap:8px 32px;padding:20px 0;border-top:1px solid #1F1F23"><span style="flex:0 0 240px;color:#9A9AA3;font-size:16px">Heat buffer</span><span style="flex:1 1 320px;min-width:0;font-size:18px;line-height:1.5;color:#E4E4E8">Paraffin wax, a phase-change material</span></div>
-<div style="display:flex;flex-wrap:wrap;gap:8px 32px;padding:20px 0;border-top:1px solid #1F1F23"><span style="flex:0 0 240px;color:#9A9AA3;font-size:16px">Mounting</span><span style="flex:1 1 320px;min-width:0;font-size:18px;line-height:1.5;color:#E4E4E8">Mounts on the outside of the transformer</span></div>
-<div style="display:flex;flex-wrap:wrap;gap:8px 32px;padding:20px 0;border-top:1px solid #1F1F23"><span style="flex:0 0 240px;color:#9A9AA3;font-size:16px">Heat absorption</span><span style="flex:1 1 320px;min-width:0;font-size:18px;line-height:1.5;color:#E4E4E8">Passive. The wax needs no fans or pumps.</span></div>
-<div style="display:flex;flex-wrap:wrap;gap:8px 32px;padding:20px 0;border-top:1px solid #1F1F23"><span style="flex:0 0 240px;color:#9A9AA3;font-size:16px">Monitoring</span><span style="flex:1 1 320px;min-width:0;font-size:18px;line-height:1.5;color:#E4E4E8">Planned: temperature sensors on the tank and in the wax, with a cellular link to the dashboard</span></div>
-<div style="display:flex;flex-wrap:wrap;gap:8px 32px;padding:20px 0;border-top:1px solid #1F1F23"><span style="flex:0 0 240px;color:#9A9AA3;font-size:16px">Status</span><span style="flex:1 1 320px;min-width:0;font-size:18px;line-height:1.5;color:#E4E4E8">Simulated. A bench prototype is planned next.</span></div>
-</div>
-<p style="margin:0;font-size:14px;color:#8A8A93;max-width:960px">Design values may change as we test.</p>
-</div>
-
-<!-- DASHBOARD -->
-<div id="dashboard" style="border-top:1px solid #1F1F23;padding:88px 64px;box-sizing:border-box;display:flex;flex-wrap:wrap;align-items:center;gap:40px 64px">
-<div style="flex:1 1 440px;min-width:0;display:flex;flex-direction:column;gap:20px">
-<h2 style="margin:0;font-family:'Orbitron',sans-serif;font-weight:600;font-size:38px;line-height:1.15;text-wrap:balance">See which units to check first.</h2>
-<p style="margin:0;font-size:19px;line-height:1.6;color:#B4B4BC;max-width:560px">The risk dashboard maps every monitored transformer with its risk score, its load, and context like the weather and city events. Crews inspect the units that need it instead of visiting every unit on a fixed schedule.</p>
-<a href="dashboard.html" style="font-weight:600;font-size:17px">Try the dashboard</a>
-</div>
-<div style="flex:1 1 440px;min-width:0;display:flex;justify-content:center">
-<div style="width:100%;max-width:640px;display:flex;flex-direction:column;gap:10px"><img src="assets/dashboard-map.webp" alt="Screenshot of the Golden Fleece dashboard demo: a map of Los Angeles with 42 transformers colored by risk" style="width:100%;height:auto;border-radius:16px;border:1px solid #1F1F23;display:block"><span style="font-size:13px;color:#8A8A93">Screenshot of our demo. Synthetic data.</span></div>
-</div>
-</div>
-
-<!-- PILOT CTA -->
-<div id="pilot" style="border-top:1px solid #1F1F23;padding:112px 64px;box-sizing:border-box;display:flex;flex-direction:column;align-items:center;gap:24px;text-align:center">
-<h2 style="margin:0;font-family:'Orbitron',sans-serif;font-weight:800;font-size:44px;line-height:1.1;max-width:760px;text-wrap:balance">Pilot Golden Fleece with us.</h2>
-<p style="margin:0;font-size:20px;line-height:1.55;max-width:600px;color:#B4B4BC">We are looking for a utility or city partner to test the jacket and dashboard on a small group of transformers.</p>
-<p style="margin:0;font-size:22px;font-weight:600;color:#4C9AFF">benzari@usc.edu</p>
-</div>
-<!-- FOOTER -->
-<div style="border-top:1px solid #1F1F23;padding:36px 64px;box-sizing:border-box;display:flex;flex-wrap:wrap;justify-content:space-between;gap:16px 32px;font-size:14px;color:#8A8A93">
-<span>© 2026 Golden Fleece. Performance figures are simulated. The dashboard demo uses synthetic data. The background alerts are illustrative. Map data © OpenStreetMap contributors.</span>
-<span style="display:flex;flex-wrap:wrap;gap:8px 24px"><a href="index.html">Home</a><a href="#specs">Specs</a><a href="contact.html">Contact</a></span>
-</div>
-
-</div>
-</div>
+:root{--bg:#0a0a0b;--fg:#f2f2f3;--mute:#9a9aa3;--line:#1f1f23;--acc:#5b9bff}
+*{box-sizing:border-box}html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--fg);font:400 17px/1.65 Inter,system-ui,-apple-system,Segoe UI,Roboto,sans-serif;-webkit-font-smoothing:antialiased}
+a{color:inherit}
+.wrap{max-width:1080px;margin:0 auto;padding:0 24px}
+header{position:sticky;top:0;z-index:5;background:rgba(10,10,11,.8);backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}
+header .wrap{display:flex;align-items:center;justify-content:space-between;height:60px}
+.logo{font-weight:600;letter-spacing:.14em;font-size:13px;text-decoration:none}
+nav{display:flex;gap:28px;align-items:center}
+nav a{font-size:14px;color:var(--mute);text-decoration:none}nav a:hover,nav a[aria-current]{color:var(--fg)}
+nav a.btn{color:var(--fg);border:1px solid #34343a;padding:7px 14px;border-radius:999px}nav a.btn:hover{border-color:var(--fg)}
+section{padding:112px 0;border-top:1px solid var(--line)}
+section.first{border-top:0}
+h1{font-size:clamp(40px,7vw,76px);line-height:1.04;letter-spacing:-.035em;font-weight:600;margin:0 0 24px}
+h2{font-size:clamp(28px,4vw,44px);line-height:1.12;letter-spacing:-.025em;font-weight:600;margin:0 0 20px}
+h3{font-size:17px;font-weight:600;margin:0 0 6px}
+p{margin:0 0 16px;color:var(--mute)}
+.lead{font-size:20px;max-width:560px}
+.eyebrow{font-size:13px;color:var(--acc);letter-spacing:.08em;text-transform:uppercase;margin-bottom:16px}
+.cta{display:inline-block;margin-top:12px;background:var(--fg);color:#0a0a0b;padding:12px 22px;border-radius:999px;font-weight:500;font-size:15px;text-decoration:none}
+.cta:hover{background:#fff}.link{color:var(--acc);text-decoration:none;font-size:15px}.link:hover{text-decoration:underline}
+.cols{display:grid;grid-template-columns:repeat(3,1fr);gap:40px;margin-top:48px}
+.cols>div{border-top:1px solid var(--line);padding-top:20px}
+.num{font-size:12px;color:var(--acc);margin-bottom:10px}
+.hero{display:grid;grid-template-columns:1fr 1fr;gap:32px;align-items:center}
+.stage{position:relative;user-select:none;touch-action:pan-y;cursor:grab}
+.stage:active{cursor:grabbing}
+.stage canvas{width:100%;height:auto;display:block;outline:none}
+.stage canvas:focus-visible{outline:2px solid var(--acc);outline-offset:4px;border-radius:8px}
+.hint{text-align:center;font-size:12px;color:var(--mute);letter-spacing:.06em;margin-top:6px}
+.note{font-size:13px;color:#6f6f78}
+.big{display:flex;gap:64px;flex-wrap:wrap;margin:36px 0 24px}
+.big b{display:block;font-size:clamp(48px,8vw,88px);line-height:1;letter-spacing:-.04em;font-weight:600}
+.big span{font-size:14px;color:var(--mute)}.big .a b{color:var(--acc)}
+.shot{width:100%;border:1px solid var(--line);border-radius:12px;display:block;margin-top:32px}
+.tabs{display:flex;gap:8px;margin-top:32px}.tabs button{background:none;border:1px solid #2a2a30;color:var(--mute);padding:7px 14px;border-radius:999px;font:inherit;font-size:14px;cursor:pointer}
+.tabs button[aria-selected=true]{color:var(--fg);border-color:var(--fg)}
+.tabs+.shot{margin-top:16px}
+dl{display:grid;grid-template-columns:200px 1fr;margin:32px 0 0}
+dt,dd{margin:0;padding:16px 0;border-top:1px solid var(--line)}dt{color:var(--mute);font-size:15px}
+details{border-top:1px solid var(--line);padding:18px 0}details:last-child{border-bottom:1px solid var(--line)}
+summary{cursor:pointer;font-weight:500;list-style:none}summary::-webkit-details-marker{display:none}
+details p{margin:10px 0 0;max-width:640px}
+.team{display:grid;grid-template-columns:1fr 1fr;gap:40px;margin-top:40px}
+.team h3{font-size:20px}.role{color:var(--acc);font-size:14px;margin-bottom:10px}
+footer{border-top:1px solid var(--line);padding:40px 0 56px;font-size:13px;color:#6f6f78}
+footer .wrap{display:flex;justify-content:space-between;gap:24px;flex-wrap:wrap}
+@media(max-width:760px){.hero{grid-template-columns:1fr}.cols,.team{grid-template-columns:1fr;gap:28px}dl{grid-template-columns:1fr}dt{border-bottom:0;padding-bottom:0}dd{border-top:0;padding-top:4px}section{padding:72px 0}nav{gap:16px}nav a.btn{display:none}}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+</style></head><body>
+<header><div class="wrap"><a class="logo" href="index.html">GOLDEN FLEECE</a><nav><a href="product.html" aria-current="page">Product</a><a href="dashboard.html">Dashboard</a><a href="about.html">About</a><a class="btn" href="contact.html">Become a pilot partner</a></nav></div></header>
+<main>
+<section class="first"><div class="wrap hero"><div><div class="eyebrow">Product</div><h1>The wax that takes the heat.</h1><p class="lead">A jacket of paraffin wax for pad-mounted transformers, plus a dashboard that shows which units run hot.</p></div><div><div class="stage"><canvas data-turn tabindex="0" role="img" aria-label="Rotatable view of the Golden Fleece module beside a transformer. Drag, or use the left and right arrow keys, to rotate." width="518" height="480"></canvas><div class="hint">DRAG TO ROTATE</div></div></div></div></section>
+<section><div class="wrap"><h2>Melting is the trick.</h2><p class="lead">Wax soaks up a large amount of heat while it changes from solid to liquid, and stays at nearly the same temperature while it does. That flat stretch is the buffer. When the load drops, the wax gives the heat back to the evening air and solidifies.</p>
+<div class="big"><div><b>82°C</b><span>Bare transformer, simulated peak</span></div><div class="a"><b>57°C</b><span>With wax, simulated peak</span></div></div><p class="note">Air at 32°C, heat output rising from 3.5 kW to 10 kW for three hours. Read from our simulation plot; we plan to validate with a bench prototype.</p></div></section>
+<section><div class="wrap"><h2>At a glance.</h2><dl>
+<dt>Fits</dt><dd>Pad-mounted distribution transformers</dd><dt>Heat buffer</dt><dd>Paraffin wax, a phase-change material</dd><dt>Mounting</dt><dd>Mounts on the outside of the transformer</dd><dt>Monitoring</dt><dd>Planned: temperature sensors on the tank and in the wax, with a cellular link to the dashboard</dd><dt>Status</dt><dd>Simulated. A bench prototype is planned next.</dd></dl><p class="note" style="margin-top:16px">Design values may change as we test.</p></div></section>
+<section><div class="wrap"><h2>Pilot Golden Fleece with us.</h2><p class="lead">We are looking for a utility or city partner to test the jacket and dashboard on a small group of transformers.</p><a class="cta" href="contact.html">Become a pilot partner</a></div></section></main>
+<footer><div class="wrap"><span>© 2026 Golden Fleece. Performance figures are simulated. The dashboard demo uses synthetic data.</span><span><a href="contact.html">Contact</a> · benzari@usc.edu</span></div></footer>
 <script>
 (function(){
-var imgs=document.querySelectorAll('.gf-viewimg'),sl=document.getElementById('viewSlider'),lab=document.getElementById('viewLabel');
-if(!sl)return;var n=imgs.length,v=0;
-function set(i){v=(i+n)%n;for(var k=0;k<n;k++)imgs[k].style.opacity=k===v?'1':'0';sl.value=String(v+1);lab.textContent='View '+(v+1)+' of '+n;}
-sl.addEventListener('input',function(){set(Number(sl.value)-1)});
-document.getElementById('prevView').addEventListener('click',function(){set(v-1)});
-document.getElementById('nextView').addEventListener('click',function(){set(v+1)});
+ var N=36,imgs=[],loaded=0,cv=document.querySelectorAll('canvas[data-turn]');
+ if(!cv.length)return;
+ var reduce=matchMedia('(prefers-reduced-motion:reduce)').matches;
+ for(var i=1;i<=N;i++){(function(i){var im=new Image();im.onload=function(){loaded++;if(i==1)init();};im.src='assets/turn/turn-'+(i<10?'0':'')+i+'.webp';imgs[i-1]=im;})(i);}
+ function init(){cv.forEach(setup);}
+ function setup(c){
+  var w=imgs[0].naturalWidth,h=imgs[0].naturalHeight;c.width=w;c.height=h;
+  var x=c.getContext('2d'),f=0,auto=!reduce,drag=false,sx=0,sf=0,last=0;
+  function draw(){var im=imgs[((Math.round(f)%N)+N)%N];if(im&&im.complete){x.clearRect(0,0,w,h);x.drawImage(im,0,0);}}
+  function tick(t){if(auto){if(t-last>90){f=(f+1)%N;last=t;draw();}}requestAnimationFrame(tick);}
+  draw();requestAnimationFrame(tick);
+  var hint=c.parentNode.querySelector('.hint');
+  function stop(){auto=false;}
+  c.addEventListener('pointerdown',function(e){drag=true;stop();sx=e.clientX;sf=f;c.setPointerCapture(e.pointerId);});
+  c.addEventListener('pointermove',function(e){if(!drag)return;f=sf-(e.clientX-sx)/(c.clientWidth/N*0.9)*-1*-1;f=sf+(e.clientX-sx)/(c.clientWidth/N)*0.9;draw();});
+  c.addEventListener('pointerup',function(){drag=false;});
+  c.addEventListener('pointercancel',function(){drag=false;});
+  c.addEventListener('keydown',function(e){if(e.key=='ArrowLeft'){stop();f-=1;draw();e.preventDefault();}if(e.key=='ArrowRight'){stop();f+=1;draw();e.preventDefault();}});
+  new IntersectionObserver(function(en){if(!en[0].isIntersecting)last=0;}).observe(c);
+ }
+ document.querySelectorAll('.tabs').forEach(function(t){var img=t.nextElementSibling;t.querySelectorAll('button').forEach(function(b){b.onclick=function(){t.querySelectorAll('button').forEach(function(o){o.setAttribute('aria-selected',o===b)});img.src=b.dataset.src;img.alt=b.dataset.alt;};});});
 })();
-</script>
-</body>
-</html>
+</script></body></html>
