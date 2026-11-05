@@ -2,6 +2,7 @@
 <title>Golden Fleece | Struggle to keep your cool?</title><meta name="description" content="A wax thermal buffer for pad-mounted transformers, plus a risk dashboard."><link rel="icon" href="favicon.svg">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<script type="importmap">{"imports":{"three":"./assets/vendor/build/three.module.js"}}</script>
 <style>
 :root{--bg:#0a0a0b;--fg:#f2f2f3;--mute:#9a9aa3;--line:#1f1f23;--acc:#5b9bff}
 *{box-sizing:border-box}html{scroll-behavior:smooth}
@@ -28,7 +29,7 @@ p{margin:0 0 16px;color:var(--mute)}
 .cols>div{border-top:1px solid var(--line);padding-top:20px}
 .num{font-size:12px;color:var(--acc);margin-bottom:10px}
 .hero{display:grid;grid-template-columns:1fr 1fr;gap:32px;align-items:center}
-.stage{position:relative;user-select:none;touch-action:pan-y;cursor:grab}
+.stage{position:relative;aspect-ratio:518/480;user-select:none;touch-action:pan-y;cursor:grab}
 .stage:active{cursor:grabbing}
 .stage canvas{width:100%;height:auto;display:block;outline:none}
 .stage canvas:focus-visible{outline:2px solid var(--acc);outline-offset:4px;border-radius:8px}
@@ -77,8 +78,8 @@ footer .wrap{display:flex;justify-content:space-between;gap:24px;flex-wrap:wrap}
  function setup(c){
   var w=imgs[0].naturalWidth,h=imgs[0].naturalHeight;c.width=w;c.height=h;
   var x=c.getContext('2d'),f=0,auto=!reduce,drag=false,sx=0,sf=0,last=0;
-  function draw(){var fl=Math.floor(f),t=f-fl,a=imgs[((fl%N)+N)%N],b=imgs[(((fl+1)%N)+N)%N];x.clearRect(0,0,w,h);if(a&&a.complete){x.globalAlpha=1;x.drawImage(a,0,0);}if(b&&b.complete&&t>0.001){x.globalAlpha=t;x.drawImage(b,0,0);}x.globalAlpha=1;}
-  function tick(t){if(auto){if(last){f=(f+(t-last)/1000*N/90)%N;draw();}last=t;}else last=0;requestAnimationFrame(tick);}
+  function draw(){var im=imgs[((Math.round(f)%N)+N)%N];if(im&&im.complete){x.clearRect(0,0,w,h);x.drawImage(im,0,0);}}
+  function tick(t){if(!c.isConnected)return;if(auto){if(last){f=(f+(t-last)/1000*N/16)%N;draw();}last=t;}else last=0;requestAnimationFrame(tick);}
   draw();requestAnimationFrame(tick);
   var hint=c.parentNode.querySelector('.hint');
   function stop(){auto=false;}
@@ -91,4 +92,4 @@ footer .wrap{display:flex;justify-content:space-between;gap:24px;flex-wrap:wrap}
  }
  document.querySelectorAll('.tabs').forEach(function(t){var img=t.nextElementSibling;t.querySelectorAll('button').forEach(function(b){b.onclick=function(){t.querySelectorAll('button').forEach(function(o){o.setAttribute('aria-selected',o===b)});img.src=b.dataset.src;img.alt=b.dataset.alt;};});});
 })();
-</script></body></html>
+</script><script type="module" src="assets/viewer3d.js"></script></body></html>
