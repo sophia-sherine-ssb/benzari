@@ -1,5 +1,5 @@
 <!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Golden Fleece | A wax buffer for overheating transformers</title><meta name="description" content="A wax thermal buffer for pad-mounted transformers, plus a risk dashboard."><link rel="icon" href="favicon.svg">
+<title>Golden Fleece | Struggle to keep your cool?</title><meta name="description" content="A wax thermal buffer for pad-mounted transformers, plus a risk dashboard."><link rel="icon" href="favicon.svg">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
@@ -48,6 +48,10 @@ summary{cursor:pointer;font-weight:500;list-style:none}summary::-webkit-details-
 details p{margin:10px 0 0;max-width:640px}
 .team{display:grid;grid-template-columns:1fr 1fr;gap:40px;margin-top:40px}
 .team h3{font-size:20px}.role{color:var(--acc);font-size:14px;margin-bottom:10px}
+.mapt{background:linear-gradient(180deg,rgba(10,10,11,.2) 0%,rgba(10,10,11,.55) 55%,#0a0a0b 100%),url(assets/city-map.jpg) center 18%/cover no-repeat}
+.mapb{background:linear-gradient(180deg,#0a0a0b 0%,rgba(10,10,11,.5) 55%,rgba(10,10,11,.15) 100%),url(assets/city-map.jpg) center 72%/cover no-repeat;padding-bottom:180px}
+.glow{position:absolute;inset:10% 5%;background:radial-gradient(closest-side,rgba(91,155,255,.18),transparent);pointer-events:none}
+section.first.mapt{padding:140px 0 160px}
 footer{border-top:1px solid var(--line);padding:40px 0 56px;font-size:13px;color:#6f6f78}
 footer .wrap{display:flex;justify-content:space-between;gap:24px;flex-wrap:wrap}
 @media(max-width:760px){.hero{grid-template-columns:1fr}.cols,.team{grid-template-columns:1fr;gap:28px}dl{grid-template-columns:1fr}dt{border-bottom:0;padding-bottom:0}dd{border-top:0;padding-top:4px}section{padding:72px 0}nav{gap:16px}nav a.btn{display:none}}
@@ -55,13 +59,13 @@ footer .wrap{display:flex;justify-content:space-between;gap:24px;flex-wrap:wrap}
 </style></head><body>
 <header><div class="wrap"><a class="logo" href="index.html">GOLDEN FLEECE</a><nav><a href="product.html">Product</a><a href="dashboard.html">Dashboard</a><a href="about.html">About</a><a class="btn" href="contact.html">Become a pilot partner</a></nav></div></header>
 <main>
-<section class="first"><div class="wrap hero"><div><h1>Keep transformers cool.</h1><p class="lead">A wax buffer that melts to absorb a transformer's peak heat, and a dashboard that shows which units to check first.</p><a class="cta" href="contact.html">Become a pilot partner</a></div><div><div class="stage"><canvas data-turn tabindex="0" role="img" aria-label="Rotatable view of the Golden Fleece module beside a transformer. Drag, or use the left and right arrow keys, to rotate." width="518" height="480"></canvas><div class="hint">DRAG TO ROTATE</div></div><p class="note" style="text-align:center">Fusion 360 rendering of our design.</p></div></div></section>
+<section class="first mapt"><div class="wrap hero"><div><h1>Struggle to keep your <span style="color:var(--acc)">cool?</span></h1><p class="lead">A wax buffer that melts to absorb a transformer's peak heat, and a dashboard that shows which units to check first.</p><a class="cta" href="contact.html">Become a pilot partner</a></div><div><div class="stage"><div class="glow"></div><canvas data-turn tabindex="0" role="img" aria-label="Rotatable view of the Golden Fleece module beside a transformer. Drag, or use the left and right arrow keys, to rotate." width="518" height="480"></canvas><div class="hint">DRAG TO ROTATE</div></div><p class="note" style="text-align:center">Fusion 360 rendering of our design.</p></div></div></section>
 <section><div class="wrap"><div class="eyebrow">The problem</div><h2>Transformers overheat when everyone needs power most.</h2><p class="lead">In September 2024, an LA heat wave overheated the grid's equipment, and more than 64,000 LADWP customers lost power.</p><p class="note">Sources: LAist reporting and LADWP public updates, September 2024.</p></div></section>
 <section><div class="wrap"><div class="eyebrow">How it works</div><h2>A melting buffer for the worst hours.</h2>
 <div class="cols"><div><div class="num">01</div><h3>Heat flows in</h3><p>At peak load, heat moves from the transformer into the wax.</p></div><div><div class="num">02</div><h3>The wax melts</h3><p>Melting stores a lot of heat while the wax stays at one temperature, so the peak stays lower.</p></div><div><div class="num">03</div><h3>It resets overnight</h3><p>Evening air cools the wax and it solidifies, ready for the next day.</p></div></div></div></section>
 <section><div class="wrap"><div class="eyebrow">Result (simulated)</div><h2>A peak about 25°C lower.</h2><div class="big"><div><b>82°C</b><span>Bare transformer</span></div><div class="a"><b>57°C</b><span>With wax</span></div></div><p class="note">Our thermal simulation: air at 32°C, heat output rising from 3.5 kW to 10 kW for three hours. Values are read from the simulation plot. We plan to validate them with a bench prototype.</p><a class="link" href="product.html">See the product →</a></div></section>
 <section><div class="wrap"><div class="eyebrow">Risk dashboard</div><h2>See which units to check first.</h2><p class="lead">A map of every monitored transformer with its risk score, load and context like weather and city events.</p><img class="shot" src="assets/dashboard-map.webp" alt="Dashboard map of monitored transformers"><p class="note" style="margin-top:12px">Screenshot of our demo. Synthetic data.</p><a class="link" href="dashboard.html">See the dashboard →</a></div></section>
-<section><div class="wrap"><h2>Pilot Golden Fleece with us.</h2><p class="lead">We are looking for a utility or city partner to test the jacket and dashboard on a small group of transformers.</p><a class="cta" href="contact.html">Become a pilot partner</a></div></section></main>
+<section class="mapb"><div class="wrap"><h2>Pilot Golden Fleece with us.</h2><p class="lead">We are looking for a utility or city partner to test the jacket and dashboard on a small group of transformers.</p><a class="cta" href="contact.html">Become a pilot partner</a></div></section></main>
 <footer><div class="wrap"><span>© 2026 Golden Fleece. Performance figures are simulated. The dashboard demo uses synthetic data.</span><span><a href="contact.html">Contact</a> · benzari@usc.edu</span></div></footer>
 <script>
 (function(){
@@ -74,7 +78,7 @@ footer .wrap{display:flex;justify-content:space-between;gap:24px;flex-wrap:wrap}
   var w=imgs[0].naturalWidth,h=imgs[0].naturalHeight;c.width=w;c.height=h;
   var x=c.getContext('2d'),f=0,auto=!reduce,drag=false,sx=0,sf=0,last=0;
   function draw(){var fl=Math.floor(f),t=f-fl,a=imgs[((fl%N)+N)%N],b=imgs[(((fl+1)%N)+N)%N];x.clearRect(0,0,w,h);if(a&&a.complete){x.globalAlpha=1;x.drawImage(a,0,0);}if(b&&b.complete&&t>0.001){x.globalAlpha=t;x.drawImage(b,0,0);}x.globalAlpha=1;}
-  function tick(t){if(auto){if(last){f=(f+(t-last)/1000*N/30)%N;draw();}last=t;}else last=0;requestAnimationFrame(tick);}
+  function tick(t){if(auto){if(last){f=(f+(t-last)/1000*N/90)%N;draw();}last=t;}else last=0;requestAnimationFrame(tick);}
   draw();requestAnimationFrame(tick);
   var hint=c.parentNode.querySelector('.hint');
   function stop(){auto=false;}

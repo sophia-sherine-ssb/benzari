@@ -48,6 +48,10 @@ summary{cursor:pointer;font-weight:500;list-style:none}summary::-webkit-details-
 details p{margin:10px 0 0;max-width:640px}
 .team{display:grid;grid-template-columns:1fr 1fr;gap:40px;margin-top:40px}
 .team h3{font-size:20px}.role{color:var(--acc);font-size:14px;margin-bottom:10px}
+.mapt{background:linear-gradient(180deg,rgba(10,10,11,.2) 0%,rgba(10,10,11,.55) 55%,#0a0a0b 100%),url(assets/city-map.jpg) center 18%/cover no-repeat}
+.mapb{background:linear-gradient(180deg,#0a0a0b 0%,rgba(10,10,11,.5) 55%,rgba(10,10,11,.15) 100%),url(assets/city-map.jpg) center 72%/cover no-repeat;padding-bottom:180px}
+.glow{position:absolute;inset:10% 5%;background:radial-gradient(closest-side,rgba(91,155,255,.18),transparent);pointer-events:none}
+section.first.mapt{padding:140px 0 160px}
 footer{border-top:1px solid var(--line);padding:40px 0 56px;font-size:13px;color:#6f6f78}
 footer .wrap{display:flex;justify-content:space-between;gap:24px;flex-wrap:wrap}
 @media(max-width:760px){.hero{grid-template-columns:1fr}.cols,.team{grid-template-columns:1fr;gap:28px}dl{grid-template-columns:1fr}dt{border-bottom:0;padding-bottom:0}dd{border-top:0;padding-top:4px}section{padding:72px 0}nav{gap:16px}nav a.btn{display:none}}
@@ -76,7 +80,7 @@ footer .wrap{display:flex;justify-content:space-between;gap:24px;flex-wrap:wrap}
   var w=imgs[0].naturalWidth,h=imgs[0].naturalHeight;c.width=w;c.height=h;
   var x=c.getContext('2d'),f=0,auto=!reduce,drag=false,sx=0,sf=0,last=0;
   function draw(){var fl=Math.floor(f),t=f-fl,a=imgs[((fl%N)+N)%N],b=imgs[(((fl+1)%N)+N)%N];x.clearRect(0,0,w,h);if(a&&a.complete){x.globalAlpha=1;x.drawImage(a,0,0);}if(b&&b.complete&&t>0.001){x.globalAlpha=t;x.drawImage(b,0,0);}x.globalAlpha=1;}
-  function tick(t){if(auto){if(last){f=(f+(t-last)/1000*N/30)%N;draw();}last=t;}else last=0;requestAnimationFrame(tick);}
+  function tick(t){if(auto){if(last){f=(f+(t-last)/1000*N/90)%N;draw();}last=t;}else last=0;requestAnimationFrame(tick);}
   draw();requestAnimationFrame(tick);
   var hint=c.parentNode.querySelector('.hint');
   function stop(){auto=false;}
